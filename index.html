@@ -1,0 +1,2136 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Catchlight — คู่มือจัดแสงสำหรับช่างภาพมือใหม่</title>
+<meta name="description" content="Catchlight — A Field Guide to Light: คู่มือจัดแสงแบบอินเทอร์แอคทีฟสำหรับช่างภาพมือใหม่ ครอบคลุมพื้นฐานแสง สตูดิโอจำลอง สูตรจัดไฟ แสงธรรมชาติ และการถ่ายสินค้า">
+<meta name="theme-color" content="#111214">
+<style>
+:root{
+  --bg:#111214; --bg2:#16171a; --bg3:#1c1d21;
+  --ink:#e8e6e1; --ink2:#b3b0a9; --ink3:#77756f;
+  --line:rgba(232,230,225,.13); --line2:rgba(232,230,225,.26); --line3:rgba(232,230,225,.5);
+  --amber:#ffb35c; --amber2:rgba(255,179,92,.16); --day:#cfe3ff; --day2:rgba(207,227,255,.14);
+  --gel-r:#ff4d6d; --gel-c:#4dd6ff; --gel-v:#9b5cff;
+  --sans:"IBM Plex Sans Thai","Noto Sans Thai","Sarabun","Leelawadee UI",Tahoma,sans-serif;
+  --cond:"Bahnschrift SemiCondensed","Bahnschrift","Roboto Condensed","Arial Narrow","Helvetica Neue",Arial,sans-serif;
+  --mono:"JetBrains Mono","Cascadia Mono",Consolas,"SFMono-Regular",Menlo,"Courier New",monospace;
+  --r:14px;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.7;overflow-x:hidden;
+  background-image:
+    radial-gradient(140% 60% at 50% -10%, #202125 0%, rgba(17,18,20,0) 60%),
+    linear-gradient(180deg, #131417 0%, #111214 40%, #0f1012 100%);
+  background-attachment:fixed;}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;
+  background:radial-gradient(90% 70% at 50% 110%, rgba(255,255,255,.035), transparent 70%);}
+a{color:var(--amber)}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:.01em}
+.en{color:var(--ink3);font-size:.86em}
+h1,h2,h3,h4{line-height:1.25;margin:0;font-weight:600;text-wrap:balance}
+p{margin:.4em 0 .8em}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--amber);outline-offset:2px;border-radius:6px}
+.skip{position:absolute;left:-999px;top:8px;background:var(--amber);color:#111;padding:6px 12px;border-radius:8px;z-index:100}
+.skip:focus{left:8px}
+
+/* ---------- rail (aperture progress) ---------- */
+.rail{position:fixed;left:18px;top:50%;transform:translateY(-50%);z-index:40;display:flex;flex-direction:column;align-items:center;gap:8px}
+.rail canvas{width:52px;height:52px;display:block}
+.rail .fnum{font-size:11px;color:var(--amber)}
+.rail ol{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-direction:column;gap:6px;align-items:center}
+.rail a{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink3);font-family:var(--cond);font-size:11px;letter-spacing:.14em;position:relative}
+.rail a i{width:7px;height:7px;border-radius:50%;border:1px solid var(--line3);display:block;transition:.3s}
+.rail a em{position:absolute;left:18px;white-space:nowrap;font-style:normal;font-family:var(--sans);letter-spacing:0;font-size:12px;background:var(--bg3);border:1px solid var(--line);padding:1px 8px;border-radius:6px;opacity:0;pointer-events:none;transform:translateX(-4px);transition:.2s}
+.rail a:hover em,.rail a:focus-visible em{opacity:1;transform:none}
+.rail a.on i{background:var(--amber);border-color:var(--amber);box-shadow:0 0 8px var(--amber)}
+@media (max-width:1100px){
+  .rail{left:auto;right:10px;top:auto;bottom:10px;transform:none;flex-direction:row;background:rgba(17,18,20,.8);backdrop-filter:blur(8px);border:1px solid var(--line);border-radius:30px;padding:4px 10px 4px 4px}
+  .rail canvas{width:36px;height:36px}.rail ol{display:none}
+}
+
+/* ---------- layout ---------- */
+main{position:relative;z-index:1}
+.sec{max-width:1240px;margin:0 auto;padding:110px 28px 40px 96px;position:relative}
+@media (max-width:1100px){.sec{padding:80px 18px 30px}}
+.sec-head{display:grid;grid-template-columns:auto 1fr;gap:6px 22px;align-items:end;margin-bottom:34px;max-width:900px}
+.sec-num{font-family:var(--cond);font-stretch:condensed;text-transform:uppercase;letter-spacing:.22em;font-size:13px;color:var(--amber);grid-column:1/-1}
+.sec-head h2{grid-column:1/-1;font-size:clamp(28px,4.2vw,46px);font-weight:600;letter-spacing:-.01em}
+.sec-head p{grid-column:1/-1;color:var(--ink2);max-width:760px;margin:6px 0 0}
+.card{background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.015));border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .9s ease,transform .9s cubic-bezier(.2,.7,.2,1)}
+.reveal.in{opacity:1;transform:none}
+.tag{display:inline-block;font-family:var(--cond);letter-spacing:.14em;text-transform:uppercase;font-size:11px;color:var(--ink3);border:1px solid var(--line);border-radius:20px;padding:1px 9px}
+.sim{position:absolute;left:10px;bottom:8px;font-family:var(--mono);font-size:10px;color:rgba(232,230,225,.5);letter-spacing:.04em;pointer-events:none;text-shadow:0 1px 2px #000}
+.note{font-size:13px;color:var(--ink3)}
+kbd{font-family:var(--mono);font-size:12px;border:1px solid var(--line2);border-radius:4px;padding:0 5px}
+
+/* ---------- controls ---------- */
+.ctl{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:center;margin:10px 0}
+.ctl label{font-size:14px;color:var(--ink2)}
+.ctl output{font-family:var(--mono);font-size:12px;color:var(--amber);text-align:right;min-width:64px}
+.ctl input[type=range]{grid-column:1/-1}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:28px;background:transparent;margin:0;cursor:pointer;touch-action:pan-y}
+input[type=range]::-webkit-slider-runnable-track{height:2px;background:linear-gradient(90deg,var(--line3),var(--line2));border-radius:2px}
+input[type=range]::-moz-range-track{height:2px;background:var(--line2);border-radius:2px}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--bg);border:2px solid var(--amber);margin-top:-8px;box-shadow:0 0 10px rgba(255,179,92,.5)}
+input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--bg);border:2px solid var(--amber);box-shadow:0 0 10px rgba(255,179,92,.5)}
+input[type=range]:focus-visible{outline:none}
+input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(255,179,92,.35)}
+select{background:var(--bg3);border:1px solid var(--line2);border-radius:8px;padding:6px 8px;width:100%;font-size:14px}
+.btn{display:inline-flex;align-items:center;gap:8px;background:transparent;border:1px solid var(--amber);color:var(--amber);padding:9px 16px;border-radius:30px;cursor:pointer;text-decoration:none;font-size:15px;transition:background .2s,color .2s}
+.btn:hover{background:var(--amber);color:#16120c}
+.btn.ghost{border-color:var(--line2);color:var(--ink)}
+.btn.ghost:hover{background:var(--ink);color:var(--bg)}
+.btn.small{padding:5px 12px;font-size:13px}
+.seg{display:inline-flex;border:1px solid var(--line2);border-radius:30px;padding:3px;gap:2px;flex-wrap:wrap}
+.seg button{background:transparent;border:0;padding:5px 12px;border-radius:30px;font-size:13px;color:var(--ink2);cursor:pointer}
+.seg button[aria-pressed=true],.seg button[aria-selected=true]{background:var(--ink);color:var(--bg)}
+.chk{display:flex;gap:8px;align-items:center;font-size:14px;color:var(--ink2);cursor:pointer;margin:6px 0}
+.chk input{accent-color:var(--amber);width:16px;height:16px}
+
+/* ---------- hero ---------- */
+.hero{position:relative;height:100vh;min-height:560px;overflow:hidden;z-index:1;touch-action:pan-y}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.hero #heroMotes{pointer-events:none;mix-blend-mode:screen}
+.hero-copy{position:absolute;left:max(96px,7vw);top:50%;transform:translateY(-50%);max-width:520px;z-index:2}
+.kicker{font-family:var(--cond);letter-spacing:.3em;text-transform:uppercase;font-size:12px;color:var(--amber);margin:0 0 18px}
+.hero h1{font-size:clamp(40px,6.4vw,84px);font-weight:600;letter-spacing:-.02em;line-height:1.08;text-shadow:0 2px 30px rgba(0,0,0,.6)}
+.hero h1.h1-en{font-size:clamp(34px,5.2vw,72px);letter-spacing:-.028em;line-height:1.02}
+.hero h1.h1-en span{display:block;white-space:nowrap}
+.hero h1.h1-en .h1-sub{font-weight:400;color:var(--ink2);letter-spacing:-.02em;margin-top:.08em}
+.hero-copy:has(.h1-en){max-width:min(700px,56vw)}
+.hero .lede{color:var(--ink2);font-size:18px;margin:22px 0 26px;max-width:440px}
+.hero .hint{font-size:13px;color:var(--ink3);margin-top:18px}
+.hero-readout{position:absolute;right:28px;bottom:22px;font-size:12px;color:var(--ink3);z-index:2;text-align:right}
+.lang-switch{position:absolute;top:18px;right:24px;z-index:3;font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--ink2);text-decoration:none;border:1px solid var(--line2);border-radius:20px;padding:4px 12px;background:rgba(17,18,20,.5)}
+.lang-switch:hover{color:var(--amber);border-color:var(--amber)}
+.scroll-cue{position:absolute;left:50%;bottom:22px;width:1px;height:44px;background:linear-gradient(var(--amber),transparent);z-index:2}
+@media (max-width:760px){
+  .hero-copy{left:18px;right:18px;top:auto;bottom:76px;transform:none}
+  .hero h1{font-size:44px}.hero h1.h1-en{font-size:min(42px,9.4vw)}.hero-copy:has(.h1-en){max-width:none}.hero .lede{font-size:16px;margin:12px 0 16px}
+  .hero-readout{right:84px;left:18px;bottom:auto;top:20px;text-align:left;font-size:10.5px;line-height:1.5}
+  .scroll-cue{display:none}
+}
+
+/* ---------- labs ---------- */
+.labs{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+@media (max-width:1280px){.labs{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:900px){.labs{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;padding-bottom:12px;margin:0 -18px;padding-left:18px;padding-right:18px;scrollbar-width:thin}
+  .labs>.lab{flex:0 0 86%;scroll-snap-align:center}}
+.lab h3{font-size:18px;margin-bottom:2px}
+.lab .sub{font-size:13px;color:var(--ink3);margin:0 0 10px}
+.lab canvas{width:100%;display:block;border-radius:10px;background:#0c0d0f}
+.lab .rview{position:relative;margin:8px 0}
+.lab .diagram{aspect-ratio:2/1;border:1px solid var(--line)}
+.lab .readout{font-family:var(--mono);font-size:12px;color:var(--ink2);border-top:1px dashed var(--line);padding-top:8px;margin-top:8px;display:grid;grid-template-columns:1fr auto;gap:2px 12px}
+.lab .readout b{color:var(--amber);font-weight:500}
+.lab .explain{font-size:14px;color:var(--ink2);margin-top:10px}
+.face-canvas{aspect-ratio:124/112}
+.bust-canvas{aspect-ratio:220/270}
+.ring{position:relative;aspect-ratio:1;margin:8px 0}
+.ring .rview{position:absolute;inset:17%;margin:0}
+.ring .rview canvas{height:100%;width:100%;border-radius:50%;object-fit:cover}
+.ring svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.ring button{position:absolute;transform:translate(-50%,-50%);width:34px;height:34px;border-radius:50%;background:var(--bg3);border:1px solid var(--line2);cursor:pointer;display:grid;place-items:center;font-size:10px;font-family:var(--mono);color:var(--ink2);padding:0}
+.ring button[aria-pressed=true]{background:var(--amber);color:#16120c;border-color:var(--amber);box-shadow:0 0 16px rgba(255,179,92,.6)}
+.ktscale{position:relative;height:30px;margin-top:-2px}
+.ktscale span{position:absolute;transform:translateX(-50%);font-size:11px;color:var(--ink3);white-space:nowrap;text-align:center;line-height:1.2;top:0}
+.ktbar{height:6px;border-radius:4px;margin-top:6px;background:linear-gradient(90deg,#ff8a1c,#ffb35c 20%,#ffe2bd 38%,#fff8ee 45%,#f3f5ff 55%,#cfe3ff 75%,#a8c6ff)}
+.meter{height:10px;border-radius:6px;background:var(--bg3);border:1px solid var(--line);position:relative;margin:8px 0 2px;overflow:hidden}
+.meter i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#6b4a22,var(--amber));transition:width .15s}
+.meter-scale{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--ink3)}
+
+/* ---------- playground ---------- */
+.pg{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:18px;align-items:start}
+.pg-plan{padding:14px}
+.plan-wrap{position:relative}
+#planCanvas{width:100%;aspect-ratio:1/1.02;display:block;border-radius:10px;background:#0d1a26;background:radial-gradient(120% 90% at 50% 40%,#10202e,#0a141d);touch-action:none;cursor:grab;border:1px solid rgba(207,227,255,.18)}
+#planCanvas:active{cursor:grabbing}
+.plan-legend{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.plan-legend h3{font-size:16px}
+.tabs{display:flex;gap:4px;margin:12px 0 0;flex-wrap:wrap}
+.tabs button{flex:1 1 auto;background:var(--bg3);border:1px solid var(--line);border-radius:10px 10px 0 0;padding:7px 8px;cursor:pointer;font-size:13px;color:var(--ink2);display:flex;align-items:center;gap:6px;justify-content:center;min-width:68px}
+.tabs button .dot{width:8px;height:8px;border-radius:50%;background:var(--ink3)}
+.tabs button.live .dot{background:var(--amber);box-shadow:0 0 6px var(--amber)}
+.tabs button[aria-selected=true]{background:rgba(255,179,92,.1);border-color:rgba(255,179,92,.5);color:var(--ink)}
+.panel{border:1px solid var(--line);border-radius:0 0 12px 12px;padding:6px 14px 10px;background:rgba(0,0,0,.18)}
+.panel .row2{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}
+@media (max-width:560px){.panel .row2{grid-template-columns:1fr}}
+.pg-render{position:sticky;top:16px}
+.render-wrap{position:relative;border-radius:var(--r);overflow:hidden;border:1px solid var(--line);background:#0c0d0f}
+.render-wrap canvas{display:block;width:100%}
+.render-wrap .motes{position:absolute;inset:0;pointer-events:none;mix-blend-mode:screen}
+.flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}
+.flash.go{animation:flash .28s ease-out}
+@keyframes flash{0%{opacity:.42}100%{opacity:0}}
+.pattern{margin-top:14px;display:grid;grid-template-columns:1fr 132px;gap:14px}
+.pattern h3{font-size:22px;color:var(--amber)}
+.pattern h3 small{display:block;font-size:13px;color:var(--ink3);font-weight:400;font-family:var(--cond);letter-spacing:.14em;text-transform:uppercase}
+.pattern p{font-size:14px;color:var(--ink2);margin:6px 0}
+.loupe{position:relative}
+.loupe canvas{width:100%;aspect-ratio:26/20;border-radius:10px;display:block;border:1px solid var(--line2)}
+.loupe span{font-size:11px;color:var(--ink3);display:block;margin-top:4px;line-height:1.3}
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:12px}
+.stat{border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.stat small{display:block;font-size:11px;color:var(--ink3)}
+.stat b{font-family:var(--mono);font-weight:500;font-size:18px;color:var(--ink)}
+.stat canvas{width:100%;height:44px;display:block}
+@media (max-width:560px){.stats{grid-template-columns:1fr 1fr}.stats .stat:last-child{grid-column:1/-1}}
+.badge{display:inline-block;font-size:12px;border-radius:20px;padding:0 9px;margin:2px 4px 0 0;border:1px solid var(--line2);color:var(--ink2)}
+.badge.hot{border-color:var(--amber);color:var(--amber)}
+@media (max-width:900px){
+  .pg{grid-template-columns:1fr}
+  .pg-render{position:relative;top:0;order:-1}
+  #planCanvas{aspect-ratio:1/1.1}
+  .pattern{grid-template-columns:1fr 110px}
+}
+
+/* ---------- library ---------- */
+.lib-filter{margin-bottom:18px}
+.recipes{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}
+@media (max-width:420px){.recipes{grid-template-columns:1fr}}
+.recipe{display:flex;flex-direction:column}
+.recipe canvas{width:100%;aspect-ratio:16/10;display:block;border-radius:10px;border:1px solid rgba(207,227,255,.16);background:#0b1620}
+.recipe h3{font-size:19px;margin-top:12px}
+.recipe .en{display:block;margin-bottom:6px}
+.recipe .lead{font-size:14px;color:var(--ink2)}
+.recipe details{border-top:1px dashed var(--line);padding:8px 0 2px;font-size:14px}
+.recipe summary{cursor:pointer;color:var(--ink);font-weight:500;list-style:none;display:flex;justify-content:space-between}
+.recipe summary::after{content:"+";font-family:var(--mono);color:var(--amber)}
+.recipe details[open] summary::after{content:"−"}
+.recipe ul,.recipe ol{margin:6px 0 6px;padding-left:22px;color:var(--ink2)}
+.recipe li{margin:2px 0}
+.recipe .actions{margin-top:auto;padding-top:12px;display:flex;gap:8px;flex-wrap:wrap}
+.gear{display:flex;flex-wrap:wrap;gap:4px;margin:6px 0 4px}
+.gear span{font-size:12px;font-family:var(--mono);color:var(--day);border:1px solid rgba(207,227,255,.25);border-radius:6px;padding:0 6px}
+
+/* ---------- natural ---------- */
+.nat{display:grid;grid-template-columns:1.6fr 1fr;gap:16px}
+.nat canvas{width:100%;display:block;border-radius:10px}
+#skyCanvas{aspect-ratio:16/9}
+.timeline{margin-top:14px}
+.tmarks{position:relative;height:34px;font-size:11px;color:var(--ink3)}
+.tmarks span{position:absolute;transform:translateX(-50%);text-align:center;white-space:nowrap;line-height:1.25}
+.condition h3{font-size:20px;color:var(--amber)}
+.window-room{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:18px;align-items:start}
+#winPlan{aspect-ratio:1/1;border:1px solid rgba(207,227,255,.18);touch-action:none;background:#0b1620;cursor:grab}
+@media (max-width:980px){.nat,.window-room{grid-template-columns:1fr}}
+
+/* ---------- product ---------- */
+.prod{display:grid;grid-template-columns:1.5fr 1fr;gap:16px;align-items:start}
+#prodCanvas{width:100%;aspect-ratio:4/3;display:block;border-radius:10px;border:1px solid var(--line)}
+#prodPlan{width:100%;aspect-ratio:16/10;display:block;border-radius:10px;border:1px solid rgba(207,227,255,.16);background:#0b1620;margin-top:10px}
+@media (max-width:900px){.prod{grid-template-columns:1fr}}
+
+/* ---------- quiz ---------- */
+.quiz{display:grid;grid-template-columns:1fr 1.1fr;gap:18px;align-items:start}
+.quiz .render-wrap{max-width:440px}
+.qopts{display:grid;gap:8px;margin:12px 0}
+.qopts button{text-align:left;background:var(--bg3);border:1px solid var(--line2);border-radius:10px;padding:10px 14px;cursor:pointer;font-size:15px;transition:.2s}
+.qopts button:hover:not(:disabled){border-color:var(--amber)}
+.qopts button.right{border-color:#7ddc9a;background:rgba(125,220,154,.1)}
+.qopts button.wrong{border-color:var(--gel-r);background:rgba(255,77,109,.08)}
+.qopts button:disabled{cursor:default}
+.qreveal canvas{width:100%;aspect-ratio:16/10;display:block;border-radius:10px;border:1px solid rgba(207,227,255,.16);background:#0b1620;margin:8px 0}
+.qscore{display:flex;gap:16px;align-items:center;font-family:var(--mono);font-size:13px;color:var(--ink2)}
+.qscore b{color:var(--amber);font-size:20px}
+.pips{display:flex;gap:4px}.pips i{width:18px;height:4px;border-radius:2px;background:var(--line2)}
+.pips i.ok{background:#7ddc9a}.pips i.no{background:var(--gel-r)}.pips i.cur{background:var(--amber)}
+@media (max-width:900px){.quiz{grid-template-columns:1fr}}
+
+/* ---------- glossary ---------- */
+.gsearch{width:100%;max-width:520px;background:var(--bg3);border:1px solid var(--line2);border-radius:30px;padding:11px 18px;font-size:16px;margin-bottom:18px}
+.gsearch:focus{outline:none;border-color:var(--amber)}
+.gloss{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;margin:0}
+.gloss div{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:rgba(255,255,255,.02)}
+.gloss dt{font-weight:600}
+.gloss dt span{font-size:12.5px;color:var(--amber);display:block;font-weight:400;margin-top:1px}
+.gloss dd{margin:4px 0 0;font-size:14px;color:var(--ink2)}
+.gloss mark{background:rgba(255,179,92,.3);color:inherit;border-radius:3px}
+footer{max-width:1240px;margin:0 auto;padding:40px 28px 90px 96px;color:var(--ink3);font-size:13px;border-top:1px solid var(--line)}
+@media (max-width:1100px){footer{padding:30px 18px 90px}}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .reveal{transform:none;transition:opacity .4s ease}
+  .flash.go{animation:none}
+  *{animation-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#playground">ข้ามไปที่สตูดิโอจำลอง</a>
+
+<nav class="rail" aria-label="ความคืบหน้าและสารบัญ">
+  <canvas id="aperture" width="104" height="104" aria-hidden="true"></canvas>
+  <div class="fnum mono" id="fnum" aria-live="off">f/22</div>
+  <ol id="railList"></ol>
+</nav>
+
+<main>
+<!-- 1. HERO -->
+<header id="hero" class="hero" data-title="แสงคือทุกอย่าง">
+  <canvas id="heroCanvas" tabindex="0" role="img" aria-label="หุ่นครึ่งตัวในความมืด มีไฟหนึ่งดวงตามตำแหน่งเมาส์หรือนิ้ว ใช้ปุ่มลูกศรเพื่อย้ายไฟ"></canvas>
+  <canvas id="heroMotes"></canvas>
+  <div class="hero-copy">
+    <p class="kicker">Catchlight · A Field Guide to Light</p>
+    <h1>แสงคือทุกอย่าง<br>ในภาพถ่าย</h1>
+    <p class="lede">คู่มือจัดแสงสำหรับช่างภาพมือใหม่ — ใช้อุปกรณ์อะไร วางไว้ตรงไหน และแสงจะตกกระทบใบหน้าอย่างไร ทดลองได้จริงในสตูดิโอจำลอง</p>
+    <a class="btn" href="#fundamentals">เริ่มเรียนพื้นฐาน ↓</a>
+    <p class="hint">เลื่อนเมาส์หรือลากนิ้วบนภาพ เพื่อย้ายไฟ · คีย์บอร์ด: <kbd>←</kbd><kbd>→</kbd><kbd>↑</kbd><kbd>↓</kbd></p>
+  </div>
+  <div class="hero-readout mono" id="heroReadout">—</div>
+  <div class="scroll-cue" aria-hidden="true"></div>
+  <a class="lang-switch" href="index-en.html" hreflang="en" lang="en">EN</a>
+</header>
+
+<!-- 2. FUNDAMENTALS -->
+<section id="fundamentals" class="sec" data-title="พื้นฐานของแสง">
+  <div class="sec-head reveal">
+    <div class="sec-num">02 — Fundamentals</div>
+    <h2>พื้นฐานของแสง</h2>
+    <p>สี่เรื่องที่ช่างภาพทุกคนต้องเข้าใจก่อนแตะไฟดวงแรก: ความแข็ง–นุ่มของแสง ระยะทาง ทิศทาง และสีของแสง ทุกแล็บปรับค่าได้จริง</p>
+  </div>
+  <div class="labs">
+    <!-- Hard vs soft -->
+    <article class="lab card reveal" aria-labelledby="labSoftT">
+      <span class="tag">Lab 1</span>
+      <h3 id="labSoftT">แสงแข็ง vs แสงนุ่ม</h3>
+      <p class="sub">แสงแข็ง (Hard light) · แสงนุ่ม (Soft light)</p>
+      <canvas id="labSoftDiagram" class="diagram" aria-label="แผนภาพเงามืด (Umbra) และเงามัว (Penumbra)"></canvas>
+      <div class="rview"><canvas id="labSoftRender" class="face-canvas"></canvas><span class="sim">ภาพจำลองอย่างง่าย</span></div>
+      <div class="ctl"><label for="softSize">ขนาดแหล่งแสง (Source size)</label><output id="softSizeO" class="mono"></output><input type="range" id="softSize" min="0.05" max="2" step="0.05" value="0.6"></div>
+      <div class="ctl"><label for="softDist">ระยะถึงแบบ (Distance)</label><output id="softDistO" class="mono"></output><input type="range" id="softDist" min="0.4" max="4" step="0.05" value="1.2"></div>
+      <div class="readout" id="softReadout"></div>
+      <p class="explain">ความนุ่มไม่ได้ขึ้นกับตัวอุปกรณ์ แต่ขึ้นกับ <b>ขนาดปรากฏ (Apparent size)</b> ของแหล่งแสงเมื่อมองจากตัวแบบ: ใหญ่ขึ้นหรือใกล้ขึ้น = ขอบเงาไล่นุ่มขึ้น</p>
+    </article>
+    <!-- Inverse square -->
+    <article class="lab card reveal" aria-labelledby="labInvT">
+      <span class="tag">Lab 2</span>
+      <h3 id="labInvT">กฎกำลังสองผกผัน</h3>
+      <p class="sub">Inverse square law — ลากไฟในแผนภาพ</p>
+      <canvas id="labInvDiagram" class="diagram" tabindex="0" aria-label="ลากไฟซ้ายขวาเพื่อเปลี่ยนระยะ ใช้ปุ่มลูกศรได้" style="touch-action:none;cursor:ew-resize"></canvas>
+      <div class="rview"><canvas id="labInvRender" class="bust-canvas" style="aspect-ratio:220/200"></canvas><span class="sim">ภาพจำลองอย่างง่าย · ค่ารับแสงคงที่</span></div>
+      <div class="meter" aria-hidden="true"><i id="invMeter"></i></div>
+      <div class="meter-scale"><span>−5 EV</span><span>−2</span><span>0</span><span>+2</span></div>
+      <div class="readout" id="invReadout"></div>
+      <p class="explain">ความสว่างลดลงตามระยะกำลังสอง: ระยะ ×2 เหลือแสง ¼ = <b>−2 สต็อป (stops)</b> ไฟยิ่งใกล้ ฉากหลังยิ่งมืดลงเร็วเมื่อเทียบกับตัวแบบ (Falloff)</p>
+    </article>
+    <!-- Direction -->
+    <article class="lab card reveal" aria-labelledby="labDirT">
+      <span class="tag">Lab 3</span>
+      <h3 id="labDirT">ทิศทางของแสง</h3>
+      <p class="sub">Direction — เลือกตำแหน่งบนวงนาฬิกา</p>
+      <div class="ring" id="dirRing">
+        <svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="41" fill="none" stroke="rgba(232,230,225,.25)" stroke-width=".3" stroke-dasharray="1 1.4"/><circle cx="50" cy="50" r="33.5" fill="none" stroke="rgba(232,230,225,.12)" stroke-width=".3"/></svg>
+        <div class="rview"><canvas id="labDirRender" class="face-canvas" style="aspect-ratio:1"></canvas></div>
+      </div>
+      <div class="readout"><span id="dirName">—</span><b id="dirAngle" class="mono"></b></div>
+      <p class="explain" id="dirCaption"></p>
+    </article>
+    <!-- Colour temperature -->
+    <article class="lab card reveal" aria-labelledby="labKT">
+      <span class="tag">Lab 4</span>
+      <h3 id="labKT">อุณหภูมิสี</h3>
+      <p class="sub">Colour temperature (เคลวิน, Kelvin)</p>
+      <div class="rview"><canvas id="labKRender" class="face-canvas"></canvas><span class="sim">ไวท์บาลานซ์กล้อง <span id="wbTag">5500K</span></span></div>
+      <div class="ctl"><label for="kSlider">อุณหภูมิสีของแสง</label><output id="kO" class="mono"></output><input type="range" id="kSlider" min="2000" max="10000" step="50" value="3200"></div>
+      <div class="ktbar" aria-hidden="true"></div>
+      <div class="ktscale" id="ktScale" aria-hidden="true"></div>
+      <label class="chk"><input type="checkbox" id="wbMatch"> ตั้งไวท์บาลานซ์ (White balance) ให้ตรงกับแสง</label>
+      <p class="explain" id="kCaption"></p>
+    </article>
+  </div>
+</section>
+
+<!-- 3. PLAYGROUND -->
+<section id="playground" class="sec" data-title="สตูดิโอจำลอง">
+  <div class="sec-head reveal">
+    <div class="sec-num">03 — Studio Playground</div>
+    <h2>สตูดิโอจำลอง</h2>
+    <p>ลากไฟบนแผนผังมุมบน (Floor plan) เลือกตัวปรับแสง (Modifier) กำลังไฟ ความสูง และมุมเฟเธอร์ (Feathering) แล้วดูภาพจากมุมกล้องทางขวา ระบบจะบอกชื่อรูปแบบแสงบนใบหน้าให้อัตโนมัติ</p>
+  </div>
+  <div class="pg">
+    <div class="pg-plan card reveal">
+      <div class="plan-legend">
+        <h3>แผนผังมุมบน <span class="en">(Top-down plan)</span></h3>
+        <span class="note mono">ช่อง 0.5 m · ลาก / <kbd>←↑↓→</kbd> · <kbd>[</kbd> <kbd>]</kbd> สลับไฟ</span>
+      </div>
+      <div class="plan-wrap"><canvas id="planCanvas" tabindex="0" aria-label="แผนผังสตูดิโอ ลากไฟเพื่อย้ายตำแหน่ง ปุ่มลูกศรย้ายไฟที่เลือก ปุ่มวงเล็บเหลี่ยมสลับไฟ"></canvas></div>
+      <div class="tabs" role="tablist" id="pgTabs"></div>
+      <div class="panel" id="pgPanel" role="tabpanel"></div>
+    </div>
+    <div class="pg-render reveal">
+      <div class="render-wrap">
+        <canvas id="pgCanvas" class="bust-canvas" role="img" aria-label="ภาพจำลองจากมุมกล้อง"></canvas>
+        <canvas id="pgMotes" class="motes"></canvas>
+        <div class="flash" id="pgFlash"></div>
+        <span class="sim">ภาพจำลองอย่างง่าย (Simplified simulation)</span>
+      </div>
+      <div class="pattern card">
+        <div>
+          <h3 id="patName">—</h3>
+          <div id="patBadges"></div>
+          <p id="patWhy" aria-live="polite"></p>
+        </div>
+        <div class="loupe"><canvas id="loupe" aria-label="ภาพขยายดวงตา แสดงแคตช์ไลต์"></canvas><span>แคตช์ไลต์ (Catchlight) · ขยายดวงตา</span></div>
+      </div>
+      <div class="stats">
+        <div class="stat"><small>อัตราส่วนแสง (Ratio)</small><b id="ratioO">—</b></div>
+        <div class="stat"><small>มิเตอร์ที่ใบหน้า (Meter)</small><b id="meterO">—</b></div>
+        <div class="stat"><small>ฮิสโตแกรม (Histogram)</small><canvas id="histo"></canvas></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4. LIBRARY -->
+<section id="library" class="sec" data-title="คลังสูตรจัดไฟ">
+  <div class="sec-head reveal">
+    <div class="sec-num">04 — Setup Library</div>
+    <h2>คลังสูตรจัดไฟ</h2>
+    <p>12 สูตรมาตรฐานที่ใช้ได้จริง แต่ละสูตรมีแผนผัง รายการอุปกรณ์ ขั้นตอนวาง เหตุผล และข้อผิดพลาดที่มือใหม่เจอบ่อย กด “โหลดเข้า Playground” เพื่อดูไฟเคลื่อนเข้าที่</p>
+  </div>
+  <div class="recipes" id="recipes"></div>
+</section>
+
+<!-- 5. NATURAL -->
+<section id="natural" class="sec" data-title="แสงธรรมชาติ">
+  <div class="sec-head reveal">
+    <div class="sec-num">05 — Natural Light</div>
+    <h2>แสงธรรมชาติ</h2>
+    <p>ดวงอาทิตย์คือไฟดวงเดียวที่ย้ายไม่ได้ — แต่เราเลือกเวลาและตำแหน่งยืนได้ เลื่อนแถบเวลาเพื่อดูความแข็งของแสง ความยาวเงา และสีที่เปลี่ยนไปตลอดวัน</p>
+  </div>
+  <div class="nat reveal">
+    <div class="card">
+      <canvas id="skyCanvas" role="img" aria-label="ฉากกลางแจ้ง ดวงอาทิตย์เคลื่อนตามเวลา"></canvas>
+      <div class="timeline">
+        <div class="ctl"><label for="tod">เวลาของวัน (Time of day)</label><output id="todO" class="mono"></output><input type="range" id="tod" min="5.25" max="19.25" step="0.05" value="17.6"></div>
+        <div class="tmarks" id="tmarks" aria-hidden="true"></div>
+      </div>
+      <div class="seg" role="group" aria-label="สภาพท้องฟ้า" id="skyMode">
+        <button aria-pressed="true" data-m="sun">แดดตรง</button>
+        <button aria-pressed="false" data-m="overcast">ครึ้มฟ้า (Overcast)</button>
+        <button aria-pressed="false" data-m="shade">ร่มเงา (Open shade)</button>
+      </div>
+    </div>
+    <div class="card condition">
+      <div class="render-wrap"><canvas id="natRender" class="bust-canvas"></canvas><span class="sim">ภาพจำลองอย่างง่าย</span></div>
+      <h3 id="natName" style="margin-top:12px">—</h3>
+      <div class="mono note" id="natRead"></div>
+      <p id="natWhy" style="font-size:14px;color:var(--ink2)"></p>
+    </div>
+  </div>
+  <div class="window-room reveal">
+    <div class="card">
+      <h3 style="font-size:18px">แสงจากหน้าต่าง <span class="en">(Window light)</span></h3>
+      <p class="note">ลากตัวแบบเข้าใกล้/ออกห่างหน้าต่าง</p>
+      <canvas id="winPlan" style="width:100%;display:block;border-radius:10px" tabindex="0" aria-label="แผนผังห้อง ลากตัวแบบหรือใช้ปุ่มลูกศรซ้ายขวา"></canvas>
+    </div>
+    <div class="card">
+      <div class="render-wrap"><canvas id="winRender" class="bust-canvas"></canvas><span class="sim">ภาพจำลองอย่างง่าย</span></div>
+    </div>
+    <div class="card">
+      <div class="ctl"><label for="winDist">ระยะจากหน้าต่าง</label><output id="winDistO" class="mono"></output><input type="range" id="winDist" min="0.5" max="4" step="0.05" value="1.2"></div>
+      <label class="chk"><input type="checkbox" id="winRefl"> เพิ่มแผ่นสะท้อนแสงสีขาว (Reflector) ฝั่งเงา</label>
+      <div class="readout lab" id="winRead" style="font-family:var(--mono);font-size:12px;color:var(--ink2);display:grid;grid-template-columns:1fr auto;gap:2px 12px;margin-top:10px"></div>
+      <p style="font-size:14px;color:var(--ink2)" id="winWhy"></p>
+    </div>
+  </div>
+</section>
+
+<!-- 6. PRODUCT -->
+<section id="product" class="sec" data-title="ถ่ายสินค้า">
+  <div class="sec-head reveal">
+    <div class="sec-num">06 — Product &amp; Tabletop</div>
+    <h2>ถ่ายสินค้าบนโต๊ะ</h2>
+    <p>แก้วไม่ได้ “รับแสง” แต่ “สะท้อนและหักเห” แสง เราจึงไม่ส่องไฟไปที่ขวดโดยตรง แต่ส่องไปที่ฉากหลังหรือแผ่นไฟข้างๆ เพื่อให้ขอบแก้วปรากฏเป็นเส้น ส่วนวัตถุผิวด้าน (Matte) ต้องการแสงตกกระทบตรงๆ</p>
+  </div>
+  <div class="prod reveal">
+    <div class="card">
+      <canvas id="prodCanvas" role="img" aria-label="ขวดแก้วและลูกบาศก์ผิวด้านบนโต๊ะ"></canvas>
+    </div>
+    <div class="card">
+      <div class="seg" role="group" aria-label="โหมดฉากหลัง" id="prodMode">
+        <button aria-pressed="true" data-m="bright">Bright-field</button>
+        <button aria-pressed="false" data-m="dark">Dark-field</button>
+      </div>
+      <label class="chk"><input type="checkbox" id="prodGrad"> ฉากหลังไล่เฉด (Gradient background)</label>
+      <label class="chk"><input type="checkbox" id="prodStrips" checked> สตริปบ็อกซ์ขอบซ้าย–ขวา (Strip box rim lights)</label>
+      <label class="chk"><input type="checkbox" id="prodTop"> ซอฟต์บ็อกซ์ด้านบน (Top softbox) สำหรับลูกบาศก์</label>
+      <canvas id="prodPlan" aria-label="แผนผังการจัดไฟสินค้า"></canvas>
+      <p id="prodWhy" style="font-size:14px;color:var(--ink2)"></p>
+    </div>
+  </div>
+</section>
+
+<!-- 7. QUIZ -->
+<section id="quiz" class="sec" data-title="ทายการจัดแสง">
+  <div class="sec-head reveal">
+    <div class="sec-num">07 — Quiz</div>
+    <h2>ทายการจัดแสง</h2>
+    <p>ดูภาพแล้วทายว่าใช้สูตรไหน สังเกตเงาใต้จมูก ขอบเงาบนแก้ม แคตช์ไลต์ในดวงตา และความสว่างของฉากหลัง</p>
+  </div>
+  <div class="quiz reveal">
+    <div>
+      <div class="render-wrap"><canvas id="quizRender" class="bust-canvas"></canvas><span class="sim">ภาพจำลองอย่างง่าย</span></div>
+    </div>
+    <div class="card">
+      <div class="qscore"><span>ข้อ <b id="qNum">1</b>/8</span><span>คะแนน <b id="qScore">0</b></span><div class="pips" id="qPips"></div></div>
+      <h3 style="margin-top:14px;font-size:20px">ภาพนี้จัดไฟแบบไหน?</h3>
+      <div class="qopts" id="qOpts"></div>
+      <div class="qreveal" id="qReveal" hidden>
+        <p id="qFeedback" aria-live="polite" style="font-weight:500"></p>
+        <canvas id="qDiagram" aria-label="แผนผังคำตอบ"></canvas>
+        <p id="qWhy" style="font-size:14px;color:var(--ink2)"></p>
+        <button class="btn" id="qNext">ข้อต่อไป →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 8. GLOSSARY -->
+<section id="glossary" class="sec" data-title="อภิธานศัพท์">
+  <div class="sec-head reveal">
+    <div class="sec-num">08 — Glossary</div>
+    <h2>อภิธานศัพท์การจัดแสง</h2>
+    <p>รวมคำศัพท์ที่ใช้ในคู่มือนี้ พร้อมความหมายสั้นๆ ค้นหาได้ทั้งคำหลักและคำที่ใช้เรียกแทน</p>
+  </div>
+  <input type="search" class="gsearch reveal" id="gSearch" placeholder="ค้นหา เช่น เงามัว, เฟเธอร์, สต็อป…" aria-label="ค้นหาคำศัพท์">
+  <dl class="gloss" id="gloss"></dl>
+  <p class="note" id="gEmpty" hidden>ไม่พบคำที่ค้นหา</p>
+</section>
+</main>
+<footer>
+  <p><b>Catchlight</b> — คู่มือจัดแสงสำหรับช่างภาพมือใหม่ · ภาพทั้งหมดเป็น <b>การจำลองอย่างง่าย</b> (Lambert diffuse + specular, เงาจาก height field, แหล่งแสงแบบพื้นที่) เพื่อการเรียนรู้หลักการ ไม่ใช่การเรนเดอร์ที่แม่นยำทางฟิสิกส์ทุกประการ</p>
+  <p><a href="index-en.html" hreflang="en" lang="en">English version</a></p>
+  <p>ค่ามิเตอร์อ้างอิง: ไฟกำลัง 0 EV ที่ระยะ 1 m ≈ f/8 ที่ ISO 100</p>
+</footer>
+<script>
+(()=>{
+'use strict';
+/* =====================================================================
+   CORE — utilities, colour, modifiers
+   ===================================================================== */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const COARSE = matchMedia('(pointer: coarse)').matches;
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+const lerp = (a, b, t) => a + (b - a) * t;
+const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+const D2R = Math.PI / 180, R2D = 180 / Math.PI;
+const sgnStr = (v, d = 1) => (v >= 0 ? '+' : '−') + Math.abs(v).toFixed(d);
+const nstr = (v, d = 1) => (v < 0 ? '−' : '') + Math.abs(v).toFixed(d);
+const nrm = v => { const l = Math.hypot(v[0], v[1], v[2]) || 1; return [v[0] / l, v[1] / l, v[2] / l]; };
+const easeIO = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const DPR = () => Math.min(2, window.devicePixelRatio || 1);
+const hex2lin = h => { const n = parseInt(h.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255].map(c => Math.pow(c / 255, 2.2)); };
+
+function kelvinSRGB(K) {
+  const t = K / 100; let r, g, b;
+  if (t <= 66) { r = 255; g = 99.4708025861 * Math.log(t) - 161.1195681661; }
+  else { r = 329.698727446 * Math.pow(t - 60, -0.1332047592); g = 288.1221695283 * Math.pow(t - 60, -0.0755148492); }
+  if (t >= 66) b = 255; else if (t <= 19) b = 0; else b = 138.5177312231 * Math.log(t - 10) - 305.0447927307;
+  return [clamp(r, 0, 255) / 255, clamp(g, 0, 255) / 255, clamp(b, 0, 255) / 255];
+}
+const kelvinLin = K => kelvinSRGB(K).map(c => Math.pow(c, 2.2));
+const kelvinCSS = K => { const c = kelvinSRGB(K); return `rgb(${c.map(v => Math.round(v * 255)).join(',')})`; };
+const GELS = {
+  none: { th: 'ไม่ใส่เจล', hex: null },
+  red: { th: 'เจลแดง-ชมพู', hex: '#ff4d6d' },
+  cyan: { th: 'เจลฟ้าไซแอน', hex: '#4dd6ff' },
+  violet: { th: 'เจลม่วง', hex: '#9b5cff' }
+};
+function lightColor(K, wbK = 5500, gel = 'none') {
+  const a = kelvinLin(K), w = kelvinLin(wbK);
+  let c = [a[0] / w[0], a[1] / w[1], a[2] / w[2]];
+  const Y = .2126 * c[0] + .7152 * c[1] + .0722 * c[2];
+  c = c.map(v => v / Y);
+  if (gel && gel !== 'none') { const g = hex2lin(GELS[gel].hex); c = [c[0] * g[0], c[1] * g[1], c[2] * g[2]]; }
+  return c;
+}
+const colCSS = (c, a = 1) => { const m = Math.max(c[0], c[1], c[2], 1e-4); return `rgba(${c.map(v => Math.round(255 * Math.pow(v / m, 1 / 2.2))).join(',')},${a})`; };
+
+/* Modifiers: w,h = size in metres; p = beam falloff exponent (cos^p); eff = light efficiency; n = area samples */
+const MODS = {
+  bare:     { th: 'หัวไฟเปล่า + รีเฟลกเตอร์', en: 'Bare / standard reflector', w: .18, h: .18, shape: 'circle', p: 3, eff: 1, n: 1 },
+  softbox:  { th: 'ซอฟต์บ็อกซ์ 60×90', en: 'Softbox', w: .6, h: .9, shape: 'rect', p: 1.6, eff: .5, n: 9 },
+  octa:     { th: 'ออคตาบ็อกซ์ 120', en: 'Octabox', w: 1.2, h: 1.2, shape: 'octa', p: 1.3, eff: .45, n: 9 },
+  umbShoot: { th: 'ร่มทะลุ', en: 'Umbrella, shoot-through', w: 1.05, h: 1.05, shape: 'umbrella', p: .7, eff: .5, n: 9 },
+  umbRefl:  { th: 'ร่มสะท้อน', en: 'Umbrella, reflective', w: 1.0, h: 1.0, shape: 'umbrellaR', p: 1, eff: .6, n: 9 },
+  dish:     { th: 'บิวตี้ดิช 55', en: 'Beauty dish', w: .55, h: .55, shape: 'dish', p: 3, eff: .7, n: 6 },
+  grid:     { th: 'ซอฟต์บ็อกซ์ + กริด', en: 'Grid (≈20°)', w: .4, h: .4, shape: 'grid', p: 14, eff: .35, n: 4 },
+  snoot:    { th: 'สนู้ต', en: 'Snoot', w: .06, h: .06, shape: 'circle', p: 60, eff: .3, n: 1 },
+  scrim:    { th: 'สคริม 1.5×1.8', en: 'Scrim / diffusion panel', w: 1.5, h: 1.8, shape: 'rect', p: .8, eff: .35, n: 9 },
+  strip:    { th: 'สตริปบ็อกซ์ 30×140', en: 'Strip box', w: .3, h: 1.4, shape: 'rect', p: 1.6, eff: .45, n: 7 },
+  window:   { th: 'หน้าต่าง', en: 'Window', w: 1.2, h: 1.4, shape: 'window', p: .9, eff: 1, n: 9 }
+};
+const MOD_ORDER = ['bare', 'softbox', 'octa', 'umbShoot', 'umbRefl', 'dish', 'grid', 'snoot', 'scrim', 'strip', 'window'];
+const halfBeam = p => clamp(Math.acos(Math.pow(.5, 1 / p)) * R2D, 4, 80);
+
+/* =====================================================================
+   2.5D BUST — procedural depth + normal map (cached)
+   ===================================================================== */
+const KM = 0.30;          // metres per model unit
+const EYE_Y = -0.335;     // image-space y of eye level
+const VIEWS = {
+  full: { x0: -1.1, x1: 1.1, y0: -1.05, y1: 1.65 },
+  face: { x0: -0.62, x1: 0.62, y0: -0.86, y1: 0.26 },
+  sq:   { x0: -0.56, x1: 0.56, y0: -0.86, y1: 0.26 },
+  inv:  { x0: -1.1, x1: 1.1, y0: -1.05, y1: 0.95 }
+};
+// materials: 0 bg, 1 skin, 2 lip, 3 hair, 4 cloth, 5 sclera, 6 iris, 7 pupil
+const ALB = [[0, 0, 0], [.56, .33, .245], [.46, .19, .17], [.05, .035, .027], [.075, .08, .09], [.4, .38, .36], [.12, .07, .04], [.012, .012, .012]];
+const KS = [0, .10, .16, .08, .02, .3, .3, .3];
+const SH = [1, 26, 40, 14, 6, 90, 90, 90];
+
+const GEOM = new Map();
+function getGeom(view, ppu, turn) {
+  const key = `${view.x0.toFixed(3)},${view.x1.toFixed(3)},${view.y0.toFixed(3)}|${ppu.toFixed(1)}|${turn.toFixed(3)}`;
+  let g = GEOM.get(key);
+  if (g) { GEOM.delete(key); GEOM.set(key, g); return g; }
+  g = buildGeom(view, ppu, turn);
+  GEOM.set(key, g);
+  if (GEOM.size > 28) GEOM.delete(GEOM.keys().next().value);
+  return g;
+}
+function ell(x, y, cx, cy, cz, rx, ry, rz) { const dx = (x - cx) / rx, dy = (y - cy) / ry, e = 1 - dx * dx - dy * dy; return e > 0 ? cz + rz * Math.sqrt(e) : -9; }
+function sell(x, y, cx, cy, cz, rx, ry, rz, n) { const dx = Math.abs(x - cx) / rx, dy = (y - cy) / ry, e = 1 - Math.pow(dx, n) - dy * dy; return e > 0 ? cz + rz * Math.pow(e, 1 / n) : -9; } // flatter front, steeper sides
+
+function buildGeom(view, ppu, turn) {
+  const W = Math.max(8, Math.round((view.x1 - view.x0) * ppu)), H = Math.max(8, Math.round((view.y1 - view.y0) * ppu));
+  const N = W * H, hz = new Float32Array(N), mat = new Uint8Array(N), af = new Float32Array(N);
+  const nx = new Float32Array(N), ny = new Float32Array(N), nz = new Float32Array(N), isEye = new Uint8Array(N);
+  const c = Math.cos(turn), s = Math.sin(turn);
+  const R = (fx, fz) => [fx * c + fz * s, -fx * s + fz * c];
+  const feat = [];
+  const F = (fx, fy, fz, rx, ry, rz, m, k) => { const [cx, cz] = R(fx, fz); feat.push([cx, fy, cz, rx, ry, rz, m, k]); };
+  F(.13, -.235, .13, .1, .08, .085, 1, .06); F(-.13, -.235, .13, .1, .08, .085, 1, .06);   // cheeks
+  F(0, -.405, .225, .21, .05, .075, 1, .04);                                                     // brow
+  F(0, -.005, .19, .075, .05, .06, 1, .04);                                                      // chin
+  F(.28, -.31, -.01, .035, .085, .06, 1, .02); F(-.28, -.31, -.01, .035, .085, .06, 1, .02);    // ears
+  F(0, -.265, .25, .04, .105, .075, 1, .025);                                                    // nose bridge
+  F(0, -.185, .285, .05, .045, .06, 1, .02);                                                     // nose tip
+  F(.042, -.172, .245, .034, .03, .04, 1, .015); F(-.042, -.172, .245, .034, .03, .04, 1, .015); // alae
+  F(0, -.098, .232, .07, .02, .04, 2, .015); F(0, -.07, .228, .062, .024, .045, 2, .015);        // lips
+  const sockets = [R(.105, .2), R(-.105, .2)];
+  const eyes = [R(.105, .172), R(-.105, .172)];
+  const mouth = R(0, .23);
+  const cosT = Math.max(.45, c);
+  let z, m;
+  const U = (zn, mn, k) => {
+    if (zn <= -9) return;
+    if (z <= -9) { z = zn; m = mn; return; }
+    if (k > 0) { const h = clamp(.5 + .5 * (zn - z) / k, 0, 1); const r = z + (zn - z) * h + k * h * (1 - h); if (zn > z) m = mn; z = r; }
+    else if (zn > z) { z = zn; m = mn; }
+  };
+  for (let j = 0; j < H; j++) {
+    const y = view.y0 + (j + .5) / ppu;
+    for (let i = 0; i < W; i++) {
+      const x = view.x0 + (i + .5) / ppu, p = j * W + i;
+      z = -9; m = 0;
+      { const ax = Math.abs(x); if (ax < 1) { const yt = .24 + .34 * Math.pow(ax / .98, 1.8); // torso: sloping shoulders rolling over the top
+        if (y > yt) U(-.14 + .36 * Math.sqrt(1 - ax * ax) * Math.sqrt(Math.min(1, (y - yt) / .22)), 4, 0); } }
+      if (y > -.2) { const e = 1 - (x / .135) * (x / .135); if (e > 0) U(-.03 + .13 * Math.sqrt(e), 1, .07); } // neck
+      if (y < .15) {
+        U(sell(x, y, 0, -.36, 0, .285, .37, .28, 2.5), 1, 0);                         // cranium
+        U(sell(x, y, 0, -.15, .01, .2, .21, .23, 2.4), 1, .07);                       // jaw
+        for (let f = 0; f < feat.length; f++) { const q = feat[f]; U(ell(x, y, q[0], q[1], q[2], q[3], q[4], q[5]), q[6], q[7]); }
+        if (m === 1 || m === 2) {
+          for (const sk of sockets) { const dx = x - sk[0], dy = y + .335; z -= .045 * Math.exp(-(dx * dx + dy * dy) / (2 * .055 * .055)); }
+          const mx = x - mouth[0], my = y + .084; if (Math.abs(mx) < .07) z -= .012 * Math.exp(-(my * my) / (2 * .006 * .006)) * (1 - Math.pow(mx / .07, 2));
+          // eyes
+          for (const e of eyes) {
+            const dx = x - e[0], dy = y + .335, lx = dx / cosT, a = 1 - (lx / .062) * (lx / .062);
+            if (a > 0 && Math.abs(dy + .003) < .024 * Math.pow(a, .75)) {
+              const e2 = .068 * .068 - dx * dx - dy * dy;
+              if (e2 > 0) {
+                const ze = e[1] + Math.sqrt(e2);
+                if (ze > z - .03) {
+                  z = ze; const dI = Math.hypot(dx, dy); m = dI < .012 ? 7 : dI < .03 ? 6 : 5;
+                  const l = .068; nx[p] = dx / l; ny[p] = -dy / l; nz[p] = (ze - e[1]) / l; isEye[p] = 1;
+                }
+              }
+            }
+          }
+        }
+        // hair
+        const hl = -.535 + .33 * (x / .3) * (x / .3);
+        if (y < hl) { const hh = ell(x, y, 0, -.43, -.035, .305, .378, .3); if (hh > z - .004 && hh > -9) { z = Math.max(z, hh); m = 3; isEye[p] = 0; } }
+      }
+      hz[p] = z; mat[p] = m;
+      af[p] = m === 3 ? .72 + .28 * (.5 + .5 * Math.sin(x * 150 + Math.sin(y * 9) * 7)) : m === 4 ? .9 + .1 * Math.sin(x * 60 + y * 40) : 1;
+    }
+  }
+  // normals from height field (one-sided at silhouettes)
+  const d = 1 / ppu;
+  for (let j = 0; j < H; j++) for (let i = 0; i < W; i++) {
+    const p = j * W + i; if (!mat[p] || isEye[p]) continue;
+    const zc = hz[p];
+    const L = i > 0 && mat[p - 1] ? hz[p - 1] : NaN, Rr = i < W - 1 && mat[p + 1] ? hz[p + 1] : NaN;
+    const T = j > 0 && mat[p - W] ? hz[p - W] : NaN, B = j < H - 1 && mat[p + W] ? hz[p + W] : NaN;
+    let dzdx = 0, dzdy = 0;
+    if (L === L && Rr === Rr) dzdx = (Rr - L) / (2 * d); else if (Rr === Rr) dzdx = (Rr - zc) / d * 3; else if (L === L) dzdx = (zc - L) / d * 3;
+    if (T === T && B === B) dzdy = (B - T) / (2 * d); else if (B === B) dzdy = (B - zc) / d * 3; else if (T === T) dzdy = (zc - T) / d * 3;
+    let a = -dzdx, b = dzdy, cc = 1;
+    if (mat[p] === 3) { const x = view.x0 + (i + .5) / ppu, y = view.y0 + (j + .5) / ppu; a += .12 * Math.cos(x * 150 + Math.sin(y * 9) * 7); }
+    const l = Math.hypot(a, b, cc); nx[p] = a / l; ny[p] = b / l; nz[p] = cc / l;
+  }
+  // cavity AO from blurred height
+  const hb = new Float32Array(N), tmp = new Float32Array(N), r = Math.max(1, Math.round(.05 * ppu));
+  for (let p = 0; p < N; p++) hb[p] = mat[p] ? hz[p] : -.3;
+  const blur = (src, dst, horiz) => {
+    const len = horiz ? W : H, cnt = horiz ? H : W;
+    for (let a = 0; a < cnt; a++) {
+      let acc = 0; const idx = k => horiz ? a * W + k : k * W + a;
+      for (let k = -r; k <= r; k++) acc += src[idx(clamp(k, 0, len - 1))];
+      for (let k = 0; k < len; k++) {
+        dst[idx(k)] = acc / (2 * r + 1);
+        acc += src[idx(Math.min(len - 1, k + r + 1))] - src[idx(Math.max(0, k - r))];
+      }
+    }
+  };
+  blur(hb, tmp, true); blur(tmp, hb, false);
+  const ao = new Float32Array(N);
+  for (let p = 0; p < N; p++) ao[p] = mat[p] ? clamp(1 - Math.max(0, hb[p] - hz[p]) * 7, .35, 1) : 1;
+  // silhouette signed distance (units), chamfer transform
+  const dt = inside => {
+    const D = new Float32Array(N);
+    for (let p = 0; p < N; p++) D[p] = (!!mat[p]) === inside ? 1e6 : 0;
+    const S2 = 1.4142;
+    for (let j = 0; j < H; j++) for (let i = 0; i < W; i++) { const p = j * W + i; let v = D[p]; if (!v) continue;
+      if (i > 0) v = Math.min(v, D[p - 1] + 1); if (j > 0) { v = Math.min(v, D[p - W] + 1); if (i > 0) v = Math.min(v, D[p - W - 1] + S2); if (i < W - 1) v = Math.min(v, D[p - W + 1] + S2); } D[p] = v; }
+    for (let j = H - 1; j >= 0; j--) for (let i = W - 1; i >= 0; i--) { const p = j * W + i; let v = D[p]; if (!v) continue;
+      if (i < W - 1) v = Math.min(v, D[p + 1] + 1); if (j < H - 1) { v = Math.min(v, D[p + W] + 1); if (i < W - 1) v = Math.min(v, D[p + W + 1] + S2); if (i > 0) v = Math.min(v, D[p + W - 1] + S2); } D[p] = v; }
+    return D;
+  };
+  const dOut = dt(false), dIn = dt(true), sd = new Float32Array(N);
+  for (let p = 0; p < N; p++) sd[p] = (mat[p] ? -dIn[p] : dOut[p]) / ppu;
+  return { W, H, ppu, view, hz, nx, ny, nz, mat, af, ao, sd, turn };
+}
+
+/* =====================================================================
+   RENDERER — per-pixel Lambert + Blinn specular, area sampling,
+   cone-traced height-field shadows, silhouette shadow on the wall,
+   modifier-shaped catchlights, inverse-square falloff, Kelvin tint
+   ===================================================================== */
+const LUT = new Uint8ClampedArray(4096);
+for (let i = 0; i < 4096; i++) { const v = i / 4095; LUT[i] = Math.round(255 * (v <= .0031308 ? 12.92 * v : 1.055 * Math.pow(v, 1 / 2.4) - .055)); }
+
+function inShape(shape, u, v, hw, hh) {
+  switch (shape) {
+    case 'rect': case 'grid': return Math.abs(u) < hw && Math.abs(v) < hh ? 1 : 0;
+    case 'octa': { const au = Math.abs(u), av = Math.abs(v); return Math.max(au, av, (au + av) * .7071) < hw ? 1 : 0; }
+    case 'circle': return u * u + v * v < hw * hw ? 1 : 0;
+    case 'dish': { const r2 = u * u + v * v; return r2 < hw * hw ? (r2 < hw * hw * .09 ? .08 : 1) : 0; }
+    case 'umbrella': case 'umbrellaR': {
+      const r2 = u * u + v * v; if (r2 >= hw * hw) return 0;
+      const a = Math.atan2(v, u) / (Math.PI / 4), f = a - Math.round(a), r = Math.sqrt(r2);
+      if (Math.abs(f) * r < .018 && r > hw * .12) return .35;
+      if (shape === 'umbrellaR' && r < hw * .08) return .2;
+      return 1;
+    }
+    case 'window': {
+      if (Math.abs(u) >= hw || Math.abs(v) >= hh) return 0;
+      if (Math.abs(u) < .03) return 0;
+      const row = (v + hh) / (hh * 2 / 3); if (Math.abs(row - Math.round(row)) * (hh * 2 / 3) < .025) return 0;
+      return 1;
+    }
+  }
+  return 0;
+}
+
+function prepLights(sc, q) {
+  const wb = sc.wb || 5500, out = [];
+  let bE = 0, bc = [0, 0, 0];
+  for (const L of sc.lights) {
+    if (!L) continue;
+    const M = L.m || MODS[L.mod];
+    let px, py, pz, ax, ay, az, d0, dir = false;
+    if (L.dirv) { const dv = nrm(L.dirv); px = dv[0] * 60; py = dv[1] * 60; pz = dv[2] * 60; ax = -dv[0]; ay = -dv[1]; az = -dv[2]; dir = true; d0 = 60; }
+    else { px = L.x; py = L.y; pz = L.z; const t = L.aim || [0, 0, 0]; const a = nrm([t[0] - px, t[1] - py, t[2] - pz]); ax = a[0]; ay = a[1]; az = a[2]; d0 = Math.max(.15, Math.hypot(px, py, pz)); }
+    const base = Math.pow(2, L.power || 0) * M.eff * (L.gain == null ? 1 : L.gain);
+    if (base <= 0) continue;
+    const col = L.col || lightColor(L.kelvin || 5500, wb, L.gel);
+    const ul = Math.hypot(az, ax);
+    let ux, uy = 0, uz; if (ul < 1e-3) { ux = 1; uz = 0; } else { ux = -az / ul; uz = ax / ul; }
+    const vx = uy * az - uz * ay, vy = uz * ax - ux * az, vz = ux * ay - uy * ax;
+    const n = q ? M.n : Math.min(M.n, 4);
+    const hw = M.w / 2, hh = M.h / 2, round = M.shape !== 'rect' && M.shape !== 'grid' && M.shape !== 'window';
+    let S = new Float32Array(n * 3), cu, cv;
+    if (round) { for (let k = 0; k < n; k++) { const r = n === 1 ? 0 : Math.sqrt((k + .5) / n) * hw, th = k * 2.39996; const u = r * Math.cos(th), v = r * Math.sin(th) * (hh / hw); S[k * 3] = ux * u + vx * v; S[k * 3 + 1] = uy * u + vy * v; S[k * 3 + 2] = uz * u + vz * v; } cu = cv = hw * 1.3 / Math.sqrt(n); }
+    else { const kx = Math.max(1, Math.round(Math.sqrt(n * M.w / M.h))), ky = Math.max(1, Math.ceil(n / kx)); let k = 0; const S2 = new Float32Array(kx * ky * 3);
+      for (let a = 0; a < kx; a++) for (let b = 0; b < ky; b++) { const u = ((a + .5) / kx - .5) * M.w, v = ((b + .5) / ky - .5) * M.h; S2[k * 3] = ux * u + vx * v; S2[k * 3 + 1] = uy * u + vy * v; S2[k * 3 + 2] = uz * u + vz * v; k++; }
+      cu = M.w / kx; cv = M.h / ky; S = S2; }
+    const ns = S.length / 3;
+    const rEff = Math.max(.03, Math.sqrt(M.w * M.h) / 2);
+    const tanA = dir ? (L.tanA || .005) : rEff / d0;
+    // bounce contribution
+    const c0 = Math.max(0, -(px * ax + py * ay + pz * az) / d0);
+    const Ec = (dir ? base : base / (d0 * d0)) * Math.pow(c0, M.p);
+    bE += Ec; bc = [bc[0] + Ec * col[0], bc[1] + Ec * col[1], bc[2] + Ec * col[2]];
+    out.push({ px, py, pz, ax, ay, az, ux, uy, uz, vx, vy, vz, S, ns, ju: [ux * cu, uy * cu, uz * cu], jv: [vx * cv, vy * cv, vz * cv],
+      base, dir, p: M.p, cr: col[0], cg: col[1], cb: col[2], tanA, rEff, spread: Math.min(.95, tanA * 1.3 + .02),
+      shape: M.shape, hwC: Math.max(hw, .05), hhC: Math.max(hh, .05), cat: Math.min(2.6, .55 + base * 1.6) });
+  }
+  const amb = (sc.amb == null ? .012 : sc.amb) + (sc.bounce == null ? .03 : sc.bounce) * bE;
+  const ac = bE > 0 ? [bc[0] / bE, bc[1] / bE, bc[2] / bE] : [1, 1, 1];
+  return { Ls: out, amb, ac };
+}
+
+function coneShadow(g, i, j, z, dx, dy, dz, tanA, step) {
+  const hl = Math.hypot(dx, dy);
+  if (hl < 1e-4) return 1;
+  const W = g.W, H = g.H, hz = g.hz, mat = g.mat, ppu = g.ppu;
+  const sx = dx / hl * step, sy = dy / hl * step, sz = dz / hl * step / ppu, st = step / (hl * ppu);
+  let px = i + .5, py = j + .5, pz = z + .006, t = 0, vis = 1;
+  const maxSteps = Math.min(90, (1.3 * ppu / step) | 0);
+  for (let k = 0; k < maxSteps; k++) {
+    px += sx; py += sy; pz += sz; t += st;
+    if (pz > .42 && sz >= 0) break;
+    if (pz < -.4 && sz <= 0) break;
+    if (px < 0 || py < 0 || px >= W || py >= H) break;
+    const q = (py | 0) * W + (px | 0);
+    if (!mat[q]) continue;
+    const c = pz - hz[q], w = t * tanA + .006;
+    if (c < w && pz > -.35) { const v = .5 + .5 * c / w; if (v < vis) { vis = v; if (vis <= 0) return 0; } }
+  }
+  return vis;
+}
+
+function renderBust(img, g, sc, q) {
+  const job = { prep: prepLights(sc, q), hist: new Uint32Array(64) };
+  renderRows(img, g, sc, q, job, 0, g.H);
+  return { hist: job.hist };
+}
+function renderRows(img, g, sc, q, job, jA, jB) {
+  const { W, H, ppu, view, hz, nx, ny, nz, mat, af, ao, sd } = g;
+  const data = img.data, { Ls, amb, ac } = job.prep;
+  const wallZ = -(sc.wall ? sc.wall.dist : 1.5), wa = sc.wall ? sc.wall.alb : [.18, .18, .18], emit = sc.bgEmit;
+  const expo = sc.exposure || 1, sky = sc.sky;
+  const hist = job.hist;
+  const step = q ? 1.4 : 1.2, nL = Ls.length;
+  for (let j = jA; j < jB; j++) {
+    const y = view.y0 + (j + .5) / ppu, Py0 = (EYE_Y - y) * KM;
+    for (let i = 0; i < W; i++) {
+      const p = j * W + i, m = mat[p], x = view.x0 + (i + .5) / ppu, Px = x * KM;
+      let r = 0, gg = 0, b = 0;
+      if (m) {
+        const z = hz[p], Pz = z * KM, Py = Py0, n0 = nx[p], n1 = ny[p], n2 = nz[p];
+        const A = ALB[m], f = af[p], ar = A[0] * f, ag = A[1] * f, ab = A[2] * f, ks = KS[m], sh = SH[m], o = ao[p];
+        let h = Math.imul(i, 374761393) + Math.imul(j, 668265263) | 0; h = Math.imul(h ^ (h >>> 13), 1274126177); h ^= h >>> 16;
+        const j1 = ((h & 1023) / 1023) - .5, j2 = (((h >>> 10) & 1023) / 1023) - .5;
+        const eye = m >= 5;
+        for (let k = 0; k < nL; k++) {
+          const L = Ls[k];
+          const Dx = L.px - Px, Dy = L.py - Py, Dz = L.pz - Pz, d2 = Dx * Dx + Dy * Dy + Dz * Dz, d = Math.sqrt(d2);
+          const lx = Dx / d, ly = Dy / d, lz = Dz / d;
+          const cb = -(lx * L.ax + ly * L.ay + lz * L.az); if (cb <= 0) continue;
+          const ndl = n0 * lx + n1 * ly + n2 * lz; if (ndl < -L.spread) continue;
+          const E = (L.dir ? L.base : L.base / Math.max(d2, .04)) * Math.pow(cb, L.p);
+          let diff = 0, spec = 0;
+          const S = L.S, ns = L.ns, jx = L.ju[0] * j1 + L.jv[0] * j2, jy = L.ju[1] * j1 + L.jv[1] * j2, jz = L.ju[2] * j1 + L.jv[2] * j2;
+          for (let s = 0; s < ns; s++) {
+            const sx = L.px + S[s * 3] + jx - Px, sy = L.py + S[s * 3 + 1] + jy - Py, sz = L.pz + S[s * 3 + 2] + jz - Pz;
+            const inv = 1 / Math.sqrt(sx * sx + sy * sy + sz * sz), ax = sx * inv, ay = sy * inv, az = sz * inv;
+            const dd = n0 * ax + n1 * ay + n2 * az;
+            if (dd > 0) {
+              diff += dd;
+              const hx = ax, hy = ay, hzz = az + 1, hi = 1 / Math.sqrt(hx * hx + hy * hy + hzz * hzz);
+              const nh = (n0 * hx + n1 * hy + n2 * hzz) * hi; if (nh > 0) spec += Math.pow(nh, sh);
+            }
+          }
+          diff /= ns; spec /= ns;
+          if (diff <= 0 && !eye) continue;
+          const vis = coneShadow(g, i, j, z, lx, -ly, lz, L.tanA, step);
+          if (vis <= 0) continue;
+          const e = E * vis;
+          r += e * (ar * diff + ks * spec) * L.cr; gg += e * (ag * diff + ks * spec) * L.cg; b += e * (ab * diff + ks * spec) * L.cb;
+          if (eye) { // catchlight: mirror reflection of the modifier's real shape
+            const nv = n2, Rx = 2 * nv * n0, Ry = 2 * nv * n1, Rz = 2 * nv * n2 - 1;
+            const Ra = Rx * L.ax + Ry * L.ay + Rz * L.az;
+            if (Ra < -1e-3) {
+              const t = (Dx * L.ax + Dy * L.ay + Dz * L.az) / Ra;
+              if (t > 0) {
+                const hx = Px + Rx * t - L.px, hy = Py + Ry * t - L.py, hz2 = Pz + Rz * t - L.pz;
+                const u = hx * L.ux + hy * L.uy + hz2 * L.uz, v = hx * L.vx + hy * L.vy + hz2 * L.vz;
+                const c = L.dir ? (u * u + v * v < (L.tanA * t * 3) ** 2 ? 1 : 0) : inShape(L.shape, u, v, L.hwC, L.hhC);
+                if (c > 0) { const cv = c * L.cat * vis * Math.pow(cb, L.p * .5); r += cv * L.cr; gg += cv * L.cg; b += cv * L.cb; }
+              }
+            }
+          }
+        }
+        const hemi = (.55 + .45 * n1) * o * amb;
+        r += hemi * ar * ac[0]; gg += hemi * ag * ac[1]; b += hemi * ab * ac[2];
+        if (sky) { const s = sky.I * (.5 + .5 * n1) * o; r += s * ar * sky.c[0]; gg += s * ag * sky.c[1]; b += s * ab * sky.c[2]; }
+      } else {
+        // background wall / seamless paper
+        const Py = Py0, Pz = wallZ;
+        for (let k = 0; k < nL; k++) {
+          const L = Ls[k];
+          const Dx = L.px - Px, Dy = L.py - Py, Dz = L.pz - Pz; if (Dz <= .01) continue;
+          const d2 = Dx * Dx + Dy * Dy + Dz * Dz, d = Math.sqrt(d2);
+          const cb = -(Dx * L.ax + Dy * L.ay + Dz * L.az) / d; if (cb <= 0) continue;
+          let E = (L.dir ? L.base : L.base / Math.max(d2, .04)) * Math.pow(cb, L.p) * (Dz / d);
+          if (L.pz > .02) {
+            const s = -Pz / Dz, Xc = Px + Dx * s, Yc = Py + Dy * s;
+            const fi = (Xc / KM - view.x0) * ppu, fj = ((EYE_Y - Yc / KM) - view.y0) * ppu;
+            let sdv = 9;
+            if (fi >= 0 && fj >= 0 && fi < W - 1 && fj < H - 1) {
+              const i0 = fi | 0, j0 = fj | 0, tx = fi - i0, ty = fj - j0, q0 = j0 * W + i0;
+              sdv = (sd[q0] * (1 - tx) + sd[q0 + 1] * tx) * (1 - ty) + (sd[q0 + W] * (1 - tx) + sd[q0 + W + 1] * tx) * ty;
+            } else if (fj >= H - 1 && fi >= 0 && fi < W) sdv = sd[(H - 1) * W + (fi | 0)];
+            const w = (L.dir ? L.tanA * (-Pz) : L.rEff * s) / KM + .008;
+            E *= smooth(-w, w, sdv);
+          }
+          r += E * wa[0] * L.cr; gg += E * wa[1] * L.cg; b += E * wa[2] * L.cb;
+        }
+        r += amb * .7 * wa[0] * ac[0]; gg += amb * .7 * wa[1] * ac[1]; b += amb * .7 * wa[2] * ac[2];
+        if (sky) { r += sky.I * .5 * wa[0] * sky.c[0]; gg += sky.I * .5 * wa[1] * sky.c[1]; b += sky.I * .5 * wa[2] * sky.c[2]; }
+        if (emit) { const t = (y - view.y0) / (view.y1 - view.y0); r += emit[0] * (1.15 - t * .5); gg += emit[1] * (1.15 - t * .5); b += emit[2] * (1.15 - t * .5); }
+      }
+      const o4 = p * 4;
+      r *= expo; gg *= expo; b *= expo;
+      if (r > .82) r = .82 + .18 * (1 - Math.exp(-(r - .82) / .18));
+      if (gg > .82) gg = .82 + .18 * (1 - Math.exp(-(gg - .82) / .18));
+      if (b > .82) b = .82 + .18 * (1 - Math.exp(-(b - .82) / .18));
+      const R8 = LUT[(r > 0 ? r * 4095 : 0) | 0], G8 = LUT[(gg > 0 ? gg * 4095 : 0) | 0], B8 = LUT[(b > 0 ? b * 4095 : 0) | 0];
+      data[o4] = R8; data[o4 + 1] = G8; data[o4 + 2] = B8; data[o4 + 3] = 255;
+      hist[((R8 * 54 + G8 * 183 + B8 * 19) >> 8) >> 2]++;
+    }
+  }
+}
+
+function edgeAA(img, g) { // soften silhouette stair-steps with a 3x3 average on boundary pixels
+  const { W, H, mat } = g, d = img.data, src = new Uint8ClampedArray(d);
+  for (let j = 1; j < H - 1; j++) for (let i = 1; i < W - 1; i++) {
+    const p = j * W + i, m = mat[p] ? 1 : 0;
+    if ((mat[p - 1] ? 1 : 0) === m && (mat[p + 1] ? 1 : 0) === m && (mat[p - W] ? 1 : 0) === m && (mat[p + W] ? 1 : 0) === m) continue;
+    for (let c = 0; c < 3; c++) { let a = 0; for (let y = -1; y <= 1; y++) for (let x = -1; x <= 1; x++) a += src[((j + y) * W + i + x) * 4 + c] * (x || y ? 1 : 2); d[p * 4 + c] = a / 10; }
+  }
+}
+/* =====================================================================
+   VIEW + SCHEDULER — draft (half-res) while interacting, full-res at rest
+   ===================================================================== */
+const VIEWSET = new Set(), FRAME = new Set();
+const visIO = new IntersectionObserver(es => es.forEach(e => { const v = e.target.__view; if (v) { v.visible = e.isIntersecting; if (v.visible && v.need === 0 && !v.drawnOnce) v.need = 2; } }), { rootMargin: '250px' });
+class BustView {
+  constructor(canvas, o) {
+    Object.assign(this, { view: VIEWS.full, ppu: 90, draftScale: .5, fit: 'fill' }, o);
+    this.canvas = canvas; this.ctx = canvas.getContext('2d');
+    this.off = document.createElement('canvas'); this.octx = this.off.getContext('2d');
+    this.visible = false; this.need = 2; this.lastInput = 0; this.drafted = 0; this.drawnOnce = false;
+    canvas.__view = this; visIO.observe(canvas); VIEWSET.add(this);
+    new ResizeObserver(() => this.resize()).observe(canvas); this.resize();
+  }
+  resize() { const r = this.canvas.getBoundingClientRect(), d = DPR(); const w = Math.max(2, Math.round(r.width * d)), h = Math.max(2, Math.round(r.height * d)); if (w !== this.canvas.width || h !== this.canvas.height) { this.canvas.width = w; this.canvas.height = h; if (this.lastJ) this.present(this.lastJ, this.lastRes, false); else this.need = 2; } }
+  invalidate(input = true) { this.need = 2; this.job = null; if (input) this.lastInput = performance.now(); }
+  invalidateJob() { this.job = null; }
+  prep(draft) {
+    const sc = this.getScene(); if (!sc) return null;
+    const view = typeof this.view === 'function' ? this.view(sc) : this.view;
+    const g = getGeom(view, this.ppu * (draft ? this.draftScale : 1), sc.turn || 0);
+    return { sc, g, img: new ImageData(g.W, g.H), q: draft ? 0 : 1 };
+  }
+  draw(draft) { // synchronous (drafts)
+    const J = this.prep(draft); if (!J) return;
+    const res = renderBust(J.img, J.g, J.sc, J.q); this.present(J, res, draft);
+  }
+  startJob() { const J = this.prep(false); if (!J) { this.need = 0; return; } J.prep = prepLights(J.sc, 1); J.hist = new Uint32Array(64); J.j = 0; this.job = J; }
+  stepJob(deadline) { // progressive full-res render, a band of rows at a time
+    const J = this.job, rows = Math.max(2, Math.round(J.g.H / 24));
+    while (J.j < J.g.H && performance.now() < deadline) { const e = Math.min(J.g.H, J.j + rows); renderRows(J.img, J.g, J.sc, 1, J, J.j, e); J.j = e; }
+    if (J.j >= J.g.H) { this.job = null; this.need = 0; this.present(J, { hist: J.hist }, false); return true; }
+    return false;
+  }
+  present(J, res, draft) {
+    const g = J.g;
+    if (this.off.width !== g.W || this.off.height !== g.H) { this.off.width = g.W; this.off.height = g.H; }
+    if (!J.aa) { edgeAA(J.img, g); J.aa = 1; }
+    this.octx.putImageData(J.img, 0, 0);
+    const c = this.ctx, cw = this.canvas.width, ch = this.canvas.height;
+    c.imageSmoothingEnabled = true; c.imageSmoothingQuality = 'high';
+    let rect;
+    if (this.fit === 'hero') {
+      const hh = ch * 1.02, ww = hh * g.W / g.H;
+      const cx = cw > ch * 1.1 ? cw * .64 : cw * .5, top = cw > ch * 1.1 ? ch * .02 : ch * -.04;
+      rect = [cx - ww / 2, top, ww, hh];
+      c.fillStyle = '#111214'; c.fillRect(0, 0, cw, ch);
+    } else rect = [0, 0, cw, ch];
+    c.drawImage(this.off, rect[0], rect[1], rect[2], rect[3]);
+    this.rect = rect; this.g = g; this.lastRes = res; this.lastJ = J; this.drawnOnce = true;
+    if (this.after) this.after(c, rect, g, J.sc, res, draft);
+  }
+  // map model-space (x,y) to canvas pixels
+  toCanvas(x, y) { const g = this.g, r = this.rect, v = g.view; return [r[0] + (x - v.x0) / (v.x1 - v.x0) * r[2], r[1] + (y - v.y0) / (v.y1 - v.y0) * r[3]]; }
+}
+let lastT = performance.now();
+function loop(now) { requestAnimationFrame(loop); tick(now); }
+setInterval(() => { const n = performance.now(); if (n - lastT > 300 && document.visibilityState === 'visible') tick(n, 80); }, 250); // fallback when frames are throttled
+function tick(now, budget = 9) {
+  const dt = clamp((now - lastT) / 1000, 0, .05); lastT = Math.max(lastT, now);
+  FRAME.forEach(f => f(now, dt));
+  const deadline = performance.now() + budget;
+  for (const v of VIEWSET) {
+    if (!v.visible || !v.need) continue;
+    if (now - v.lastInput < 150) { if (v.drafted < v.lastInput) { v.draw(true); v.drafted = now; } continue; }
+    if (!v.drawnOnce && !v.draftedOnce) { v.draw(true); v.draftedOnce = true; }
+    if (performance.now() >= deadline) continue;
+    if (!v.job) v.startJob();
+    if (v.job) v.stepJob(deadline);
+  }
+}
+requestAnimationFrame(loop);
+
+/* dust motes drifting in a beam */
+class Motes {
+  constructor(canvas, beamFn, n = 70) {
+    this.c = canvas; this.ctx = canvas.getContext('2d'); this.beam = beamFn; this.visible = false;
+    this.p = Array.from({ length: n }, () => ({ x: Math.random(), y: Math.random(), z: Math.random(), vx: (Math.random() - .5) * .01, vy: -.004 - Math.random() * .01, ph: Math.random() * 6.28 }));
+    canvas.__view = null;
+    new IntersectionObserver(es => this.visible = es[0].isIntersecting).observe(canvas);
+    if (!RM) FRAME.add((t, dt) => this.visible && this.step(t, dt));
+  }
+  step(t, dt) {
+    const c = this.c, d = DPR(), w = Math.round(c.clientWidth * d), h = Math.round(c.clientHeight * d);
+    if (c.width !== w || c.height !== h) { c.width = w; c.height = h; }
+    const x = this.ctx; x.clearRect(0, 0, w, h);
+    for (const p of this.p) {
+      p.x += (p.vx + Math.sin(t / 1900 + p.ph) * .004) * dt; p.y += p.vy * dt * .6;
+      if (p.y < -.02) { p.y = 1.02; p.x = Math.random(); } if (p.x < -.02) p.x = 1.02; if (p.x > 1.02) p.x = -.02;
+      const b = this.beam(p.x * w, p.y * h, w, h); if (b < .03) continue;
+      const tw = .6 + .4 * Math.sin(t / 400 + p.ph * 3);
+      x.fillStyle = `rgba(255,226,190,${(b * tw * (.35 + .5 * p.z)).toFixed(3)})`;
+      x.beginPath(); x.arc(p.x * w, p.y * h, (.6 + p.z * 1.6) * d, 0, 6.283); x.fill();
+    }
+  }
+}
+function strobe(el) { if (RM || !el) return; el.classList.remove('go'); void el.offsetWidth; el.classList.add('go'); }
+function segBeam(x, y, ax, ay, bx, by, w0, w1) { // soft cone from a to b
+  const vx = bx - ax, vy = by - ay, L2 = vx * vx + vy * vy || 1, t = ((x - ax) * vx + (y - ay) * vy) / L2;
+  if (t < 0 || t > 1.25) return 0;
+  const px = ax + vx * t - x, py = ay + vy * t - y, dist = Math.hypot(px, py), w = lerp(w0, w1, t);
+  return Math.exp(-(dist * dist) / (w * w)) * smooth(0, .15, t) * (1 - smooth(.9, 1.25, t));
+}
+function sizeCanvas(c) { const d = DPR(), w = Math.round(c.clientWidth * d), h = Math.round(c.clientHeight * d); if (c.width !== w || c.height !== h) { c.width = w; c.height = h; } return [w, h, d]; }
+
+/* =====================================================================
+   1. HERO — one light follows the pointer
+   ===================================================================== */
+const sph = (az, el, d) => ({ x: d * Math.cos(el * D2R) * Math.sin(az * D2R), y: d * Math.sin(el * D2R), z: d * Math.cos(el * D2R) * Math.cos(az * D2R) });
+const HERO = { az: -58, el: 24, taz: -58, tel: 24, last: -1e9 };
+const heroCanvas = $('#heroCanvas');
+const heroView = new BustView(heroCanvas, {
+  view: VIEWS.full, ppu: 118, draftScale: .55, fit: 'hero',
+  getScene: () => ({ lights: [{ ...sph(HERO.az, HERO.el, 1.25), aim: [0, 0, 0], mod: 'dish', power: 0, kelvin: 3400 }], wall: { dist: 1.1, alb: [.06, .06, .065] }, amb: .002, bounce: .012, exposure: 1.9, wb: 5000 }),
+  after: (c, r) => {
+    const cw = c.canvas.width, ch = c.canvas.height, [fx, fy] = heroView.toCanvas(0, -.2);
+    const g = c.createRadialGradient(fx, fy, ch * .22, fx, fy, ch * .72);
+    g.addColorStop(0, 'rgba(17,18,20,0)'); g.addColorStop(1, 'rgba(17,18,20,1)');
+    c.fillStyle = g; c.fillRect(0, 0, cw, ch);
+    if (cw > ch * 1.1) { const l = c.createLinearGradient(0, 0, cw * .55, 0); l.addColorStop(0, 'rgba(17,18,20,.85)'); l.addColorStop(1, 'rgba(17,18,20,0)'); c.fillStyle = l; c.fillRect(0, 0, cw * .55, ch); }
+    const b = c.createLinearGradient(0, ch * .8, 0, ch); b.addColorStop(0, 'rgba(17,18,20,0)'); b.addColorStop(1, '#111214'); c.fillStyle = b; c.fillRect(0, ch * .8, cw, ch * .2);
+  }
+});
+function heroReadout() { $('#heroReadout').textContent = `KEY · AZ ${nstr(HERO.az, 0)}° · EL ${nstr(HERO.el, 0)}° · 1.25 m · 3400K · BEAUTY DISH`; }
+function heroAim(cx, cy) {
+  const r = heroCanvas.getBoundingClientRect(), d = DPR(); if (!heroView.g) return;
+  const [fx, fy] = heroView.toCanvas(0, -.3);
+  const dx = (cx - r.left - fx / d) / (r.width * .32), dy = (cy - r.top - fy / d) / (r.height * .38);
+  HERO.taz = clamp(dx * 95, -130, 130); HERO.tel = clamp(-dy * 60, -45, 78); HERO.last = performance.now();
+  if (RM) { HERO.az = HERO.taz; HERO.el = HERO.tel; heroView.invalidate(); heroReadout(); }
+}
+$('#hero').addEventListener('pointermove', e => heroAim(e.clientX, e.clientY));
+$('#hero').addEventListener('pointerdown', e => heroAim(e.clientX, e.clientY));
+heroCanvas.addEventListener('keydown', e => {
+  const k = { ArrowLeft: [-10, 0], ArrowRight: [10, 0], ArrowUp: [0, 8], ArrowDown: [0, -8] }[e.key]; if (!k) return;
+  e.preventDefault(); HERO.taz = clamp(HERO.taz + k[0], -130, 130); HERO.tel = clamp(HERO.tel + k[1], -45, 78); HERO.last = performance.now();
+  if (RM) { HERO.az = HERO.taz; HERO.el = HERO.tel; heroView.invalidate(); heroReadout(); }
+});
+FRAME.add((t, dt) => {
+  if (RM || !heroView.visible) return;
+  if (t - HERO.last > 3500) { HERO.taz = -70 * Math.cos(t / 3100); HERO.tel = 22 + 16 * Math.sin(t / 2300); }
+  const k = 1 - Math.exp(-dt * 7), na = lerp(HERO.az, HERO.taz, k), ne = lerp(HERO.el, HERO.tel, k);
+  if (Math.abs(na - HERO.az) + Math.abs(ne - HERO.el) > .03) { HERO.az = na; HERO.el = ne; heroView.invalidate(); heroReadout(); }
+});
+heroReadout();
+new Motes($('#heroMotes'), (x, y, w, h) => {
+  if (!heroView.g) return 0;
+  const p = sph(HERO.az, HERO.el, 1.25), [lx, ly] = heroView.toCanvas(p.x / KM, EYE_Y - p.y / KM), [fx, fy] = heroView.toCanvas(0, -.3);
+  return segBeam(x, y, lx, ly, fx, fy, w * .02, w * .13) * (p.z > 0 ? 1 : .5);
+}, COARSE ? 40 : 80);
+
+/* =====================================================================
+   2. FUNDAMENTAL LABS
+   ===================================================================== */
+// ---- Lab 1: hard vs soft
+const softS = $('#softSize'), softD = $('#softDist');
+const softView = new BustView($('#labSoftRender'), {
+  view: VIEWS.face, ppu: 150, draftScale: .5,
+  getScene: () => { const s = +softS.value, d = +softD.value; return { lights: [{ ...sph(-48, 28, d), aim: [0, 0, 0], m: { w: s, h: s, shape: 'rect', p: 1.2, eff: 1, n: s < .15 ? 1 : 9 }, power: Math.log2(d * d), kelvin: 5200 }], wall: { dist: .55, alb: [.22, .22, .23] }, amb: .006, bounce: .02, exposure: 1.25 }; }
+});
+function drawSoft() {
+  const c = $('#labSoftDiagram'), [W, H, dp] = sizeCanvas(c), x = c.getContext('2d');
+  const s = +softS.value, d = +softD.value, Dw = .5, r = .09;
+  x.clearRect(0, 0, W, H);
+  const sc = (W * .8) / (4 + Dw), X0 = W * .08, cy = H * .5, ox = X0 + d * sc, wx = ox + Dw * sc;
+  const a = s / 2 * sc, rr = Math.max(4 * dp, r * sc);
+  // penumbra + umbra on wall
+  const outer = rr + (rr + a) * (Dw / d), inner = rr - (a - rr) * (Dw / d);
+  x.fillStyle = 'rgba(207,227,255,.07)'; x.beginPath(); x.moveTo(ox, cy - rr); x.lineTo(wx, cy - outer); x.lineTo(wx, cy + outer); x.lineTo(ox, cy + rr); x.fill();
+  if (inner > 0) { x.fillStyle = 'rgba(0,0,0,.55)'; x.beginPath(); x.moveTo(ox, cy - rr); x.lineTo(wx, cy - inner); x.lineTo(wx, cy + inner); x.lineTo(ox, cy + rr); x.fill(); }
+  x.strokeStyle = 'rgba(232,230,225,.35)'; x.lineWidth = dp * .8; x.setLineDash([3 * dp, 3 * dp]);
+  [[-a, -inner], [a, -outer], [-a, outer], [a, inner]].forEach(([sy, wy]) => { x.beginPath(); x.moveTo(X0, cy + sy); x.lineTo(wx, cy + wy); x.stroke(); });
+  x.setLineDash([]);
+  // source
+  x.strokeStyle = '#ffb35c'; x.lineWidth = 3 * dp; x.shadowColor = '#ffb35c'; x.shadowBlur = 12 * dp;
+  x.beginPath(); x.moveTo(X0, cy - Math.max(a, 1.5 * dp)); x.lineTo(X0, cy + Math.max(a, 1.5 * dp)); x.stroke(); x.shadowBlur = 0;
+  // occluder + wall
+  x.fillStyle = '#26282c'; x.strokeStyle = '#e8e6e1'; x.lineWidth = dp; x.beginPath(); x.arc(ox, cy, rr, 0, 6.283); x.fill(); x.stroke();
+  x.beginPath(); x.moveTo(wx, H * .06); x.lineTo(wx, H * .94); x.stroke();
+  // wall profile strip
+  const gw = 8 * dp, gr = x.createLinearGradient(0, cy - outer * 1.3, 0, cy + outer * 1.3);
+  const o1 = Math.max(inner, 0) / (outer * 1.3), o2 = outer / (outer * 1.3);
+  gr.addColorStop(0, '#d9d7d2'); gr.addColorStop(clamp(.5 - o2 / 2, 0, 1), '#d9d7d2'); gr.addColorStop(clamp(.5 - o1 / 2, 0, 1), '#111'); gr.addColorStop(clamp(.5 + o1 / 2, 0, 1), '#111'); gr.addColorStop(clamp(.5 + o2 / 2, 0, 1), '#d9d7d2'); gr.addColorStop(1, '#d9d7d2');
+  x.fillStyle = gr; x.fillRect(wx + 3 * dp, cy - outer * 1.3, gw, outer * 2.6);
+  x.font = `${10 * dp}px ${getComputedStyle(document.body).getPropertyValue('--mono')}`; x.fillStyle = 'rgba(232,230,225,.75)';
+  x.fillText(`s=${s.toFixed(2)}m`, X0 + 5 * dp, H * .1); x.fillText(`d=${d.toFixed(2)}m`, (X0 + ox) / 2 - 20 * dp, H * .94);
+  x.fillText('umbra', wx - 44 * dp, cy + 3 * dp); x.fillText('penumbra', wx - 60 * dp, cy - Math.min(outer, H * .4) + 10 * dp);
+}
+function updSoft() {
+  const s = +softS.value, d = +softD.value, ang = 2 * Math.atan(s / (2 * d)) * R2D, pen = s * .5 / d * 100;
+  $('#softSizeO').textContent = s.toFixed(2) + ' m'; $('#softDistO').textContent = d.toFixed(2) + ' m';
+  const verdict = ang < 8 ? 'แข็ง (Hard)' : ang < 25 ? 'กึ่งนุ่ม (Medium)' : 'นุ่ม (Soft)';
+  $('#softReadout').innerHTML = `<span>ขนาดปรากฏ</span><b>${ang.toFixed(1)}°</b><span>เงามัวบนผนังห่าง 0.5 m</span><b>${pen.toFixed(1)} cm</b><span>ลักษณะแสง</span><b>${verdict}</b>`;
+  drawSoft(); softView.invalidate();
+}
+[softS, softD].forEach(e => e.addEventListener('input', updSoft));
+new ResizeObserver(drawSoft).observe($('#labSoftDiagram'));
+
+// ---- Lab 2: inverse square
+let invD = 1;
+const invView = new BustView($('#labInvRender'), {
+  view: VIEWS.inv, ppu: 80, draftScale: .5,
+  getScene: () => ({ lights: [{ ...sph(-32, 14, invD), aim: [0, 0, 0], mod: 'dish', power: 0, kelvin: 5200 }], wall: { dist: 1, alb: [.4, .4, .41] }, amb: .004, bounce: .015, exposure: 1.5 })
+});
+const FSTOPS = [1, 1.1, 1.2, 1.4, 1.6, 1.8, 2, 2.2, 2.5, 2.8, 3.2, 3.5, 4, 4.5, 5, 5.6, 6.3, 7.1, 8, 9, 10, 11, 13, 14, 16, 18, 20, 22, 25, 29, 32];
+const fstopStr = N => { let b = FSTOPS[0]; for (const f of FSTOPS) if (Math.abs(Math.log2(f / N)) < Math.abs(Math.log2(b / N))) b = f; return 'f/' + b; };
+function drawInv() {
+  const c = $('#labInvDiagram'), [W, H, dp] = sizeCanvas(c), x = c.getContext('2d');
+  x.clearRect(0, 0, W, H);
+  const sc = W * .78 / 5.1, sx = W * .1 + 4 * sc, bx = sx + 1 * sc, lx = sx - invD * sc, cy = H * .55;
+  // ray fan (grid squares spreading)
+  x.strokeStyle = 'rgba(255,179,92,.18)'; x.lineWidth = dp;
+  for (let k = -3; k <= 3; k++) { x.beginPath(); x.moveTo(lx, cy); x.lineTo(bx, cy + k * H * .1 * (bx - lx) / (sc * 1.4)); x.stroke(); }
+  // squares at 1m and 2m from light
+  [1, 2].forEach(m => { const px = lx + m * sc; if (px < W) { const hh = H * .07 * m; x.strokeStyle = 'rgba(207,227,255,.35)'; x.setLineDash([2 * dp, 3 * dp]); x.strokeRect(px - 1, cy - hh, 2, hh * 2); x.setLineDash([]); x.fillStyle = 'rgba(207,227,255,.55)'; x.font = `${9 * dp}px monospace`; x.fillText(m + 'm', px - 7 * dp, cy + hh + 11 * dp); } });
+  // subject + background
+  x.fillStyle = '#2a2c30'; x.strokeStyle = '#e8e6e1'; x.lineWidth = dp; x.beginPath(); x.arc(sx, cy, 8 * dp, 0, 6.283); x.fill(); x.stroke();
+  x.beginPath(); x.moveTo(bx, H * .12); x.lineTo(bx, H * .95); x.stroke();
+  // light
+  const g = x.createRadialGradient(lx, cy, 0, lx, cy, 26 * dp); g.addColorStop(0, 'rgba(255,179,92,.7)'); g.addColorStop(1, 'rgba(255,179,92,0)');
+  x.fillStyle = g; x.beginPath(); x.arc(lx, cy, 26 * dp, 0, 6.283); x.fill();
+  x.fillStyle = '#ffb35c'; x.beginPath(); x.arc(lx, cy, 6 * dp, 0, 6.283); x.fill();
+  x.fillStyle = 'rgba(232,230,225,.8)'; x.font = `${10 * dp}px monospace`;
+  x.fillText(`d = ${invD.toFixed(2)} m`, (lx + sx) / 2 - 26 * dp, H * .2); x.fillText('แบบ', sx - 9 * dp, cy - 14 * dp); x.fillText('ฉาก +1m', bx - 22 * dp, H * .1);
+  x.fillText('⟷ ลาก', lx - 18 * dp, cy + 24 * dp);
+}
+function updInv() {
+  const ev = -2 * Math.log2(invD), bg = -2 * Math.log2(invD + 1), dif = 2 * Math.log2((invD + 1) / invD);
+  $('#invMeter').style.width = clamp((ev + 5) / 7 * 100, 0, 100) + '%';
+  $('#invReadout').innerHTML = `<span>ระยะไฟ → แบบ</span><b>${invD.toFixed(2)} m</b><span>แสงที่ตัวแบบ (เทียบ 1 m)</span><b>${sgnStr(ev)} EV</b><span>แสงที่ฉากหลัง</span><b>${sgnStr(bg)} EV</b><span>ฉากมืดกว่าแบบ</span><b>${dif.toFixed(1)} สต็อป</b><span>รูรับแสงที่ต้องใช้</span><b>${fstopStr(8 / invD)}</b>`;
+  drawInv(); invView.invalidate();
+}
+(() => {
+  const c = $('#labInvDiagram'); let drag = false;
+  const set = e => { const r = c.getBoundingClientRect(), W = r.width, sc = W * .78 / 5.1, sx = W * .1 + 4 * sc; invD = clamp((sx - (e.clientX - r.left)) / sc, .5, 4); updInv(); };
+  c.addEventListener('pointerdown', e => { drag = true; c.setPointerCapture(e.pointerId); set(e); });
+  c.addEventListener('pointermove', e => drag && set(e));
+  c.addEventListener('pointerup', () => drag = false);
+  c.addEventListener('keydown', e => { if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { e.preventDefault(); invD = clamp(invD + (e.key === 'ArrowLeft' ? .1 : -.1), .5, 4); updInv(); } });
+  new ResizeObserver(drawInv).observe(c);
+})();
+
+// ---- Lab 3: direction
+const DIRS = [
+  { k: 'front', lab: '0°', az: 0, el: 6, pos: [50, 91], th: 'หน้าตรง (Front / Flat)', cap: 'แสงแบนราบ เงาน้อยมาก ผิวดูเรียบ แต่ใบหน้าขาดมิติ เหมาะกับภาพติดบัตรหรือบิวตี้ที่เน้นผิว' },
+  { k: '45', lab: '45°', az: -45, el: 30, th: 'เฉียง 45° สูง (Classic 45°)', cap: 'ตำแหน่งคลาสสิกที่สุด ให้มิติพอดี เงาจมูกเฉียงลงแก้ม เกิดแพทเทิร์นลูปหรือเรมบรันต์ ดูเป็นธรรมชาติและสวยกับคนส่วนใหญ่' },
+  { k: 'side', lab: '90°', az: -90, el: 8, th: 'ด้านข้าง 90° (Side)', cap: 'แบ่งหน้าครึ่งสว่าง–ครึ่งมืด (Split) อารมณ์ลึกลับ ดราม่า และขับพื้นผิวผิวหนังให้เด่น' },
+  { k: 'rim', lab: '135°', az: -135, el: 28, th: 'ด้านหลังเฉียง (Rim / Kicker)', cap: 'แสงเลียขอบแก้ม ผม และไหล่ แยกตัวแบบออกจากฉากหลัง ใบหน้าส่วนใหญ่มืด มักใช้คู่กับไฟหลักด้านหน้า' },
+  { k: 'back', lab: '180°', az: 172, el: 22, th: 'ย้อนแสง (Backlight)', cap: 'ไฟอยู่หลังตัวแบบตรงๆ ได้ขอบผมเรืองแสง (Halo) หรือภาพเงาดำ (Silhouette) ถ้าไม่มีไฟเติมด้านหน้า' },
+  { k: 'top', lab: 'บน', az: 0, el: 80, pos: [81, 20], th: 'ด้านบน (Top light)', cap: 'เหมือนแดดเที่ยง เบ้าตากลายเป็นหลุมดำ (Raccoon eyes) เงาใต้จมูกและคางยาว แก้ได้ด้วยรีเฟลกเตอร์ด้านล่าง' },
+  { k: 'under', lab: 'ล่าง', az: 0, el: -50, pos: [81, 80], th: 'ด้านล่าง (Under-lighting)', cap: 'ผิดธรรมชาติเพราะเราคุ้นกับแสงจากฟ้า เงากลับหัว ให้ความรู้สึกน่ากลัว (Horror) — ใช้อ่อนๆ เป็นไฟเติมแบบแคลมเชลล์ได้' }
+];
+let dirSel = DIRS[1];
+const dirView = new BustView($('#labDirRender'), {
+  view: VIEWS.sq, ppu: 160, draftScale: .5,
+  getScene: () => ({ lights: [{ ...sph(dirSel.az, dirSel.el, 1.3), aim: [0, 0, 0], mod: 'softbox', power: 1, kelvin: 5200 }], wall: { dist: 1, alb: [.1, .1, .11] }, amb: .006, bounce: .02, exposure: 2.1 })
+});
+(() => {
+  const ring = $('#dirRing');
+  DIRS.forEach(d => {
+    const b = document.createElement('button'); b.type = 'button'; b.textContent = d.lab; b.setAttribute('aria-label', d.th); b.setAttribute('aria-pressed', d === dirSel);
+    const p = d.pos || [50 + 41 * Math.sin(d.az * D2R), 50 + 41 * Math.cos(d.az * D2R)];
+    b.style.left = p[0] + '%'; b.style.top = p[1] + '%';
+    b.onclick = () => { dirSel = d; $$('button', ring).forEach(x => x.setAttribute('aria-pressed', x === b)); updDir(); dirView.invalidate(false); };
+    ring.appendChild(b);
+  });
+  const svg = $('svg', ring); svg.insertAdjacentHTML('beforeend', '<text x="50" y="99" fill="rgba(232,230,225,.45)" font-size="3.6" text-anchor="middle" font-family="monospace">▲ กล้อง (CAMERA)</text>');
+})();
+function updDir() { $('#dirName').textContent = dirSel.th; $('#dirAngle').textContent = `AZ ${nstr(dirSel.az, 0)}° · EL ${nstr(dirSel.el, 0)}°`; $('#dirCaption').textContent = dirSel.cap; }
+
+// ---- Lab 4: colour temperature
+const kS = $('#kSlider'), wbM = $('#wbMatch');
+const kView = new BustView($('#labKRender'), {
+  view: VIEWS.face, ppu: 150, draftScale: .5,
+  getScene: () => ({ lights: [{ ...sph(-35, 25, 1.2), aim: [0, 0, 0], mod: 'softbox', power: 1, kelvin: +kS.value }], wall: { dist: .8, alb: [.3, .3, .3] }, amb: .01, bounce: .03, exposure: 1.9, wb: wbM.checked ? +kS.value : 5500 })
+});
+const KREFS = [[2000, 'เทียน', '~1900K'], [2900, 'หลอดไส้', '2700–3200K'], [5500, 'กลางวัน', '5500K'], [7000, 'ครึ้มฟ้า', '6500–7500K'], [9000, 'ร่มเงา', '8000–10000K']];
+$('#ktScale').innerHTML = KREFS.map(([k, n, r]) => `<span style="left:${(k - 2000) / 80}%">${n}<br><em class="mono" style="font-style:normal;font-size:9px">${r}</em></span>`).join('');
+function updK() {
+  const K = +kS.value; $('#kO').textContent = K + 'K'; $('#wbTag').textContent = (wbM.checked ? K : 5500) + 'K';
+  $('#kO').style.color = kelvinCSS(K);
+  $('#kCaption').textContent = wbM.checked ? 'เมื่อตั้งไวท์บาลานซ์ตรงกับแสง กล้องจะชดเชยสีให้เป็นกลาง — ปัญหาจริงเกิดเมื่อมีแสงหลายอุณหภูมิสีปนกัน (Mixed lighting) จะแก้ได้ทีละแหล่งเท่านั้น'
+    : K < 2600 ? 'แสงเทียนและไฟส้มมาก ให้บรรยากาศอบอุ่น ใกล้ชิด เมื่อกล้องตั้งไว้ที่แสงกลางวันภาพจะออกส้มจัด'
+    : K < 4200 ? 'หลอดไส้ / ทังสเตน (Tungsten) ~3200K ภาพจะติดส้ม-เหลือง ถ้ากล้องตั้ง WB แบบกลางวัน'
+    : K < 6200 ? 'แสงกลางวันและแฟลช (~5500K) คือค่าอ้างอิงที่ “เป็นกลาง” ของงานถ่ายภาพ'
+    : K < 8000 ? 'วันฟ้าครึ้ม แสงนุ่มแต่อมฟ้าเล็กน้อย มักเพิ่มความอุ่นด้วย WB แบบ Cloudy'
+    : 'ในร่มเงาแสงมาจากท้องฟ้าสีฟ้าเป็นหลัก ภาพจะอมฟ้าเย็น ต้องตั้ง WB แบบ Shade หรือใช้เจล CTO ที่แฟลช';
+  kView.invalidate();
+}
+kS.addEventListener('input', updK); wbM.addEventListener('change', updK);
+updSoft(); updInv(); updDir(); updK();
+
+/* =====================================================================
+   3. STUDIO PLAYGROUND
+   ===================================================================== */
+const SLOTS = ['key', 'fill', 'rim', 'bg'];
+const SLOT = { key: { th: 'ไฟหลัก', en: 'Key', s: 'KEY' }, fill: { th: 'ไฟเติม', en: 'Fill', s: 'FILL' }, rim: { th: 'ไฟขอบ/ผม', en: 'Rim / Hair', s: 'RIM' }, bg: { th: 'ไฟฉากหลัง', en: 'Background', s: 'BG' } };
+const GOLD = (() => { const c = [1, .7, .36], Y = .2126 * c[0] + .7152 * c[1] + .0722 * c[2]; return c.map(v => v / Y); })();
+const REFL = {
+  none: { th: 'ไม่มี' },
+  white: { th: 'แผ่นสะท้อนขาว', en: 'White reflector', rho: .9, g: 1, w: .8, h: .8, css: '#f2f0ea' },
+  silver: { th: 'แผ่นสะท้อนเงิน', en: 'Silver reflector', rho: .9, g: 3, w: .8, h: .8, css: '#c9d3de' },
+  gold: { th: 'แผ่นสะท้อนทอง', en: 'Gold reflector', rho: .8, g: 2.6, w: .8, h: .8, tint: GOLD, css: '#e9b949' },
+  vwhite: { th: 'V-flat ขาว', en: 'V-flat, white', rho: .9, g: 1, w: .9, h: 1.8, css: '#f2f0ea' },
+  vblack: { th: 'V-flat ดำ (ตัดแสง)', en: 'V-flat, black — negative fill', css: '#050505' }
+};
+const BGT = { grey: { th: 'เทา', alb: [.18, .18, .185] }, white: { th: 'ขาว', alb: [.8, .8, .8] }, black: { th: 'ดำ', alb: [.018, .018, .02] } };
+const defLight = o => Object.assign({ on: 0, x: 0, z: 1, h: .5, mod: 'softbox', power: 0, feather: 0, kelvin: 5500, gel: 'none' }, o);
+const defaultState = () => ({
+  lights: {
+    key: defLight({ on: 1, x: -.9, z: .85, h: .6, power: 0 }),
+    fill: defLight({ x: .8, z: 1.4, h: .1, mod: 'umbShoot', power: -1.5 }),
+    rim: defLight({ x: .9, z: -.8, h: .7, mod: 'strip', power: -.5 }),
+    bg: defLight({ x: 0, z: -.7, h: -.3, mod: 'bare', power: 0 })
+  },
+  refl: { type: 'none', x: .75, z: .45, h: -.1 }, bgDist: 1.5, bgTone: 'grey', turn: 0
+});
+const clone = o => JSON.parse(JSON.stringify(o, (k, v) => k === '__sc' ? undefined : v));
+let ST = defaultState();
+
+function aimFor(slot, L, st) {
+  let t = slot === 'bg' ? [0, -.05, -st.bgDist] : slot === 'rim' ? [0, .08, 0] : [0, 0, 0];
+  if (L.feather) {
+    const dx = t[0] - L.x, dz = t[2] - L.z, f = L.feather * D2R;
+    const r1 = [dx * Math.cos(f) - dz * Math.sin(f), dx * Math.sin(f) + dz * Math.cos(f)], r2 = [dx * Math.cos(f) + dz * Math.sin(f), -dx * Math.sin(f) + dz * Math.cos(f)];
+    const r = (slot === 'bg' ? r1[1] < r2[1] : r1[1] > r2[1]) ? r1 : r2;
+    t = [L.x + r[0], t[1] + (L.h - t[1]) * 0, L.z + r[1]];
+  }
+  return t;
+}
+function studioLights(st) {
+  const out = [];
+  SLOTS.forEach(s => { const L = st.lights[s]; if (!L.on) return; out.push({ slot: s, x: L.x, y: L.h, z: L.z, aim: aimFor(s, L, st), mod: L.mod, power: L.power, kelvin: L.kelvin, gel: L.gel, gain: L.gain }); });
+  return out;
+}
+function lightE(L, P) { // illuminance of a scene light at point P (no normal)
+  const M = L.m || MODS[L.mod], dx = L.x - P[0], dy = L.y - P[1], dz = L.z - P[2], d = Math.hypot(dx, dy, dz) || .01;
+  const a = nrm([L.aim[0] - L.x, L.aim[1] - L.y, L.aim[2] - L.z]), cb = -(dx * a[0] + dy * a[1] + dz * a[2]) / d;
+  if (cb <= 0) return { E: 0, l: [dx / d, dy / d, dz / d], d };
+  return { E: Math.pow(2, L.power || 0) * M.eff * (L.gain == null ? 1 : L.gain) * Math.pow(cb, M.p) / Math.max(d * d, .04), l: [dx / d, dy / d, dz / d], d };
+}
+function reflectorLight(st, lights, wb = 5500) {
+  const R = st.refl, T = REFL[R.type]; if (!T || !T.rho) return null;
+  const P = [R.x, R.h, R.z], toS = nrm([-P[0], -P[1], -P[2]]);
+  let E = 0, co = [0, 0, 0], ciS = 0;
+  for (const L of lights) {
+    const { E: e, l } = lightE(L, P); if (e <= 0) continue;
+    const nb = nrm([l[0] + toS[0], l[1] + toS[1], l[2] + toS[2]]), ci = Math.max(0, nb[0] * l[0] + nb[1] * l[1] + nb[2] * l[2]);
+    const ee = e * ci, c = lightColor(L.kelvin || 5500, wb, L.gel);
+    E += ee; ciS += ee * ci; co = co.map((v, i) => v + ee * c[i]);
+  }
+  if (E <= 0) return null;
+  const col = co.map((v, i) => v / E * (T.tint ? T.tint[i] : 1)), ci = ciS / E;
+  const base = T.rho * T.g * E * (T.w * T.h * .8) / Math.PI * ci;
+  return { slot: 'refl', x: P[0], y: P[1], z: P[2], aim: [0, 0, 0], m: { w: T.w, h: T.h, shape: R.type === 'vwhite' ? 'rect' : 'circle', p: 1, eff: 1, n: 6 }, power: 0, gain: base, col };
+}
+function meterAt(lights) { let E = 0; for (const L of lights) { const r = lightE(L, [0, 0, .05]); E += r.E * (.5 + .5 * r.l[2]); } return E; }
+function toScene(st, extra = {}) {
+  const lights = studioLights(st), rl = reflectorLight(st, lights);
+  if (rl) lights.push(rl);
+  const Em = meterAt(lights.filter(l => l.slot !== 'bg'));
+  const vb = st.refl.type === 'vblack';
+  return Object.assign({ lights, wall: { dist: st.bgDist, alb: BGT[st.bgTone].alb }, turn: st.turn * D2R, amb: vb ? .002 : .006, bounce: vb ? .006 : .02, exposure: clamp(.95 / Math.max(Em, .005), .05, 60), meterE: Em }, extra);
+}
+
+/* ---- pattern detection */
+const PAT = {
+  butterfly: { th: 'บัตเตอร์ฟลาย / พาราเมาต์', en: 'Butterfly / Paramount', why: 'ไฟหลักอยู่ด้านหน้าในแนวจมูกและสูงกว่าระดับตา เงาใต้จมูกจึงตกลงตรงกลางเป็นรูปผีเสื้อเล็กๆ เน้นโหนกแก้มและกรามแบบภาพดาราฮอลลีวูดยุคคลาสสิก' },
+  clamshell: { th: 'แคลมเชลล์', en: 'Clamshell', why: 'บัตเตอร์ฟลาย + ไฟเติมหรือแผ่นสะท้อนจากด้านล่าง ประกบบน–ล่างเหมือนเปลือกหอย เปิดเงาใต้ตาและใต้คาง ผิวเรียบ มักเห็นแคตช์ไลต์สองจุดในตา นิยมในงานบิวตี้' },
+  loop: { th: 'ลูป', en: 'Loop', why: 'ไฟหลักทำมุมราว 15–40° จากแนวกล้องและสูงกว่าตาเล็กน้อย เงาจมูกเป็นวงเล็กเฉียงลงหามุมปากโดยไม่แตะเงาแก้ม ดูเป็นธรรมชาติและเข้ากับใบหน้าส่วนใหญ่' },
+  rembrandt: { th: 'เรมบรันต์', en: 'Rembrandt', why: 'ไฟหลักทำมุมราว 45–60° และสูงกว่าศีรษะ เงาจมูกเชื่อมกับเงาแก้ม เหลือแสงรูปสามเหลี่ยมใต้ตาฝั่งเงา (ไม่ควรกว้างกว่าดวงตาหรือยาวกว่าจมูก) ได้อารมณ์ภาพเขียนคลาสสิกที่มีมิติ' },
+  split: { th: 'สปลิต', en: 'Split', why: 'ไฟหลักอยู่ด้านข้างราว 90° แบ่งใบหน้าเป็นครึ่งสว่าง–ครึ่งมืดชัดเจน อารมณ์ลึกลับ ดราม่า และขับพื้นผิวผิวหนัง' },
+  rim: { th: 'ริมไลต์ / แสงขอบ', en: 'Rim / Backlight', why: 'แสงหลักมาจากด้านหลังตัวแบบ เป็นเส้นสว่างตามขอบผม ไหล่ และกรอบหน้า แยกตัวแบบออกจากฉากหลัง ใบหน้าส่วนใหญ่อยู่ในเงา ต้องมีไฟเติมอ่อนๆ ถ้าอยากเห็นหน้า' },
+  under: { th: 'แสงจากด้านล่าง', en: 'Under-lighting', why: 'ไฟหลักต่ำกว่าระดับตา เงากลับหัวขึ้นด้านบน ดูผิดธรรมชาติเพราะเราคุ้นกับแสงจากฟ้า จึงให้ความรู้สึกน่ากลัว เหมาะเป็นไฟเติมอ่อนๆ มากกว่าไฟหลัก' },
+  flat: { th: 'แสงหน้าตรง', en: 'Flat front light', why: 'ไฟอยู่แนวกล้องและใกล้ระดับตา แทบไม่มีเงา ใบหน้าดูแบนแต่ผิวเรียบ เหมาะกับภาพติดบัตร ลองยกไฟสูงขึ้นเพื่อได้บัตเตอร์ฟลาย' },
+  none: { th: 'ยังไม่มีไฟหลัก', en: 'No key light', why: 'เปิดไฟหลักแล้วลากมาไว้ด้านหน้าตัวแบบ' }
+};
+function lightAngles(L, st) { const az = Math.atan2(L.x, L.z) * R2D; return { az, azRel: az - st.turn, el: Math.atan2(L.y, Math.hypot(L.x, L.z)) * R2D }; }
+function detectPattern(st, sc) {
+  const face = [0, 0, .05];
+  const info = sc.lights.filter(l => l.slot !== 'bg').map(l => Object.assign({ L: l, E: lightE(l, face).E }, lightAngles(l, st)));
+  const front = info.filter(i => Math.abs(i.azRel) < 112 && i.L.slot !== 'refl').sort((a, b) => b.E - a.E);
+  const back = info.filter(i => Math.abs(i.azRel) >= 112).sort((a, b) => b.E - a.E);
+  const key = front[0], res = { key, extras: [] };
+  if (!key && !back.length) { res.k = 'none'; return res; }
+  if (!key || (back[0] && back[0].E > key.E * 2.2)) { res.k = 'rim'; res.key = key || back[0]; return res; }
+  const a = Math.abs(key.azRel), el = key.el;
+  if (a < 12) {
+    if (el < -12) res.k = 'under';
+    else if (el < 12) res.k = 'flat';
+    else res.k = info.some(i => i !== key && i.el < -8 && Math.abs(i.azRel) < 45 && i.E > key.E * .12) ? 'clamshell' : 'butterfly';
+  } else if (a < 38) res.k = el < -12 ? 'under' : 'loop';
+  else if (a < 68) res.k = el < -12 ? 'under' : 'rembrandt';
+  else res.k = 'split';
+  if (Math.abs(st.turn) >= 8 && a >= 12 && a < 112 && res.k !== 'under') res.bs = key.az * st.turn < 0 ? 'broad' : 'short';
+  if (back.length && back[0].E > key.E * .12) res.extras.push('rim');
+  return res;
+}
+function ratioOf(st, sc) {
+  const t = st.turn * D2R, rot = v => [v[0] * Math.cos(t) + v[2] * Math.sin(t), v[1], -v[0] * Math.sin(t) + v[2] * Math.cos(t)];
+  const nA = rot([-.62, .05, .78]), nB = rot([.62, .05, .78]);
+  const E = n => sc.lights.filter(l => l.slot !== 'bg').reduce((s, L) => { const r = lightE(L, [n[0] * .07, 0, n[2] * .07]); return s + r.E * Math.max(0, n[0] * r.l[0] + n[1] * r.l[1] + n[2] * r.l[2]); }, 0) + sc.meterE * .03 + .0005;
+  const a = E(nA), b = E(nB); return Math.max(a, b) / Math.min(a, b);
+}
+
+/* ---- render view */
+const pgView = new BustView($('#pgCanvas'), {
+  view: VIEWS.full, ppu: 100, draftScale: .5,
+  getScene: () => (ST.__sc = toScene(ST)),
+  after: (c, rect, g, sc, res) => { pgOverlay(c, sc); drawHisto(res.hist); }
+});
+const loupeView = new BustView($('#loupe'), {
+  ppu: 440, draftScale: .5,
+  view: sc => { const ex = -.105 * Math.cos(sc.turn) + .172 * Math.sin(sc.turn); return { x0: ex - .13, x1: ex + .13, y0: -.435, y1: -.235 }; },
+  getScene: () => ST.__sc || toScene(ST)
+});
+let PATRES = null;
+function pgOverlay(c, sc) {
+  if (!PATRES || PATRES.k !== 'rembrandt' || !PATRES.key) return;
+  const t = ST.turn * D2R, s = PATRES.key.az < 0 ? 1 : -1, d = DPR();
+  const P = [[.06, -.285, .23], [.165, -.262, .19], [.085, -.16, .235]].map(([fx, fy, fz]) => pgView.toCanvas(s * fx * Math.cos(t) + fz * Math.sin(t), fy));
+  c.save(); c.strokeStyle = '#ffb35c'; c.lineWidth = 1.5 * d; c.setLineDash([4 * d, 3 * d]); c.shadowColor = '#000'; c.shadowBlur = 4 * d;
+  c.beginPath(); c.moveTo(...P[0]); c.lineTo(...P[1]); c.lineTo(...P[2]); c.closePath(); c.stroke();
+  c.setLineDash([]); c.fillStyle = '#ffb35c'; c.font = `${11 * d}px ${getComputedStyle(document.body).getPropertyValue('--mono')}`;
+  const lx = P[1][0] + (s > 0 ? 8 * d : -120 * d); c.fillText('△ Rembrandt triangle', lx, P[1][1] - 6 * d); c.restore();
+}
+function drawHisto(h) {
+  const c = $('#histo'), [W, H] = sizeCanvas(c), x = c.getContext('2d'); x.clearRect(0, 0, W, H);
+  let mx = 0; for (let i = 1; i < 63; i++) mx = Math.max(mx, h[i]); mx = Math.max(mx, 1);
+  const bw = W / 64; x.fillStyle = 'rgba(232,230,225,.75)';
+  for (let i = 0; i < 64; i++) { const v = Math.min(1, h[i] / mx); x.fillRect(i * bw, H - v * H, Math.max(1, bw - .5), v * H); }
+  x.fillStyle = h[0] > mx * 1.2 ? '#ff4d6d' : 'rgba(0,0,0,0)'; x.fillRect(0, 0, 2, H);
+  x.fillStyle = h[63] > mx * .6 ? '#ff4d6d' : 'rgba(0,0,0,0)'; x.fillRect(W - 2, 0, 2, H);
+}
+function updReadouts() {
+  const sc = ST.__sc = toScene(ST);
+  PATRES = detectPattern(ST, sc);
+  const P = PAT[PATRES.k];
+  $('#patName').innerHTML = `${P.th}<small>${P.en}</small>`;
+  let why = P.why, badges = [];
+  if (PATRES.bs === 'broad') { badges.push('<span class="badge hot">Broad lighting</span>'); why += ' · <b>Broad:</b> ไฟส่องด้านใบหน้าที่หันเข้าหากล้อง (ด้านกว้าง) หน้าดูกว้างขึ้น เหมาะกับหน้าเรียวยาว'; }
+  if (PATRES.bs === 'short') { badges.push('<span class="badge hot">Short lighting</span>'); why += ' · <b>Short:</b> ไฟส่องด้านที่หันออกจากกล้อง ด้านที่เห็นมากอยู่ในเงา หน้าดูเรียวและมีมิติ'; }
+  if (PATRES.extras.includes('rim')) badges.push('<span class="badge">+ Rim / Hair light</span>');
+  if (ST.refl.type !== 'none') badges.push(`<span class="badge">${REFL[ST.refl.type].th}</span>`);
+  if (ST.lights.bg.on) badges.push('<span class="badge">ไฟฉากหลัง</span>');
+  if (SLOTS.some(s => ST.lights[s].on && ST.lights[s].gel !== 'none')) badges.push('<span class="badge" style="border-color:#9b5cff;color:#c9a8ff">Gel</span>');
+  $('#patBadges').innerHTML = badges.join('');
+  $('#patWhy').innerHTML = why;
+  const r = ratioOf(ST, sc);
+  $('#ratioO').textContent = r < 1.15 ? '1:1' : (r < 3 ? r.toFixed(1) : Math.round(r)) + ':1';
+  $('#ratioO').title = `ต่างกัน ${Math.log2(r).toFixed(1)} สต็อป`;
+  $('#meterO').textContent = sc.meterE > .0005 ? fstopStr(8 * Math.sqrt(sc.meterE)) : '—';
+}
+function pgChanged(input = true) { updReadouts(); pgView.invalidate(input); loupeView.invalidate(input); drawPlanPG(); syncPanel(); }
+function pgFire() { strobe($('#pgFlash')); PLAN.flash = performance.now(); }
+
+/* ---- floor plan drawing (shared with recipe cards & quiz) */
+const MONO = () => getComputedStyle(document.body).getPropertyValue('--mono');
+function planXf(W, H, box) {
+  const s = Math.min(W / (box.x1 - box.x0), H / (box.z1 - box.z0)), cx = W / 2 - (box.x0 + box.x1) / 2 * s, cz = H / 2 - (box.z0 + box.z1) / 2 * s;
+  return { s, X: x => cx + x * s, Z: z => cz + z * s, ix: px => (px - cx) / s, iz: py => (py - cz) / s };
+}
+function lightCol(L) { const c = lightColor(L.kelvin || 5500, 5500, L.gel); return c; }
+function drawGlyph(x, xf, L, aim, col, dp, big) {
+  const M = MODS[L.mod], s = xf.s, px = xf.X(L.x), pz = xf.Z(L.z);
+  const ang = Math.atan2(aim[2] - L.z, aim[0] - L.x);
+  x.save(); x.translate(px, pz); x.rotate(ang);
+  const fw = Math.max(M.w * s, 7 * dp), S = v => v * s;
+  x.lineWidth = dp * (big ? 1.3 : 1); x.strokeStyle = '#e8e6e1'; x.fillStyle = colCSS(col, .22);
+  const trap = (depth, back) => { x.beginPath(); x.moveTo(0, -fw / 2); x.lineTo(-S(depth), -fw * back / 2); x.lineTo(-S(depth), fw * back / 2); x.lineTo(0, fw / 2); x.closePath(); x.fill(); x.stroke(); };
+  switch (L.mod) {
+    case 'softbox': case 'octa': case 'strip': trap(L.mod === 'octa' ? .42 : .3, .3); break;
+    case 'grid': trap(.3, .35); x.beginPath(); for (let k = -2; k <= 2; k++) { x.moveTo(0, k * fw / 5); x.lineTo(S(.06), k * fw / 5); } x.stroke(); break;
+    case 'scrim': x.fillRect(-S(.02), -fw / 2, S(.04), fw); x.strokeRect(-S(.02), -fw / 2, S(.04), fw); x.beginPath(); x.arc(-S(.55), 0, S(.06), 0, 6.283); x.stroke(); break;
+    case 'umbShoot': x.beginPath(); x.moveTo(-S(.05), -fw / 2); x.quadraticCurveTo(S(.25), 0, -S(.05), fw / 2); x.closePath(); x.fill(); x.stroke(); x.beginPath(); x.moveTo(S(.08), 0); x.lineTo(-S(.4), 0); x.stroke(); x.beginPath(); x.arc(-S(.3), 0, S(.06), 0, 6.283); x.stroke(); break;
+    case 'umbRefl': x.beginPath(); x.moveTo(S(.05), -fw / 2); x.quadraticCurveTo(-S(.4), 0, S(.05), fw / 2); x.stroke(); x.fill(); x.beginPath(); x.moveTo(-S(.18), 0); x.lineTo(S(.25), 0); x.stroke(); x.beginPath(); x.arc(S(.08), 0, S(.05), 0, 6.283); x.stroke(); break;
+    case 'dish': x.beginPath(); x.moveTo(0, -fw / 2); x.quadraticCurveTo(-S(.28), 0, 0, fw / 2); x.closePath(); x.fill(); x.stroke(); x.beginPath(); x.moveTo(-S(.03), -fw * .12); x.lineTo(-S(.03), fw * .12); x.stroke(); break;
+    case 'snoot': x.fillRect(-S(.28), -S(.05), S(.3), S(.1)); x.strokeRect(-S(.28), -S(.05), S(.3), S(.1)); break;
+    case 'window': x.fillRect(-S(.04), -fw / 2, S(.08), fw); x.strokeRect(-S(.04), -fw / 2, S(.08), fw); x.beginPath(); x.moveTo(0, -fw / 2); x.lineTo(0, fw / 2); x.stroke(); break;
+    default: x.beginPath(); x.moveTo(0, -fw / 2); x.lineTo(-S(.14), -S(.05)); x.lineTo(-S(.14), S(.05)); x.lineTo(0, fw / 2); x.closePath(); x.fill(); x.stroke();
+  }
+  x.restore();
+}
+function drawPlan(x, W, H, st, o = {}) {
+  const dp = o.dp || DPR(), box = o.box || { x0: -2.7, x1: 2.7, z0: -2.85, z1: 2.8 }, xf = planXf(W, H, box), s = xf.s, mono = MONO();
+  x.clearRect(0, 0, W, H);
+  // grid
+  for (let v = Math.ceil(box.x0 * 2 - 6) / 2; v <= box.x1 + 3; v += .5) { const X = xf.X(v); x.strokeStyle = `rgba(207,227,255,${Math.abs(v % 1) < .01 ? .1 : .045})`; x.lineWidth = 1; x.beginPath(); x.moveTo(X, 0); x.lineTo(X, H); x.stroke(); }
+  for (let v = Math.ceil(box.z0 * 2 - 6) / 2; v <= box.z1 + 3; v += .5) { const Z = xf.Z(v); x.strokeStyle = `rgba(207,227,255,${Math.abs(v % 1) < .01 ? .1 : .045})`; x.beginPath(); x.moveTo(0, Z); x.lineTo(W, Z); x.stroke(); }
+  x.font = `${9 * dp}px ${mono}`; x.textBaseline = 'middle';
+  // background paper
+  const bz = xf.Z(-st.bgDist), bt = BGT[st.bgTone];
+  x.fillStyle = st.bgTone === 'white' ? '#e8e6e1' : st.bgTone === 'black' ? '#050506' : '#6d6f73';
+  x.fillRect(xf.X(-1.5), bz - 3 * dp, s * 3, 6 * dp); x.strokeStyle = '#e8e6e1'; x.lineWidth = dp; x.strokeRect(xf.X(-1.5), bz - 3 * dp, s * 3, 6 * dp);
+  x.fillStyle = 'rgba(232,230,225,.7)'; x.fillText(`ฉากหลัง (${bt.th}) · ${st.bgDist.toFixed(1)} m`, xf.X(-1.5), bz - 12 * dp);
+  // camera
+  const cz = xf.Z(2.45), cx0 = xf.X(0);
+  x.strokeStyle = 'rgba(207,227,255,.18)'; x.setLineDash([3 * dp, 4 * dp]); x.beginPath(); x.moveTo(cx0, cz); x.lineTo(xf.X(-.55), xf.Z(-.2)); x.moveTo(cx0, cz); x.lineTo(xf.X(.55), xf.Z(-.2)); x.stroke(); x.setLineDash([]);
+  x.fillStyle = '#1a1c20'; x.strokeStyle = '#e8e6e1'; x.fillRect(cx0 - .14 * s, cz, .28 * s, .16 * s); x.strokeRect(cx0 - .14 * s, cz, .28 * s, .16 * s);
+  x.strokeRect(cx0 - .05 * s, cz - .09 * s, .1 * s, .09 * s);
+  x.fillStyle = 'rgba(232,230,225,.7)'; x.fillText('กล้อง (Camera)', cx0 + .2 * s, cz + .08 * s);
+  // beams + glows first
+  const Ls = SLOTS.map(k => [k, st.lights[k]]).filter(([, L]) => L.on && (L.__a == null || L.__a > .02));
+  for (const [k, L] of Ls) {
+    const aim = aimFor(k, L, st), col = lightCol(L), a = L.__a == null ? 1 : L.__a, M = MODS[L.mod];
+    const ang = Math.atan2(aim[2] - L.z, aim[0] - L.x), hb = halfBeam(M.p) * D2R, len = 2.6 * s, px = xf.X(L.x), pz = xf.Z(L.z);
+    const g = x.createRadialGradient(px, pz, 0, px, pz, len);
+    g.addColorStop(0, colCSS(col, .2 * a * clamp(.6 + L.power * .15, .2, 1))); g.addColorStop(1, colCSS(col, 0));
+    x.fillStyle = g; x.beginPath(); x.moveTo(px, pz); x.arc(px, pz, len, ang - hb, ang + hb); x.closePath(); x.fill();
+    const gl = x.createRadialGradient(px, pz, 0, px, pz, .45 * s); gl.addColorStop(0, colCSS(col, .5 * a)); gl.addColorStop(1, colCSS(col, 0));
+    x.fillStyle = gl; x.beginPath(); x.arc(px, pz, .45 * s, 0, 6.283); x.fill();
+  }
+  // reflector
+  const R = st.refl;
+  if (R.type !== 'none') {
+    const T = REFL[R.type], px = xf.X(R.x), pz = xf.Z(R.z), ang = Math.atan2(-R.z, -R.x);
+    x.save(); x.translate(px, pz); x.rotate(ang + Math.PI / 2);
+    const w = T.w ? T.w * s : .9 * s;
+    x.fillStyle = T.css; x.strokeStyle = '#e8e6e1'; x.lineWidth = dp;
+    if (R.type.startsWith('v')) { x.beginPath(); x.moveTo(-w / 2, -.25 * s); x.lineTo(0, 0); x.lineTo(w / 2, -.25 * s); x.lineWidth = 5 * dp; x.strokeStyle = T.css; x.stroke(); x.lineWidth = dp; x.strokeStyle = '#e8e6e1'; x.stroke(); }
+    else { x.beginPath(); x.ellipse(0, 0, w / 2, 3.5 * dp, 0, 0, 6.283); x.fill(); x.stroke(); }
+    x.restore();
+    x.fillStyle = 'rgba(232,230,225,.8)'; x.fillText(T.th, px + 12 * dp, pz + 14 * dp);
+    if (o.sel === 'refl') { x.strokeStyle = '#ffb35c'; x.setLineDash([3 * dp, 3 * dp]); x.beginPath(); x.arc(px, pz, (COARSE ? 26 : 18) * dp, 0, 6.283); x.stroke(); x.setLineDash([]); }
+  }
+  // subject
+  const sx = xf.X(0), sz = xf.Z(0), t = st.turn * D2R;
+  x.fillStyle = '#2a2c30'; x.strokeStyle = '#e8e6e1'; x.lineWidth = dp;
+  x.beginPath(); x.ellipse(sx, sz + .02 * s, .24 * s, .11 * s, 0, 0, 6.283); x.fill(); x.stroke();
+  x.beginPath(); x.arc(sx, sz, .1 * s, 0, 6.283); x.fill(); x.stroke();
+  x.beginPath(); x.moveTo(sx + Math.sin(t) * .1 * s, sz + Math.cos(t) * .1 * s); x.lineTo(sx + Math.sin(t) * .16 * s, sz + Math.cos(t) * .16 * s); x.strokeStyle = '#ffb35c'; x.lineWidth = 2 * dp; x.stroke();
+  x.fillStyle = 'rgba(232,230,225,.7)'; x.fillText('แบบ (Subject)', sx + .28 * s, sz);
+  // lights
+  for (const [k, L] of Ls) {
+    const aim = aimFor(k, L, st), col = lightCol(L), px = xf.X(L.x), pz = xf.Z(L.z), a = L.__a == null ? 1 : L.__a;
+    x.globalAlpha = a;
+    if (o.sel === k) {
+      const ang = lightAngles({ x: L.x, y: L.h, z: L.z }, { turn: 0 });
+      x.strokeStyle = 'rgba(255,179,92,.6)'; x.setLineDash([3 * dp, 3 * dp]); x.beginPath(); x.moveTo(px, pz); x.lineTo(sx, sz); x.stroke();
+      const r0 = .5 * s; x.beginPath(); x.arc(sx, sz, r0, Math.PI / 2, Math.PI / 2 - ang.az * D2R, ang.az > 0); x.stroke(); x.setLineDash([]);
+      x.fillStyle = '#ffb35c'; x.fillText(`${Math.abs(ang.az).toFixed(0)}°`, sx + Math.sin(ang.az * D2R / 2) * (r0 + 12 * dp) - 8 * dp, sz + Math.cos(ang.az * D2R / 2) * (r0 + 12 * dp));
+      x.beginPath(); x.arc(px, pz, (COARSE ? 28 : 19) * dp, 0, 6.283); x.stroke();
+    }
+    drawGlyph(x, xf, L, aim, col, dp, o.sel === k);
+    if (o.flash && performance.now() - o.flash < 380) { const f = (performance.now() - o.flash) / 380; x.strokeStyle = `rgba(255,255,255,${1 - f})`; x.lineWidth = 2 * dp; x.beginPath(); x.arc(px, pz, (8 + f * 34) * dp, 0, 6.283); x.stroke(); }
+    const d = Math.hypot(L.x, L.h, L.z), lx = px + (L.x < 0 ? -1 : 1) * 14 * dp, align = L.x < 0 ? 'right' : 'left';
+    x.textAlign = align; x.fillStyle = k === 'key' ? '#ffb35c' : '#cfe3ff';
+    x.font = `600 ${10 * dp}px ${mono}`; x.fillText(SLOT[k].s, lx, pz - 16 * dp);
+    x.font = `${9 * dp}px ${mono}`; x.fillStyle = 'rgba(232,230,225,.75)';
+    if (!o.mini) x.fillText(`${d.toFixed(2)}m · h${sgnStr(L.h, 1)} · ${sgnStr(L.power, 1)}EV`, lx, pz - 4 * dp);
+    x.textAlign = 'left'; x.globalAlpha = 1;
+  }
+  return xf;
+}
+
+/* ---- playground plan interaction */
+const PLAN = { sel: 'key', drag: null, flash: 0 };
+const planC = $('#planCanvas');
+function drawPlanPG() { const [W, H, dp] = sizeCanvas(planC); PLAN.xf = drawPlan(planC.getContext('2d'), W, H, ST, { sel: PLAN.sel, flash: PLAN.flash, dp }); }
+FRAME.add(t => { if (PLAN.flash && t - PLAN.flash < 420) drawPlanPG(); });
+new ResizeObserver(drawPlanPG).observe(planC);
+function planHit(px, py) {
+  const xf = PLAN.xf, d = DPR(), rad = (COARSE ? 30 : 18) * d; let best = null, bd = rad;
+  SLOTS.forEach(k => { const L = ST.lights[k]; if (!L.on) return; const dd = Math.hypot(xf.X(L.x) - px, xf.Z(L.z) - py); if (dd < bd) { bd = dd; best = k; } });
+  if (ST.refl.type !== 'none') { const dd = Math.hypot(xf.X(ST.refl.x) - px, xf.Z(ST.refl.z) - py); if (dd < bd) { bd = dd; best = 'refl'; } }
+  if (!best && Math.abs(py - xf.Z(-ST.bgDist)) < rad * .8 && Math.abs(px - xf.X(0)) < xf.s * 1.6) best = 'paper';
+  return best;
+}
+function moveItem(k, x, z) {
+  x = clamp(x, -2.6, 2.6); z = clamp(z, -ST.bgDist + .12, 2.3);
+  if (Math.hypot(x, z) < .3) { const a = Math.atan2(z, x); x = Math.cos(a) * .3; z = Math.sin(a) * .3; }
+  if (k === 'refl') { ST.refl.x = x; ST.refl.z = z; } else if (SLOTS.includes(k)) { ST.lights[k].x = x; ST.lights[k].z = z; }
+}
+planC.addEventListener('pointerdown', e => {
+  const r = planC.getBoundingClientRect(), d = DPR(), px = (e.clientX - r.left) * d, py = (e.clientY - r.top) * d, hit = planHit(px, py);
+  if (!hit) return; e.preventDefault(); planC.setPointerCapture(e.pointerId); PLAN.drag = hit;
+  if (hit !== 'paper') selectTab(hit);
+});
+planC.addEventListener('pointermove', e => {
+  const r = planC.getBoundingClientRect(), d = DPR(), px = (e.clientX - r.left) * d, py = (e.clientY - r.top) * d;
+  if (!PLAN.drag) { planC.style.cursor = planHit(px, py) ? 'grab' : 'default'; return; }
+  const xf = PLAN.xf;
+  if (PLAN.drag === 'paper') { ST.bgDist = clamp(-xf.iz(py), .6, 2.8); SLOTS.forEach(k => { const L = ST.lights[k]; if (L.z < -ST.bgDist + .12) L.z = -ST.bgDist + .12; }); }
+  else moveItem(PLAN.drag, xf.ix(px), xf.iz(py));
+  pgChanged();
+});
+const endDrag = () => { if (PLAN.drag) { PLAN.drag = null; pgFire(); pgChanged(false); } };
+planC.addEventListener('pointerup', endDrag); planC.addEventListener('pointercancel', endDrag);
+planC.addEventListener('keydown', e => {
+  const items = [...SLOTS.filter(k => ST.lights[k].on), ...(ST.refl.type !== 'none' ? ['refl'] : [])];
+  if (e.key === '[' || e.key === ']') { const i = items.indexOf(PLAN.sel); selectTab(items[(i + (e.key === ']' ? 1 : -1) + items.length) % items.length] || 'key'); e.preventDefault(); return; }
+  const mv = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[e.key]; if (!mv) return;
+  e.preventDefault(); const k = PLAN.sel, st = e.shiftKey ? .25 : .05;
+  const it = k === 'refl' ? ST.refl : ST.lights[k]; if (!it || (k !== 'refl' && !it.on)) return;
+  moveItem(k, it.x + mv[0] * st, it.z + mv[1] * st); pgChanged(); clearTimeout(PLAN.kt); PLAN.kt = setTimeout(pgFire, 400);
+});
+
+/* ---- control panel */
+const TABS = [...SLOTS, 'refl', 'scene'];
+const TABNAME = { ...Object.fromEntries(SLOTS.map(k => [k, SLOT[k].th])), refl: 'รีเฟลกเตอร์', scene: 'ฉาก & แบบ' };
+$('#pgTabs').innerHTML = TABS.map(k => `<button role="tab" id="tab-${k}" data-k="${k}" aria-controls="pgPanel"><span class="dot"></span>${TABNAME[k]}</button>`).join('');
+$$('#pgTabs button').forEach(b => b.onclick = () => selectTab(b.dataset.k));
+$('#pgTabs').addEventListener('keydown', e => { if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return; const i = TABS.indexOf(PLAN.tab); const k = TABS[(i + (e.key === 'ArrowRight' ? 1 : -1) + TABS.length) % TABS.length]; selectTab(k); $('#tab-' + k).focus(); });
+const rng = (id, lab, min, max, step, val, fmt) => `<div class="ctl"><label for="${id}">${lab}</label><output id="${id}O" class="mono">${fmt(val)}</output><input type="range" id="${id}" min="${min}" max="${max}" step="${step}" value="${val}"></div>`;
+const FMT = { power: v => sgnStr(+v, 1) + ' EV', h: v => sgnStr(+v, 2) + ' m', feather: v => (+v).toFixed(0) + '°', kelvin: v => (+v) + 'K', turn: v => sgnStr(+v, 0) + '°', bgDist: v => (+v).toFixed(2) + ' m' };
+function selectTab(k) {
+  PLAN.tab = k; if (SLOTS.includes(k) || k === 'refl') PLAN.sel = k;
+  $$('#pgTabs button').forEach(b => { b.setAttribute('aria-selected', b.dataset.k === k); b.tabIndex = b.dataset.k === k ? 0 : -1; });
+  $('#pgPanel').setAttribute('aria-labelledby', 'tab-' + k);
+  buildPanel(); drawPlanPG();
+}
+function buildPanel() {
+  const k = PLAN.tab, P = $('#pgPanel');
+  if (SLOTS.includes(k)) {
+    const L = ST.lights[k];
+    P.innerHTML = `<label class="chk"><input type="checkbox" data-f="on" ${L.on ? 'checked' : ''}> เปิด${SLOT[k].th} <span class="en">(${SLOT[k].en})</span></label>
+      <div class="row2"><div class="ctl"><label for="pmod">ตัวปรับแสง (Modifier)</label><select id="pmod" data-f="mod" style="grid-column:1/-1">${MOD_ORDER.map(m => `<option value="${m}" ${m === L.mod ? 'selected' : ''}>${MODS[m].th} — ${MODS[m].en}</option>`).join('')}</select></div>
+      <div class="ctl"><label for="pgel">เจลสี (Gel)</label><select id="pgel" data-f="gel" style="grid-column:1/-1">${Object.keys(GELS).map(g => `<option value="${g}" ${g === L.gel ? 'selected' : ''}>${GELS[g].th}${GELS[g].hex ? ' ' + GELS[g].hex : ''}</option>`).join('')}</select></div></div>
+      <div class="row2">${rng('ppower', 'กำลังไฟ (Power)', -3, 3, .1, L.power, FMT.power)}${rng('ph', 'ความสูงเทียบระดับตา (Height)', -1.2, 2, .05, L.h, FMT.h)}</div>
+      <div class="row2">${rng('pfeather', 'มุมเฟเธอร์ (Feathering)', 0, 60, 1, L.feather, FMT.feather)}${rng('pkelvin', 'อุณหภูมิสี (Kelvin)', 2700, 7500, 100, L.kelvin, FMT.kelvin)}</div>
+      <p class="note mono" id="pinfo"></p>`;
+    const map = { ppower: 'power', ph: 'h', pfeather: 'feather', pkelvin: 'kelvin' };
+    Object.entries(map).forEach(([id, f]) => { const el = $('#' + id); el.oninput = () => { L[f] = +el.value; $('#' + id + 'O').textContent = FMT[f](el.value); pgChanged(); }; el.onchange = pgFire; });
+    $$('[data-f]', P).forEach(el => { if (el.id && map[el.id]) return; el.onchange = () => { L[el.dataset.f] = el.type === 'checkbox' ? (el.checked ? 1 : 0) : el.value; pgChanged(false); pgFire(); updTabDots(); }; });
+  } else if (k === 'refl') {
+    const R = ST.refl;
+    P.innerHTML = `<div class="ctl"><label for="rtype">ชนิด</label><select id="rtype" style="grid-column:1/-1">${Object.keys(REFL).map(t => `<option value="${t}" ${t === R.type ? 'selected' : ''}>${REFL[t].th}${REFL[t].en ? ' — ' + REFL[t].en : ''}</option>`).join('')}</select></div>
+      ${rng('rh', 'ความสูงเทียบระดับตา', -1, 1, .05, R.h, FMT.h)}
+      <p class="note">แผ่นสะท้อนไม่ได้สร้างแสงเอง แต่รับแสงจากไฟดวงอื่นแล้วสะท้อนกลับ — ยิ่งใกล้ตัวแบบยิ่งเติมแสงแรง ส่วน V-flat ดำใช้ “ดูด” แสงสะท้อนในห้อง ทำให้ฝั่งเงาเข้มขึ้น (Negative fill)</p>`;
+    $('#rtype').onchange = e => { R.type = e.target.value; if (R.type !== 'none') PLAN.sel = 'refl'; pgChanged(false); pgFire(); updTabDots(); };
+    $('#rh').oninput = e => { R.h = +e.target.value; $('#rhO').textContent = FMT.h(R.h); pgChanged(); }; $('#rh').onchange = pgFire;
+  } else {
+    P.innerHTML = `${rng('sturn', 'การหันหน้าของแบบ (Face turn)', -35, 35, 1, ST.turn, FMT.turn)}
+      ${rng('sbg', 'ระยะแบบ → ฉากหลัง', .6, 2.8, .05, ST.bgDist, FMT.bgDist)}
+      <div class="ctl"><label>สีฉากหลัง (Seamless paper)</label><div class="seg" role="group" style="grid-column:1/-1" id="sbgt">${Object.keys(BGT).map(t => `<button type="button" data-t="${t}" aria-pressed="${t === ST.bgTone}">${BGT[t].th}</button>`).join('')}</div></div>
+      <button class="btn ghost small" id="sreset" type="button">รีเซ็ตสตูดิโอ</button>`;
+    $('#sturn').oninput = e => { ST.turn = +e.target.value; $('#sturnO').textContent = FMT.turn(ST.turn); pgChanged(); }; $('#sturn').onchange = pgFire;
+    $('#sbg').oninput = e => { ST.bgDist = +e.target.value; $('#sbgO').textContent = FMT.bgDist(ST.bgDist); SLOTS.forEach(k => { const L = ST.lights[k]; if (L.z < -ST.bgDist + .12) L.z = -ST.bgDist + .12; }); pgChanged(); }; $('#sbg').onchange = pgFire;
+    $$('#sbgt button').forEach(b => b.onclick = () => { ST.bgTone = b.dataset.t; $$('#sbgt button').forEach(x => x.setAttribute('aria-pressed', x === b)); pgChanged(false); pgFire(); });
+    $('#sreset').onclick = () => loadState(defaultState(), false);
+  }
+  syncPanel();
+}
+function syncPanel() {
+  const k = PLAN.tab, inf = $('#pinfo');
+  if (inf && SLOTS.includes(k)) {
+    const L = ST.lights[k], a = lightAngles({ x: L.x, y: L.h, z: L.z }, ST), d = Math.hypot(L.x, L.h, L.z), M = MODS[L.mod];
+    const app = 2 * Math.atan(Math.sqrt(M.w * M.h) / 2 / d) * R2D;
+    inf.textContent = `ระยะ ${d.toFixed(2)} m · มุมจากแนวกล้อง ${Math.abs(a.az).toFixed(0)}° ${a.az < 0 ? 'ซ้าย' : 'ขวา'} · มุมก้ม ${a.el.toFixed(0)}° · ขนาดปรากฏ ${app.toFixed(0)}° (${app < 10 ? 'แข็ง' : app < 28 ? 'กึ่งนุ่ม' : 'นุ่ม'}) · ลำแสงครึ่งมุม ${halfBeam(M.p).toFixed(0)}°`;
+    const syncR = (id, v, f) => { const el = $('#' + id); if (el && document.activeElement !== el && +el.value !== v) { el.value = v; $('#' + id + 'O').textContent = FMT[f](v); } };
+    syncR('ppower', L.power, 'power'); syncR('ph', L.h, 'h'); syncR('pfeather', L.feather, 'feather'); syncR('pkelvin', L.kelvin, 'kelvin');
+  }
+}
+function updTabDots() { $$('#pgTabs button').forEach(b => { const k = b.dataset.k; b.classList.toggle('live', SLOTS.includes(k) ? !!ST.lights[k].on : k === 'refl' ? ST.refl.type !== 'none' : true); }); }
+
+/* ---- animated load of a setup */
+let TWEEN = null;
+function loadState(target, animate = true) {
+  target = clone(target);
+  if (!animate || RM) { ST = target; afterLoad(); return; }
+  const from = clone(ST);
+  SLOTS.forEach(k => {
+    const a = from.lights[k], b = target.lights[k];
+    if (!a.on && b.on) { Object.assign(a, b, { x: clamp(b.x * 2.2 + (b.x >= 0 ? .6 : -.6), -2.6, 2.6), z: clamp(b.z * 1.8, -2.6, 2.3), power: b.power - 3, __a: 0 }); a.on = 1; }
+    else if (a.on && !b.on) { Object.assign(b, a, { on: 1, power: a.power - 3, __a: 0, __off: 1 }); }
+    else { a.__a = 1; b.__a = 1; a.mod = b.mod; a.gel = b.gel; }
+    if (b.__a == null) b.__a = 1; if (a.__a == null) a.__a = 1;
+  });
+  if (from.refl.type === 'none' && target.refl.type !== 'none') Object.assign(from.refl, { x: target.refl.x * 2, z: target.refl.z * 2 });
+  from.refl.type = target.refl.type; from.bgTone = target.bgTone;
+  ST = clone(from);
+  TWEEN = { from, to: target, t0: performance.now(), dur: 1100 };
+}
+FRAME.add(t => {
+  if (!TWEEN) return;
+  const { from, to, t0, dur } = TWEEN, k = easeIO(clamp((t - t0) / dur, 0, 1));
+  SLOTS.forEach(s => { const a = from.lights[s], b = to.lights[s], L = ST.lights[s]; ['x', 'z', 'h', 'power', 'feather', 'kelvin', '__a'].forEach(f => L[f] = lerp(a[f], b[f], k)); L.on = a.on || b.on ? 1 : 0; L.mod = b.mod; L.gel = b.gel; });
+  ['x', 'z', 'h'].forEach(f => ST.refl[f] = lerp(from.refl[f], to.refl[f], k));
+  ST.bgDist = lerp(from.bgDist, to.bgDist, k); ST.turn = lerp(from.turn, to.turn, k);
+  pgChanged();
+  if (k >= 1) {
+    SLOTS.forEach(s => { const L = to.lights[s]; if (L.__off) L.on = 0; delete L.__a; delete L.__off; });
+    ST = clone(to); TWEEN = null; afterLoad();
+  }
+});
+function afterLoad() { SLOTS.forEach(s => { delete ST.lights[s].__a; delete ST.lights[s].__off; }); updTabDots(); selectTab(ST.lights[PLAN.sel] && ST.lights[PLAN.sel].on ? PLAN.sel : 'key'); pgChanged(false); pgFire(); }
+new Motes($('#pgMotes'), (x, y, w, h) => {
+  const L = ST.lights.key; if (!L.on || L.z < -.1 || !pgView.g) return 0;
+  const [lx, ly] = pgView.toCanvas(L.x / KM, EYE_Y - L.h / KM), [fx, fy] = pgView.toCanvas(0, -.3);
+  return segBeam(x, y, lx, ly, fx, fy, w * .05, w * .16) * .7;
+}, COARSE ? 30 : 55);
+selectTab('key'); updTabDots(); pgChanged(false);
+
+/* =====================================================================
+   4. SETUP LIBRARY
+   ===================================================================== */
+function mk(o) {
+  const s = defaultState();
+  SLOTS.forEach(k => { s.lights[k].on = 0; if (o[k]) Object.assign(s.lights[k], { power: 0, feather: 0, kelvin: 5500, gel: 'none' }, o[k], { on: 1 }); });
+  if (o.refl) Object.assign(s.refl, o.refl); else s.refl.type = 'none';
+  ['bgDist', 'bgTone', 'turn'].forEach(k => { if (o[k] != null) s[k] = o[k]; });
+  return s;
+}
+const RECIPES = [
+  { id: 'rembrandt', th: 'เรมบรันต์คลาสสิก', en: 'Classic Rembrandt',
+    lead: 'ไฟดวงเดียวเฉียง 45–60° และสูงกว่าศีรษะ ได้สามเหลี่ยมแสงใต้ตาฝั่งเงา',
+    gear: ['แฟลชสตูดิโอ ×1', 'ซอฟต์บ็อกซ์ 60×90', 'ขาตั้งไฟ', 'ฉากเทา'],
+    steps: ['ให้แบบนั่งหันหน้าเข้ากล้อง ห่างฉากหลัง ~1.5 m', 'ตั้งซอฟต์บ็อกซ์ทางซ้ายกล้อง ทำมุม ~50° จากแนวกล้อง ห่างแบบ ~1.2 m', 'ยกไฟให้สูงกว่าระดับตา ~0.6 m แล้วก้มหน้าไฟลงหาใบหน้า', 'ขยับไฟทีละน้อยจนเงาจมูกแตะเงาแก้ม เหลือสามเหลี่ยมแสงใต้ตาฝั่งเงา', 'วัดแสงที่ใบหน้า แล้วตั้งรูรับแสงตามมิเตอร์'],
+    why: 'ไฟที่สูงและเฉียงมากพอทำให้เงาจมูกยาวลงไปเชื่อมกับเงาแก้ม เหลือแสงเล็ดลอดเป็นสามเหลี่ยม ความต่างสว่าง–มืดสร้างมิติแบบภาพเขียนของเรมบรันต์',
+    mistakes: ['สามเหลี่ยมใหญ่เกินจนกลายเป็นลูป — ขยับไฟไปด้านข้างอีกนิด', 'ไฟต่ำเกินจนเงาจมูกสั้นและไม่ลงแก้ม', 'ตาฝั่งเงาไม่มีแคตช์ไลต์ — ไฟอ้อมไปด้านหลังมากเกินไป'],
+    state: mk({ key: { x: -.95, z: .75, h: .65, mod: 'softbox' } }) },
+  { id: 'clamshell', th: 'แคลมเชลล์บิวตี้', en: 'Clamshell beauty',
+    lead: 'บิวตี้ดิชด้านหน้าสูง + รีเฟลกเตอร์เงินใต้คาง ผิวเนียน ตาสว่าง',
+    gear: ['บิวตี้ดิช 55 cm', 'รีเฟลกเตอร์สีเงิน', 'ขาตั้งบูม (Boom)', 'ไฟฉากหลัง'],
+    steps: ['วางบิวตี้ดิชตรงแนวจมูก เหนือกล้อง สูงกว่าตา ~0.5 m ห่าง ~1 m ก้มลง ~30°', 'วางรีเฟลกเตอร์ใต้คาง เอียงรับแสงแล้วสะท้อนขึ้นหน้า', 'ขยับรีเฟลกเตอร์เข้า–ออกจนเงาใต้ตาและใต้คางจางตามต้องการ', 'ถ่ายผ่านช่องระหว่างไฟบนกับรีเฟลกเตอร์'],
+    why: 'ไฟบนสร้างเงาผีเสื้อใต้จมูกเน้นโหนกแก้ม ส่วนรีเฟลกเตอร์ล่างเปิดเงาใต้ตาและคาง พร้อมเพิ่มแคตช์ไลต์ดวงที่สองด้านล่างของตา ผิวจึงดูเรียบและตาสดใส',
+    mistakes: ['ไฟบนสูงเกินจนเบ้าตาดำ', 'รีเฟลกเตอร์แรงเกินจนแสงล่างเด่นกว่าไฟหลัก (ดูน่ากลัว)', 'ไม่ก้มหน้าไฟ แสงหกไปโดนฉาก'],
+    state: mk({ key: { x: 0, z: 1, h: .55, mod: 'dish' }, bg: { x: 0, z: -.8, h: -.4, mod: 'bare', power: -.5 }, refl: { type: 'silver', x: 0, z: .45, h: -.45 } }) },
+  { id: 'lowkey', th: 'โลว์คีย์ดราม่า', en: 'Dramatic low-key',
+    lead: 'กริดลำแสงแคบบนหน้า + ริมไลต์ด้านหลัง บนฉากดำ คุมไม่ให้แสงหกลงฉาก',
+    gear: ['ซอฟต์บ็อกซ์ + กริด', 'สตริปบ็อกซ์ (ริม)', 'V-flat ดำ', 'ฉากดำ'],
+    steps: ['ให้แบบห่างฉาก ≥2 m เพื่อไม่ให้แสงตกถึงฉาก', 'วางกริดเฉียง ~60° สูงกว่าตาเล็กน้อย เล็งที่หน้า', 'ตั้งสตริปด้านหลังฝั่งตรงข้ามให้เลียขอบผมและไหล่', 'ตั้ง V-flat ดำฝั่งเงาเพื่อตัดแสงสะท้อน', 'ลดกำลังริมจนขอบเป็นเส้นบางๆ ไม่ขาวโพลน'],
+    why: 'กริดบังคับลำแสงให้แคบจึงส่องเฉพาะใบหน้า ส่วนระยะห่างจากฉากตามกฎกำลังสองผกผันทำให้ฉากมืดสนิท ริมไลต์วาดเส้นขอบแยกตัวแบบออกจากความมืด',
+    mistakes: ['แบบใกล้ฉากเกิน ฉากกลายเป็นเทา', 'ไม่มีริมไลต์ ผมดำกลืนไปกับฉาก', 'ยกเงาในโปรแกรมจนหม่น — โลว์คีย์ต้องให้ฮิสโตแกรมกองทางซ้าย'],
+    state: mk({ key: { x: -1, z: .6, h: .45, mod: 'grid' }, rim: { x: 1, z: -.85, h: .6, mod: 'strip', power: -.6 }, refl: { type: 'vblack', x: .9, z: .3, h: 0 }, bgTone: 'black', bgDist: 2.2 }) },
+  { id: 'highkey', th: 'ไฮคีย์สว่างใส', en: 'Bright high-key',
+    lead: 'ออคตาใหญ่ + ร่มเติม + ไฟยิงฉากขาวให้สว่างกว่าหน้า ~1–1.5 สต็อป',
+    gear: ['ออคตาบ็อกซ์ 120', 'ร่มทะลุ', 'ไฟฉากหลัง', 'ฉากขาว'],
+    steps: ['วางออคตาใกล้แนวกล้อง (~20°) สูงกว่าตาเล็กน้อย', 'ตั้งร่มทะลุใกล้กล้องฝั่งตรงข้าม กำลัง −1.3 EV', 'วางไฟฉากหลังหลังตัวแบบ ยิงเข้าฉากขาว', 'ให้ฉากสว่างกว่าหน้า +1 ถึง +1.5 สต็อป (มากกว่านี้จะเกิดแสงฟุ้งย้อนเข้าเลนส์)', 'ตรวจฮิสโตแกรม: ฉากชนขวา แต่ผิวต้องไม่ขาวทะลุ'],
+    why: 'แหล่งแสงใหญ่ใกล้แนวกล้องให้เงาน้อยและนุ่ม อัตราส่วนแสงต่ำ (~2:1) ส่วนไฟฉากทำให้พื้นหลังขาวบริสุทธิ์โดยไม่ต้องแต่งภาพ',
+    mistakes: ['ฉากสว่างเกินจนแสงฟุ้ง (Flare) กินขอบหน้า', 'ฉากขาวแต่ภาพออกเทา — ไฟฉากอ่อนไป', 'แบบยืนชิดฉาก แสงจากไฟฉากลามโดนตัวแบบ'],
+    state: mk({ key: { x: -.45, z: 1.3, h: .5, mod: 'octa' }, fill: { x: .35, z: 2, h: .05, mod: 'umbShoot', power: -1.3 }, bg: { x: 0, z: -.6, h: -.2, mod: 'bare', power: 1.2 }, bgTone: 'white' }) },
+  { id: 'onelight', th: 'ไฟดวงเดียวงบน้อย', en: 'One-light budget setup',
+    lead: 'แฟลชหนึ่งดวงในร่มสะท้อน + แผ่นโฟมขาวราคาถูกเป็นไฟเติม',
+    gear: ['สปีดไลต์ / แฟลช ×1', 'ร่มสะท้อน', 'แผ่นโฟมขาว', 'ขาตั้งไฟ'],
+    steps: ['ตั้งร่มเฉียง ~35° สูงกว่าตา ~0.6 m', 'วางแผ่นโฟมขาวฝั่งเงา ห่างหน้า ~0.8 m หันรับแสงจากร่ม', 'ขยับโฟมเข้าใกล้ถ้าเงายังเข้มไป', 'ดูเงาจมูก — ควรเป็นวงเล็กแบบลูป'],
+    why: 'ร่มเปลี่ยนแฟลชหัวเล็กให้เป็นแหล่งแสงใหญ่ ส่วนแผ่นโฟมนำแสงที่เลยตัวแบบกลับมาเป็นไฟเติมฟรี ได้อัตราส่วนราว 3:1 ที่ดูเป็นธรรมชาติ',
+    mistakes: ['วางแผ่นสะท้อนไกลเกินจนแทบไม่มีผล (แสงสะท้อนก็ลดตามกำลังสอง)', 'ร่มใกล้แนวกล้องเกินจนหน้าแบน', 'ใช้แผ่นเงินระยะใกล้จนเงาหายหมด'],
+    state: mk({ key: { x: -.8, z: 1.05, h: .6, mod: 'umbRefl' }, refl: { type: 'white', x: .75, z: .45, h: -.1 } }) },
+  { id: 'window', th: 'แสงหน้าต่าง + รีเฟลกเตอร์', en: 'Window light + reflector',
+    lead: 'หน้าต่างบานใหญ่คือซอฟต์บ็อกซ์ฟรี วางแบบเฉียงกับหน้าต่างแล้วเติมด้วยแผ่นขาว',
+    gear: ['หน้าต่างที่แดดไม่ส่องตรง', 'ผ้าม่านบาง (ทางเลือก)', 'แผ่นสะท้อนขาว'],
+    steps: ['ให้แบบอยู่ห่างหน้าต่าง ~1–1.5 m หันหน้าเฉียงเข้าหาหน้าต่าง', 'ยืนถ่ายเฉียงเล็กน้อยจากแนวหน้าต่าง', 'วางแผ่นขาวฝั่งตรงข้ามหน้าต่าง', 'ถ้าแดดส่องตรง ใช้ผ้าม่านบางเป็นสคริม'],
+    why: 'หน้าต่างมีขนาดปรากฏใหญ่มากเมื่อแบบอยู่ใกล้ แสงจึงนุ่ม และลดลงเร็วตามระยะ ได้การไล่แสงสวยตามธรรมชาติ แคตช์ไลต์เป็นรูปหน้าต่างพร้อมกรอบ',
+    mistakes: ['แบบอยู่ไกลหน้าต่างเกิน แสงแข็งขึ้นและมืดลงมาก', 'แบบไม่หันเข้าหาหน้าต่าง ตาไม่มีแคตช์ไลต์', 'ถ่ายตอนแดดส่องตรงเข้าหน้าต่าง ได้เงาแข็งเป็นลายกรอบ'],
+    state: mk({ key: { x: -1.2, z: .7, h: .3, mod: 'window', kelvin: 6200 }, refl: { type: 'white', x: .8, z: .35, h: 0 }, bgDist: 2 }) },
+  { id: 'rimlight', th: 'ริมไลต์ย้อนหลัง', en: 'Backlit rim',
+    lead: 'สตริปสองดวงด้านหลังซ้าย–ขวา ขอบใบหน้าเรืองแสงบนฉากดำ',
+    gear: ['สตริปบ็อกซ์ ×2', 'ออคตา (เติมอ่อน)', 'ฉากดำ', 'ฮูดเลนส์ / ธง (Flag)'],
+    steps: ['วางสตริปสองดวงหลังแบบ เฉียง ~130° ซ้าย–ขวา สูงระดับศีรษะ', 'หันสตริปให้เลียขอบแก้ม ไม่ยิงเข้าเลนส์', 'ใส่ไฟเติมด้านหน้ากำลังต่ำ −2 ถึง −3 EV เพื่อให้เห็นรายละเอียดหน้า', 'บังแสงเข้าเลนส์ด้วยฮูดหรือธง'],
+    why: 'แสงจากด้านหลังตกกระทบผิวในมุมเฉียงมากและสะท้อนเข้ากล้องเป็นเส้นสว่างตามขอบ ความมืดด้านหน้าทำให้เส้นขอบโดดเด่น',
+    mistakes: ['แสงย้อนเข้าเลนส์ ภาพจืด (Flare)', 'ไฟริมแรงเกินจนขอบขาวทะลุ', 'ไม่มีไฟเติม หน้าเป็นซิลูเอตต์โดยไม่ตั้งใจ'],
+    state: mk({ key: { x: -1, z: -.85, h: .4, mod: 'strip', power: -.4 }, rim: { x: 1, z: -.85, h: .4, mod: 'strip', power: -.4 }, fill: { x: 0, z: 1.6, h: .1, mod: 'octa', power: -2.2 }, bgTone: 'black', bgDist: 2.2 }) },
+  { id: 'corporate', th: 'ภาพโปรไฟล์องค์กร', en: 'Corporate headshot',
+    lead: 'ออคตาเฉียง 30° + ร่มเติม + ไฟผม + ไฟฉากเป็นวงไล่เฉด ดูสะอาด น่าเชื่อถือ',
+    gear: ['ออคตาบ็อกซ์ 120', 'ร่มทะลุ', 'กริด (ไฟผม)', 'ไฟฉากหลัง', 'ฉากเทา'],
+    steps: ['ให้แบบหันไหล่ ~10–15° แล้วหันหน้ากลับหากล้องเล็กน้อย', 'วางออคตาเฉียง ~30° ฝั่งเดียวกับทิศที่หน้าหันไป → Short lighting', 'ร่มเติมใกล้กล้อง −1.5 EV ให้อัตราส่วน ~3:1', 'กริดด้านหลังเหนือศีรษะเป็นไฟผม', 'ไฟฉากหลังเล็งกลางฉากให้เป็นวงไล่เฉด'],
+    why: 'แพทเทิร์นลูปแบบ Short ให้หน้าเรียว มีมิติแต่ไม่ดราม่า ไฟผมแยกผมเข้มออกจากฉาก และวงแสงบนฉากทำให้ภาพมีความลึก',
+    mistakes: ['ไฟเติมแรงเกินจนหน้าแบน', 'ลืมไฟผม ผมดำกลืนกับฉากเทาเข้ม', 'แว่นตาสะท้อนไฟ — ยกไฟสูงขึ้นหรือเฉียงออก'],
+    state: mk({ key: { x: -.65, z: 1.1, h: .5, mod: 'octa' }, fill: { x: .55, z: 1.6, h: .05, mod: 'umbShoot', power: -1.5 }, rim: { x: .6, z: -.7, h: 1, mod: 'grid', power: -.7 }, bg: { x: .1, z: -.8, h: -.3, mod: 'bare', power: .3 }, turn: -12 }) },
+  { id: 'split', th: 'สปลิตอารมณ์ขรึม', en: 'Moody split',
+    lead: 'ไฟดวงเดียวด้านข้าง 90° แบ่งหน้าครึ่ง + V-flat ดำตัดแสงฝั่งเงา',
+    gear: ['ซอฟต์บ็อกซ์ 60×90', 'V-flat ดำ', 'ฉากดำ'],
+    steps: ['วางซอฟต์บ็อกซ์ข้างแบบพอดี 90° ระดับหน้า', 'ตรวจว่าเส้นแบ่งแสงผ่านสันจมูกพอดี', 'ตั้ง V-flat ดำฝั่งเงาใกล้ๆ', 'ปิดแสงอื่นในห้องทั้งหมด'],
+    why: 'แสงจากด้านข้างตรงๆ ส่องได้แค่ครึ่งหน้าที่หันเข้าหาไฟ อีกครึ่งถูกศีรษะบังไว้ V-flat ดำดูดแสงสะท้อนจึงได้เงาดำสนิท',
+    mistakes: ['ไฟเฉียงมาด้านหน้าเกิน กลายเป็นเรมบรันต์', 'ห้องผนังขาวสะท้อนแสงเติมโดยไม่ตั้งใจ', 'แสงข้างขับพื้นผิวชัดที่สุด ระวังกับผิวที่มีปัญหา'],
+    state: mk({ key: { x: -1.25, z: .05, h: .2, mod: 'softbox' }, refl: { type: 'vblack', x: .9, z: .2, h: 0 }, bgTone: 'black', bgDist: 2 }) },
+  { id: 'gel', th: 'พอร์ตเทรตเจลสี', en: 'Colour-gel portrait',
+    lead: 'ไฟหลักขาวบนหน้า + สตริปเจลแดง/ไซแอนที่ขอบ + ไฟฉากเจลม่วง',
+    gear: ['บิวตี้ดิช', 'สตริปบ็อกซ์ ×2 + เจล', 'ไฟฉาก + กริด + เจล', 'ฉากเทา'],
+    steps: ['ตั้งไฟหลักขาวด้านหน้าเฉียงเล็กน้อยให้สีผิวเป็นธรรมชาติ', 'ใส่เจลแดง–ชมพูที่สตริปขวาหลัง และเจลไซแอนที่สตริปซ้ายหลัง', 'ไฟฉากใส่เจลม่วงพร้อมกริดให้เป็นวงสี', 'เจลกินแสง ~1–2 สต็อป ให้เพิ่มกำลังไฟที่ใส่เจล', 'ตั้ง WB กลางวัน (5500K) ให้สีเจลตรง'],
+    why: 'สีจากเจลอิ่มตัวที่สุดบนพื้นผิวที่ไม่ถูกไฟขาวทับ จึงวางเจลไว้ที่ขอบและฉาก ส่วนหน้าได้ไฟขาวให้สีผิวถูกต้อง สีคู่ตรงข้ามแดง/ไซแอนให้คอนทราสต์สีสูง',
+    mistakes: ['ไฟขาวหกลงฉาก สีเจลซีดจาง', 'ใส่เจลบนไฟหลักจนสีผิวผิดธรรมชาติ', 'ลืมชดเชยกำลังไฟที่เสียไปกับเจล'],
+    state: mk({ key: { x: -.35, z: 1.15, h: .5, mod: 'dish', power: -.3 }, fill: { x: -1, z: -.6, h: .3, mod: 'strip', power: .8, gel: 'cyan' }, rim: { x: 1, z: -.6, h: .3, mod: 'strip', power: .8, gel: 'red' }, bg: { x: 0, z: -.7, h: -.3, mod: 'grid', power: 1.8, gel: 'violet' }, bgDist: 1.6 }) },
+  { id: 'productwhite', th: 'สินค้าบนพื้นขาว', en: 'Product on white', product: { mode: 'bright', grad: 0, strips: 0, top: 1 },
+    lead: 'ซอฟต์บ็อกซ์เหนือสินค้า + ไฟยิงฉากขาว + แผ่นสะท้อน (ใน Playground ใช้หุ่นแทนสินค้า)',
+    gear: ['ซอฟต์บ็อกซ์ (บน)', 'ไฟฉากหลัง', 'ฉากขาวต่อเนื่อง (Sweep)', 'แผ่นสะท้อนขาว'],
+    steps: ['วางสินค้าบนฉากขาวต่อเนื่องห่างผนัง', 'ตั้งซอฟต์บ็อกซ์เหนือ–เฉียงหน้าสินค้า ให้ด้านบนสว่างที่สุด', 'ยิงไฟฉากหลังให้ขาวสนิท (+1.5 ถึง +2 EV เทียบสินค้า)', 'ใช้แผ่นขาวเติมฝั่งเงา', 'ตรวจฮิสโตแกรม: ฉากชนขวา แต่สินค้าไม่ขาวทะลุ'],
+    why: 'ไฟบนให้เงาสั้นใต้สินค้าที่ยังคงความเป็นสามมิติ ฉากที่สว่างกว่าสินค้าจะกลายเป็นขาวบริสุทธิ์ ตัดพื้นหลังง่ายสำหรับงานอีคอมเมิร์ซ',
+    mistakes: ['ใช้ไฟเดียวยิงทั้งสินค้าและฉาก ได้ฉากเทา', 'ฉากสว่างเกินจนขอบสินค้าถูกกิน', 'ลบเงาหมดจนสินค้าดูลอย'],
+    state: mk({ key: { x: -.5, z: .6, h: 1.2, mod: 'softbox' }, bg: { x: 0, z: -.6, h: -.3, mod: 'bare', power: 1.6 }, refl: { type: 'white', x: .7, z: .4, h: 0 }, bgTone: 'white' }) },
+  { id: 'glass', th: 'ขวดแก้ว', en: 'Glass bottle', product: { mode: 'dark', grad: 0, strips: 1, top: 0 },
+    lead: 'Dark-field + สตริปขอบ — แก้วกลายเป็นเส้นขอบสว่างบนพื้นดำ',
+    gear: ['สตริปบ็อกซ์ ×2', 'แผ่นดิฟฟิวส์ + ไฟหลังขวด', 'การ์ดดำ (Flag)', 'แผ่นอะคริลิกดำ'],
+    steps: ['วางขวดห่างฉาก ใส่ไฟยิงผ่านแผ่นขาวด้านหลัง', 'Dark-field: บังกลางแผ่นขาวด้วยการ์ดดำที่ใหญ่กว่าขวดเล็กน้อย เหลือแสงรอบขอบ', 'Bright-field: ไม่บัง — ขอบแก้วจะเป็นเส้นดำบนพื้นขาว', 'วางสตริปซ้าย–ขวาหลังขวดเล็กน้อยให้ไฮไลต์ยาวตามลำขวด', 'ดูไลฟ์วิวแล้วเลื่อนสตริปทีละเซนติเมตร'],
+    why: 'แก้วใสแทบไม่มีเนื้อให้แสงตกกระทบ สิ่งที่เห็นคือภาพสะท้อนและการหักเหของสิ่งรอบตัว ขอบแก้วหักเหแสงจากด้านข้างที่อยู่นอกแนวสายตา จึงแสดงเป็นขาวหรือดำตามที่เราจัดไว้',
+    mistakes: ['ส่องไฟตรงเข้าขวด ได้จุดสะท้อนแข็งแต่ไม่เห็นรูปทรง', 'ฝุ่นและลายนิ้วมือ — สวมถุงมือแล้วเช็ดก่อนถ่าย', 'สตริปอยู่หน้าขวดเกิน ไฮไลต์กินกลางขวด'],
+    state: mk({ key: { x: -.85, z: -.35, h: .2, mod: 'strip' }, rim: { x: .85, z: -.35, h: .2, mod: 'strip' }, bg: { x: 0, z: -.6, h: -.3, mod: 'bare', power: 1 }, bgTone: 'white' }) }
+];
+const CARD_BOX = { x0: -2.6, x1: 2.6, z0: -2.65, z1: 2.75 };
+function drawMiniPlan(c, st) { const [W, H, dp] = sizeCanvas(c); if (W < 4) return; drawPlan(c.getContext('2d'), W, H, st, { box: CARD_BOX, mini: true, dp }); }
+(() => {
+  const wrap = $('#recipes');
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { drawMiniPlan(e.target, e.target.__st); io.unobserve(e.target); } }), { rootMargin: '200px' });
+  RECIPES.forEach(r => {
+    const p = detectPattern(r.state, toScene(r.state)), P = PAT[p.k];
+    const a = document.createElement('article'); a.className = 'recipe card reveal';
+    a.innerHTML = `<canvas role="img" aria-label="แผนผังการจัดไฟ ${r.th}"></canvas>
+      <h3>${r.th}</h3><span class="en">${r.en} · ${r.product ? 'Product' : P.en}${p.bs ? ' · ' + (p.bs === 'broad' ? 'Broad' : 'Short') : ''}</span>
+      <p class="lead">${r.lead}</p><div class="gear">${r.gear.map(g => `<span>${g}</span>`).join('')}</div>
+      <details><summary>ขั้นตอนการวางไฟ</summary><ol>${r.steps.map(s => `<li>${s}</li>`).join('')}</ol></details>
+      <details><summary>ทำไมถึงได้ผล</summary><p style="color:var(--ink2)">${r.why}</p></details>
+      <details><summary>ข้อผิดพลาดที่มือใหม่เจอบ่อย</summary><ul>${r.mistakes.map(s => `<li>${s}</li>`).join('')}</ul></details>
+      <div class="actions"><button class="btn small" type="button" data-load>โหลดเข้า Playground →</button>${r.product ? '<button class="btn ghost small" type="button" data-prod>เปิดใน Product Lab</button>' : ''}</div>`;
+    const c = $('canvas', a); c.__st = r.state; io.observe(c);
+    new ResizeObserver(() => { if (c.width > 4) drawMiniPlan(c, r.state); }).observe(c);
+    $('[data-load]', a).onclick = () => { $('#playground').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); setTimeout(() => loadState(r.state, true), RM ? 0 : 450); };
+    if (r.product) $('[data-prod]', a).onclick = () => { setProd(r.product); $('#product').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); };
+    wrap.appendChild(a);
+  });
+})();
+
+/* =====================================================================
+   5. NATURAL LIGHT
+   ===================================================================== */
+const NAT = { mode: 'sun' };
+const todS = $('#tod');
+function sunAt(t) {
+  const u = (t - 6) / 12;
+  const el = u < 0 ? (t - 6) * 12 : u > 1 ? -(t - 18) * 12 : 72 * Math.sin(Math.PI * u);
+  const az = clamp(lerp(-100, 100, u), -112, 112);
+  const dir = nrm([Math.sin(az * D2R) * Math.cos(el * D2R), Math.sin(el * D2R), .5 * Math.cos(el * D2R) * Math.cos(az * D2R * .5) + .08]);
+  const K = el <= 0 ? 9500 : el < 6 ? lerp(2600, 3400, el / 6) : el < 15 ? lerp(3400, 4600, (el - 6) / 9) : el < 35 ? lerp(4600, 5500, (el - 15) / 20) : 5600;
+  const sunI = el > 0 ? 2.6 * (.25 + .75 * smooth(0, 35, el)) * smooth(-.5, 3, el) : 0;
+  const skyI = .02 + .3 * smooth(-10, 20, el);
+  const skyK = el < 0 ? 14000 : el < 10 ? 10000 : 8500;
+  return { u, el, az, dir, K, sunI, skyI, skyK, day: smooth(-8, 20, el) };
+}
+function natScene() {
+  const s = sunAt(+todS.value), skyC = lightColor(s.skyK);
+  const sc = { lights: [], wall: { dist: 6, alb: [.1, .12, .08] }, amb: .004, bounce: .05, wb: 5500, sky: { I: s.skyI, c: skyC } };
+  if (NAT.mode === 'sun') {
+    if (s.sunI > 0) sc.lights.push({ dirv: s.dir, m: { w: .01, h: .01, shape: 'circle', p: 0, eff: 1, n: 1 }, gain: s.sunI, kelvin: s.K, tanA: .0047 });
+    sc.bgEmit = skyC.map((v, i) => v * s.skyI * .9 + [.06, .07, .03][i] * s.sunI * .25);
+    sc.exposure = .55 / (s.sunI * .5 + s.skyI * .9 + .006);
+  } else if (NAT.mode === 'overcast') {
+    sc.lights.push({ x: 0, y: 3.2, z: 1.3, aim: [0, 0, 0], m: { w: 5, h: 5, shape: 'rect', p: .5, eff: 1, n: 9 }, gain: 9 * s.day + .02, kelvin: 6800 });
+    sc.sky = { I: .22 * s.day + .01, c: lightColor(7500) }; sc.bgEmit = [.35 * s.day, .37 * s.day, .4 * s.day];
+    sc.exposure = .5 / (.75 * s.day + .004);
+  } else {
+    sc.lights.push({ x: -1.6, y: 1.4, z: 2.4, aim: [0, 0, 0], m: { w: 3.5, h: 3, shape: 'rect', p: .6, eff: 1, n: 9 }, gain: 5 * s.day + .02, kelvin: 8800 });
+    sc.sky = { I: .12 * s.day + .01, c: lightColor(11000) }; sc.wall = { dist: 1.6, alb: [.16, .16, .17] };
+    sc.exposure = .5 / (.55 * s.day + .004);
+  }
+  return sc;
+}
+const natView = new BustView($('#natRender'), { view: VIEWS.full, ppu: 90, draftScale: .5, getScene: natScene });
+const hexA = h => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
+const mixH = (a, b, t) => { const A = hexA(a), B = hexA(b); return `rgb(${A.map((v, i) => Math.round(lerp(v, B[i], clamp(t, 0, 1)))).join(',')})`; };
+function skyCols(el) {
+  const k = [[-10, '#060a16', '#141d38'], [-3, '#0f1a3d', '#4a5a96'], [2, '#2d4677', '#ff9a4a'], [8, '#3a64a8', '#ffc98a'], [25, '#3470c4', '#b9d6f3'], [90, '#2a66bf', '#a9ccf0']];
+  for (let i = 0; i < k.length - 1; i++) if (el <= k[i + 1][0]) { const t = (el - k[i][0]) / (k[i + 1][0] - k[i][0]); return [mixH(k[i][1], k[i + 1][1], t), mixH(k[i][2], k[i + 1][2], t)]; }
+  return [k[0][1], k[0][2]];
+}
+function drawSky() {
+  const c = $('#skyCanvas'), [W, H, dp] = sizeCanvas(c), x = c.getContext('2d'), s = sunAt(+todS.value), mode = NAT.mode;
+  const hz = H * .68;
+  let [top, bot] = skyCols(s.el);
+  if (mode === 'overcast') { top = mixH('#1c1f24', '#7b8189', s.day); bot = mixH('#2a2d33', '#c3c7cc', s.day); }
+  const g = x.createLinearGradient(0, 0, 0, hz); g.addColorStop(0, top); g.addColorStop(1, bot); x.fillStyle = g; x.fillRect(0, 0, W, hz);
+  // sun path + sun
+  const sx = u => lerp(.06, .94, u) * W, sy = el => hz - (el / 72) * H * .58;
+  x.strokeStyle = 'rgba(232,230,225,.25)'; x.setLineDash([3 * dp, 5 * dp]); x.lineWidth = dp; x.beginPath();
+  for (let t = 5.25; t <= 19.25; t += .1) { const q = sunAt(t); if (q.el < -2) continue; const X = sx(clamp(q.u, 0, 1)), Y = sy(q.el); x.lineTo(X, Y); } x.stroke(); x.setLineDash([]);
+  const X = sx(clamp(s.u, -.05, 1.05)), Y = sy(s.el);
+  if (s.el > -3) {
+    const r = 11 * dp, gl = x.createRadialGradient(X, Y, 0, X, Y, r * 8), col = kelvinCSS(s.K);
+    gl.addColorStop(0, mode === 'overcast' ? 'rgba(255,255,255,.12)' : col.replace('rgb', 'rgba').replace(')', ',.55)')); gl.addColorStop(1, 'rgba(255,255,255,0)');
+    x.fillStyle = gl; x.beginPath(); x.arc(X, Y, r * 8, 0, 6.283); x.fill();
+    if (mode !== 'overcast') { x.fillStyle = col; x.beginPath(); x.arc(X, Y, r, 0, 6.283); x.fill(); }
+  }
+  // ground
+  const gd = x.createLinearGradient(0, hz, 0, H); const lit = mode === 'sun' ? s.day : s.day * .7;
+  gd.addColorStop(0, mixH('#0b0d0a', s.el < 8 && mode === 'sun' ? '#6a5a3a' : '#556448', lit)); gd.addColorStop(1, mixH('#050605', '#2c3526', lit));
+  x.fillStyle = gd; x.fillRect(0, hz, W, H - hz);
+  x.strokeStyle = 'rgba(232,230,225,.3)'; x.beginPath(); x.moveTo(0, hz); x.lineTo(W, hz); x.stroke();
+  // building for open shade
+  const px = W * .5, py = H * .9, fh = H * .26;
+  if (mode === 'shade') {
+    x.fillStyle = mixH('#08090b', '#3b3f47', s.day); x.fillRect(W * .56, hz - H * .5, W * .44, H * .5 + 1);
+    x.fillStyle = 'rgba(0,0,0,.35)'; x.beginPath(); x.moveTo(W * .56, hz); x.lineTo(W, hz); x.lineTo(W, H); x.lineTo(W * .3, H); x.closePath(); x.fill();
+  }
+  // person's shadow
+  if (mode === 'sun' && s.sunI > 0) {
+    const L = Math.min(fh / Math.tan(Math.max(s.el, 3) * D2R), W * .9), hx = -s.dir[0], hzz = -s.dir[2], hl = Math.hypot(hx, hzz) || 1;
+    const vx = hx / hl * L, vy = hzz / hl * L * .32;
+    x.fillStyle = `rgba(0,0,0,${(.25 + .4 * smooth(0, 20, s.el)).toFixed(2)})`; x.beginPath();
+    x.moveTo(px - 10 * dp, py); x.lineTo(px + 10 * dp, py); x.lineTo(px + vx + 14 * dp, py + vy); x.lineTo(px + vx - 14 * dp, py + vy); x.closePath(); x.fill();
+  } else { x.fillStyle = 'rgba(0,0,0,.35)'; x.beginPath(); x.ellipse(px, py, 26 * dp, 6 * dp, 0, 0, 6.283); x.fill(); }
+  // person
+  const body = mixH('#050506', '#3a3d44', lit * .8);
+  x.fillStyle = body; x.beginPath(); x.roundRect ? x.roundRect(px - 13 * dp, py - fh * .78, 26 * dp, fh * .78, 8 * dp) : x.rect(px - 13 * dp, py - fh * .78, 26 * dp, fh * .78); x.fill();
+  x.beginPath(); x.arc(px, py - fh * .88, 11 * dp, 0, 6.283); x.fill();
+  if (mode === 'sun' && s.sunI > 0) { x.strokeStyle = kelvinCSS(s.K); x.lineWidth = 2.5 * dp; const sd = s.dir[0] < 0 ? -1 : 1; x.beginPath(); x.arc(px, py - fh * .88, 11 * dp, sd < 0 ? Math.PI * .6 : -Math.PI * .4, sd < 0 ? Math.PI * 1.4 : Math.PI * .4); x.stroke(); x.beginPath(); x.moveTo(px + sd * 13 * dp, py - fh * .7); x.lineTo(px + sd * 13 * dp, py - 4 * dp); x.stroke(); }
+  x.fillStyle = 'rgba(232,230,225,.8)'; x.font = `${10 * dp}px ${MONO()}`;
+  x.fillText(`☀ EL ${nstr(s.el, 0)}°`, 10 * dp, 16 * dp);
+}
+const TM = [[5.6, 'บลูอาวร์'], [6.6, 'โกลเดนอาวร์'], [12, 'เที่ยง'], [17.5, 'โกลเดนอาวร์'], [18.6, 'บลูอาวร์']];
+$('#tmarks').innerHTML = TM.map(([t, n], i) => `<span style="left:${(t - 5.25) / 14 * 100}%;top:${i % 2 ? 14 : 0}px">│ ${n}</span>`).join('');
+function updNat() {
+  const t = +todS.value, s = sunAt(t), hh = Math.floor(t), mm = Math.round((t - hh) * 60);
+  $('#todO').textContent = `${String(hh).padStart(2, '0')}:${String(mm % 60).padStart(2, '0')}`;
+  let name, why;
+  if (NAT.mode === 'overcast') { name = 'ครึ้มฟ้า — ซอฟต์บ็อกซ์ยักษ์'; why = 'เมฆทั้งผืนทำหน้าที่เป็นแผ่นกระจายแสงขนาดมหึมา แสงนุ่มมาก เงาแทบไม่มี สีอมฟ้าเล็กน้อย (~6500–7500K) เหมาะกับพอร์ตเทรตผิวเรียบ แต่ภาพอาจแบน — ใช้แผ่นดำ (Negative fill) ข้างหนึ่งเพื่อสร้างมิติ'; }
+  else if (NAT.mode === 'shade') { name = 'ร่มเงา (Open shade)'; why = 'ตัวแบบอยู่ในเงาตึกแต่หันหน้าออกหาท้องฟ้าที่เปิดโล่ง แสงมาจากฟ้าเป็นแผ่นใหญ่ด้านหน้า–ข้าง จึงนุ่มและมีทิศทาง แต่อมฟ้า (8000K+) ต้องแก้ WB เป็น Shade'; }
+  else if (s.el <= 0) { name = 'บลูอาวร์ (Blue hour)'; why = 'ดวงอาทิตย์อยู่ใต้ขอบฟ้า เหลือแต่แสงจากท้องฟ้าสีฟ้าเข้ม นุ่มมากแต่มืด ต้องใช้ ISO สูงหรือขาตั้ง นิยมผสมกับไฟส้มจากเมืองหรือแฟลชใส่เจล CTO'; }
+  else if (s.el < 8) { name = 'โกลเดนอาวร์ (Golden hour)'; why = 'ดวงอาทิตย์ต่ำ แสงเดินทางผ่านบรรยากาศหนา สีฟ้าถูกกระเจิงออก เหลือโทนอุ่น (~3000–3500K) มาจากด้านข้างในมุมต่ำ เงายาว สร้างมิติและริมไลต์สวย แสงยังแข็งเพราะดวงอาทิตย์ยังเป็นจุดเล็ก'; }
+  else if (s.el < 45) { name = 'แดดเช้า / บ่ายคล้อย'; why = 'แสงเฉียงยังให้มิติดี แต่เริ่มแข็งและจ้า ลองหันแบบให้แดดเป็นริมไลต์จากด้านหลัง แล้วใช้รีเฟลกเตอร์เติมหน้า'; }
+  else { name = 'แดดเที่ยง (Harsh noon)'; why = 'แสงจากเกือบตรงศีรษะ แข็งมากเพราะดวงอาทิตย์มีขนาดปรากฏเพียง ~0.5° เบ้าตาดำ เงาใต้จมูกและคางชัด เงาสั้น แก้โดยหาร่มเงา กางสคริมเหนือหัว หรือใช้แฟลชเติม (Fill flash)'; }
+  $('#natName').textContent = name; $('#natWhy').textContent = why;
+  const shadow = NAT.mode === 'sun' && s.el > 1 ? `${(1 / Math.tan(s.el * D2R)).toFixed(1)}× ความสูง` : 'แทบไม่มี';
+  const K = NAT.mode === 'overcast' ? 6800 : NAT.mode === 'shade' ? 8800 : s.el > 0 ? Math.round(s.K / 100) * 100 : s.skyK;
+  $('#natRead').textContent = `ดวงอาทิตย์สูง ${nstr(s.el, 0)}° · เงายาว ${shadow} · ≈${K}K · WB กล้อง 5500K`;
+  drawSky(); natView.invalidate();
+}
+todS.addEventListener('input', updNat);
+$$('#skyMode button').forEach(b => b.onclick = () => { NAT.mode = b.dataset.m; $$('#skyMode button').forEach(x => x.setAttribute('aria-pressed', x === b)); updNat(); natView.invalidate(false); });
+new ResizeObserver(drawSky).observe($('#skyCanvas'));
+
+// ---- window room
+const winS = $('#winDist'), winR = $('#winRefl');
+function winScene() {
+  const d = +winS.value, lights = [{ slot: 'key', x: -d, y: .25, z: .35, aim: [0, 0, 0], mod: 'window', power: 0, gain: 1.6, kelvin: 6000 }];
+  const rl = reflectorLight({ refl: { type: winR.checked ? 'white' : 'none', x: .7, z: .2, h: 0 } }, lights); if (rl) lights.push(rl);
+  return { lights, wall: { dist: 1.2, alb: [.36, .34, .31] }, amb: .02, bounce: .12, exposure: .95, meterE: meterAt(lights) };
+}
+const winView = new BustView($('#winRender'), { view: VIEWS.full, ppu: 90, draftScale: .5, getScene: winScene });
+const WBOX = { x0: -.3, x1: 5, z0: -.2, z1: 5 };
+function drawWin() {
+  const c = $('#winPlan'), [W, H, dp] = sizeCanvas(c), x = c.getContext('2d'), xf = planXf(W, H, WBOX), d = +winS.value, s = xf.s;
+  x.clearRect(0, 0, W, H);
+  for (let v = 0; v <= 5; v += .5) { x.strokeStyle = `rgba(207,227,255,${v % 1 ? .04 : .09})`; x.beginPath(); x.moveTo(xf.X(v), 0); x.lineTo(xf.X(v), H); x.moveTo(0, xf.Z(v)); x.lineTo(W, xf.Z(v)); x.stroke(); }
+  x.strokeStyle = '#e8e6e1'; x.lineWidth = 2 * dp; x.strokeRect(xf.X(0), xf.Z(0), 4.8 * s, 4.8 * s);
+  // window
+  const wz0 = xf.Z(1.4), wz1 = xf.Z(2.6);
+  const g = x.createLinearGradient(xf.X(0), 0, xf.X(d + .6), 0); g.addColorStop(0, 'rgba(207,227,255,.28)'); g.addColorStop(1, 'rgba(207,227,255,0)');
+  x.fillStyle = g; x.beginPath(); x.moveTo(xf.X(0), wz0); x.lineTo(xf.X(d + .6), wz0 - (d + .6) * s * .5); x.lineTo(xf.X(d + .6), wz1 + (d + .6) * s * .7); x.lineTo(xf.X(0), wz1); x.fill();
+  x.strokeStyle = '#cfe3ff'; x.lineWidth = 5 * dp; x.beginPath(); x.moveTo(xf.X(0), wz0); x.lineTo(xf.X(0), wz1); x.stroke();
+  x.font = `${9 * dp}px ${MONO()}`; x.fillStyle = '#cfe3ff'; x.save(); x.translate(xf.X(0) + 12 * dp, (wz0 + wz1) / 2 + 22 * dp); x.rotate(-Math.PI / 2); x.fillText('หน้าต่าง 1.2 m', 0, 0); x.restore();
+  // subject, reflector, camera
+  const sx = xf.X(d), sz = xf.Z(1.65);
+  x.lineWidth = dp; x.strokeStyle = 'rgba(255,179,92,.6)'; x.setLineDash([3 * dp, 3 * dp]); x.beginPath(); x.moveTo(xf.X(0), sz); x.lineTo(sx, sz); x.stroke(); x.setLineDash([]);
+  x.fillStyle = '#ffb35c'; x.fillText(`${d.toFixed(2)} m`, (xf.X(0) + sx) / 2 - 14 * dp, sz - 8 * dp);
+  x.fillStyle = '#2a2c30'; x.strokeStyle = '#e8e6e1'; x.beginPath(); x.ellipse(sx, sz, .22 * s, .1 * s, 0, 0, 6.283); x.fill(); x.stroke(); x.beginPath(); x.arc(sx, sz, .1 * s, 0, 6.283); x.fill(); x.stroke();
+  x.beginPath(); x.arc(sx, sz, (COARSE ? 26 : 16) * dp, 0, 6.283); x.strokeStyle = 'rgba(255,179,92,.7)'; x.setLineDash([2 * dp, 3 * dp]); x.stroke(); x.setLineDash([]);
+  if (winR.checked) { x.fillStyle = '#f2f0ea'; x.beginPath(); x.ellipse(xf.X(d + .7), xf.Z(1.45), 4 * dp, .4 * s, 0, 0, 6.283); x.fill(); }
+  x.fillStyle = '#1a1c20'; x.strokeStyle = '#e8e6e1'; x.fillRect(sx - .12 * s, xf.Z(4.1), .24 * s, .15 * s); x.strokeRect(sx - .12 * s, xf.Z(4.1), .24 * s, .15 * s);
+  x.fillStyle = 'rgba(232,230,225,.7)'; x.fillText('กล้อง', sx + .2 * s, xf.Z(4.18));
+  WIN.xf = xf;
+}
+const WIN = {};
+function updWin() {
+  const d = +winS.value; $('#winDistO').textContent = d.toFixed(2) + ' m';
+  const sc = winScene(), E = lightE(sc.lights[0], [0, 0, .05]).E, E1 = lightE({ ...sc.lights[0], x: -1, z: .35 }, [0, 0, .05]).E;
+  const app = 2 * Math.atan(.65 / Math.hypot(d, .35)) * R2D, r = ratioOf({ turn: 0 }, sc);
+  $('#winRead').innerHTML = `<span>แสงที่ใบหน้า (เทียบ 1 m)</span><b style="color:var(--amber)">${sgnStr(Math.log2(E / E1))} EV</b><span>ขนาดปรากฏของหน้าต่าง</span><b style="color:var(--amber)">${app.toFixed(0)}°</b><span>อัตราส่วนแสง</span><b style="color:var(--amber)">${r < 1.15 ? '1:1' : (r < 3 ? r.toFixed(1) : Math.round(r)) + ':1'}</b>`;
+  $('#winWhy').textContent = d < 1.1 ? 'ใกล้หน้าต่าง: แสงนุ่มมากเพราะหน้าต่างดูใหญ่ แต่แสงตกลงเร็ว ฝั่งไกลหน้าต่างมืดกว่ามาก ได้ภาพคอนทราสต์สูงแบบภาพเขียน'
+    : d < 2.2 ? 'ระยะกำลังดี: ยังนุ่ม และการไล่แสงจากฝั่งสว่างไปฝั่งเงาดูเป็นธรรมชาติ เติมด้วยแผ่นขาวถ้าอยากลดอัตราส่วน'
+    : 'ไกลหน้าต่าง: หน้าต่างดูเล็กลง แสงแข็งขึ้นและมืดลงหลายสต็อป ขณะที่แสงสะท้อนในห้องเริ่มมีสัดส่วนมากขึ้น ภาพจึงแบนและหม่น';
+  drawWin(); winView.invalidate();
+}
+winS.addEventListener('input', updWin); winR.addEventListener('change', () => { updWin(); winView.invalidate(false); });
+(() => {
+  const c = $('#winPlan'); let drag = false;
+  const set = e => { const r = c.getBoundingClientRect(), d = DPR(); if (!WIN.xf) return; winS.value = clamp(WIN.xf.ix((e.clientX - r.left) * d), .5, 4); updWin(); };
+  c.addEventListener('pointerdown', e => { drag = true; c.setPointerCapture(e.pointerId); set(e); });
+  c.addEventListener('pointermove', e => drag && set(e)); c.addEventListener('pointerup', () => drag = false);
+  c.addEventListener('keydown', e => { if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { e.preventDefault(); winS.value = clamp(+winS.value + (e.key === 'ArrowRight' ? .1 : -.1), .5, 4); updWin(); } });
+  new ResizeObserver(drawWin).observe(c);
+})();
+updNat(); updWin();
+
+/* =====================================================================
+   6. PRODUCT & TABLETOP
+   ===================================================================== */
+const PROD = { mode: 'bright', grad: 0, strips: 1, top: 0 };
+function setProd(p) {
+  Object.assign(PROD, p);
+  $$('#prodMode button').forEach(b => b.setAttribute('aria-pressed', b.dataset.m === PROD.mode));
+  $('#prodGrad').checked = !!PROD.grad; $('#prodStrips').checked = !!PROD.strips; $('#prodTop').checked = !!PROD.top; drawProd();
+}
+$$('#prodMode button').forEach(b => b.onclick = () => setProd({ mode: b.dataset.m }));
+$('#prodGrad').onchange = e => setProd({ grad: e.target.checked }); $('#prodStrips').onchange = e => setProd({ strips: e.target.checked }); $('#prodTop').onchange = e => setProd({ top: e.target.checked });
+function bottlePath(x, cx, by, s) {
+  const P = [[.13, 0], [.13, .5]], hw = .13;
+  x.beginPath(); x.moveTo(cx - hw * s + .02 * s, by);
+  x.quadraticCurveTo(cx - hw * s, by, cx - hw * s, by - .02 * s); x.lineTo(cx - hw * s, by - .5 * s);
+  x.bezierCurveTo(cx - hw * s, by - .62 * s, cx - .042 * s, by - .6 * s, cx - .042 * s, by - .72 * s);
+  x.lineTo(cx - .042 * s, by - .9 * s); x.lineTo(cx - .05 * s, by - .9 * s); x.lineTo(cx - .05 * s, by - .95 * s);
+  x.lineTo(cx + .05 * s, by - .95 * s); x.lineTo(cx + .05 * s, by - .9 * s); x.lineTo(cx + .042 * s, by - .9 * s); x.lineTo(cx + .042 * s, by - .72 * s);
+  x.bezierCurveTo(cx + .042 * s, by - .6 * s, cx + hw * s, by - .62 * s, cx + hw * s, by - .5 * s);
+  x.lineTo(cx + hw * s, by - .02 * s); x.quadraticCurveTo(cx + hw * s, by, cx + hw * s - .02 * s, by); x.closePath(); void P;
+}
+function drawProducts(x, W, H, tableY, bgAt) {
+  const dark = PROD.mode === 'dark', s = H * .66, cx = W * .38;
+  // glass bottle
+  x.save(); bottlePath(x, cx, tableY, s); x.clip();
+  const ig = x.createLinearGradient(cx - .13 * s, 0, cx + .13 * s, 0);
+  if (dark) { ig.addColorStop(0, '#0a0c0b'); ig.addColorStop(.5, '#030404'); ig.addColorStop(1, '#0a0c0b'); }
+  else { const b = bgAt(tableY - .4 * s); ig.addColorStop(0, b); ig.addColorStop(.5, b); ig.addColorStop(1, b); }
+  x.fillStyle = ig; x.fillRect(0, 0, W, H);
+  if (!dark) { x.fillStyle = 'rgba(40,70,55,.10)'; x.fillRect(0, 0, W, H); }
+  bottlePath(x, cx, tableY, s);
+  x.lineJoin = 'round';
+  if (dark) { x.strokeStyle = 'rgba(255,255,255,.14)'; x.lineWidth = .07 * s; x.stroke(); x.strokeStyle = 'rgba(255,255,255,.45)'; x.lineWidth = .03 * s; x.stroke(); x.strokeStyle = 'rgba(255,255,255,.95)'; x.lineWidth = .01 * s; x.stroke(); }
+  else { x.strokeStyle = 'rgba(0,0,0,.18)'; x.lineWidth = .07 * s; x.stroke(); x.strokeStyle = 'rgba(0,0,0,.55)'; x.lineWidth = .03 * s; x.stroke(); x.strokeStyle = 'rgba(0,0,0,.9)'; x.lineWidth = .012 * s; x.stroke(); }
+  // base
+  x.fillStyle = dark ? 'rgba(255,255,255,.25)' : 'rgba(0,0,0,.35)'; x.beginPath(); x.ellipse(cx, tableY - .012 * s, .12 * s, .018 * s, 0, 0, 6.283); x.fill();
+  if (PROD.strips) {
+    const band = (bx, y0, y1, w, a) => { const g = x.createLinearGradient(bx - w, 0, bx + w, 0); g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(.5, `rgba(255,255,255,${a})`); g.addColorStop(1, 'rgba(255,255,255,0)'); x.fillStyle = g; x.fillRect(bx - w, y0, w * 2, y1 - y0); };
+    const a = dark ? .9 : .55;
+    [-1, 1].forEach(sd => { band(cx + sd * .088 * s, tableY - .5 * s, tableY - .04 * s, .018 * s, a); band(cx + sd * .026 * s, tableY - .88 * s, tableY - .7 * s, .007 * s, a * .9); });
+  }
+  if (PROD.top) { const g = x.createLinearGradient(0, tableY - .62 * s, 0, tableY - .5 * s); g.addColorStop(0, 'rgba(255,255,255,.55)'); g.addColorStop(1, 'rgba(255,255,255,0)'); x.fillStyle = g; x.fillRect(cx - .13 * s, tableY - .62 * s, .26 * s, .12 * s); }
+  x.restore();
+  // matte cube
+  const a = H * .2, qx = W * .7, dx = a * .5, dy = a * .28, amb = dark ? .035 : .13;
+  const lum = { top: amb + (PROD.top ? .85 : 0) + (PROD.strips ? .12 : 0) + (dark ? 0 : .06), l: amb + (PROD.strips ? .5 : 0) + (PROD.top ? .22 : 0), r: amb + (PROD.strips ? .42 : 0) + (PROD.top ? .2 : 0) };
+  const cc = v => `rgb(${[.66, .6, .52].map(c => Math.round(255 * Math.pow(clamp(c * v, 0, 1), 1 / 2.2))).join(',')})`;
+  if (PROD.top) { const sg = x.createRadialGradient(qx, tableY, 0, qx, tableY, a * .9); sg.addColorStop(0, 'rgba(0,0,0,.45)'); sg.addColorStop(1, 'rgba(0,0,0,0)'); x.fillStyle = sg; x.beginPath(); x.ellipse(qx, tableY, a * .95, a * .2, 0, 0, 6.283); x.fill(); }
+  const face = (pts, v) => { x.fillStyle = cc(v); x.beginPath(); pts.forEach((p, i) => i ? x.lineTo(p[0], p[1]) : x.moveTo(p[0], p[1])); x.closePath(); x.fill(); x.strokeStyle = 'rgba(0,0,0,.25)'; x.lineWidth = 1; x.stroke(); };
+  face([[qx - dx, tableY - dy], [qx, tableY], [qx, tableY - a], [qx - dx, tableY - a - dy]], lum.l);
+  face([[qx, tableY], [qx + dx, tableY - dy], [qx + dx, tableY - a - dy], [qx, tableY - a]], lum.r);
+  face([[qx, tableY - a], [qx + dx, tableY - a - dy], [qx, tableY - a - 2 * dy], [qx - dx, tableY - a - dy]], lum.top);
+  return { cx, s, qx, a };
+}
+function drawProd() {
+  const c = $('#prodCanvas'), [W, H, dp] = sizeCanvas(c), x = c.getContext('2d'), dark = PROD.mode === 'dark', tableY = H * .8;
+  let bgAt;
+  if (dark) { bgAt = () => '#050506'; x.fillStyle = '#050506'; x.fillRect(0, 0, W, tableY); if (PROD.grad) { const g = x.createRadialGradient(W * .5, tableY * .7, 0, W * .5, tableY * .7, W * .45); g.addColorStop(0, 'rgba(70,74,80,.9)'); g.addColorStop(1, 'rgba(5,5,6,0)'); x.fillStyle = g; x.fillRect(0, 0, W, tableY); bgAt = y => mixH('#2a2c30', '#050506', Math.abs(y - tableY * .7) / (tableY * .6)); } }
+  else if (PROD.grad) { const g = x.createLinearGradient(0, 0, 0, tableY); g.addColorStop(0, '#2e2f33'); g.addColorStop(1, '#eeedea'); x.fillStyle = g; x.fillRect(0, 0, W, tableY); bgAt = y => mixH('#2e2f33', '#eeedea', y / tableY); }
+  else { x.fillStyle = '#f1f0ec'; x.fillRect(0, 0, W, tableY); bgAt = () => '#f1f0ec'; }
+  // tabletop
+  const tg = x.createLinearGradient(0, tableY, 0, H); tg.addColorStop(0, dark ? '#0b0b0c' : '#d8d7d3'); tg.addColorStop(1, dark ? '#000' : '#b9b8b4'); x.fillStyle = tg; x.fillRect(0, tableY, W, H - tableY);
+  // reflection
+  x.save(); x.beginPath(); x.rect(0, tableY, W, H - tableY); x.clip(); x.translate(0, tableY * 2); x.scale(1, -1); x.globalAlpha = .22; drawProducts(x, W, H, tableY, bgAt); x.restore();
+  const fg = x.createLinearGradient(0, tableY, 0, tableY + H * .14); fg.addColorStop(0, dark ? 'rgba(0,0,0,0)' : 'rgba(216,215,211,0)'); fg.addColorStop(1, dark ? '#000' : '#bdbcb8'); x.fillStyle = fg; x.fillRect(0, tableY, W, H - tableY);
+  const m = drawProducts(x, W, H, tableY, bgAt);
+  // blueprint callouts
+  x.font = `${10 * dp}px ${MONO()}`; x.lineWidth = dp;
+  const call = (ax, ay, tx, ty, t) => { x.strokeStyle = dark ? 'rgba(207,227,255,.7)' : 'rgba(20,40,70,.7)'; x.fillStyle = x.strokeStyle; x.beginPath(); x.moveTo(ax, ay); x.lineTo(tx, ty); x.stroke(); x.beginPath(); x.arc(ax, ay, 2.5 * dp, 0, 6.283); x.fill(); const tw = x.measureText(t).width; x.fillText(t, clamp(tx - (tx > W * .6 ? tw : 0), 6 * dp, W - tw - 6 * dp), ty - 6 * dp); };
+  call(m.cx - .13 * m.s, tableY - .3 * m.s, W * .06, tableY - .55 * m.s, dark ? 'ขอบสว่าง (Dark-field)' : 'ขอบดำ (Bright-field)');
+  if (PROD.strips) call(m.cx + .088 * m.s, tableY - .25 * m.s, W * .5, tableY - .72 * m.s, 'ไฮไลต์จากสตริป');
+  call(m.qx + m.a * .25, tableY - m.a * .5, W * .88, tableY - m.a * 1.9, PROD.strips || PROD.top ? 'ผิวด้าน: รับแสงตรง' : 'ผิวด้าน: มืด!');
+  drawProdPlan();
+  $('#prodWhy').textContent = (dark
+    ? 'Dark-field: ฉากดำ แต่มีแผ่นสว่างอยู่นอกกรอบภาพรอบขวด ขอบแก้วหักเหแสงจากแผ่นสว่างนั้นเข้ากล้อง จึงเกิดเส้นขอบสว่างบนพื้นดำ ใช้โชว์รูปทรงแก้วให้หรู'
+    : 'Bright-field: แผ่นหลังสว่างอยู่ในแนวสายตา ส่วนขอบแก้วหักเหภาพของพื้นที่มืดด้านข้างเข้ามาแทน ขอบจึงเป็นเส้นดำคมบนพื้นขาว สะอาด เหมาะกับงานแคตตาล็อก')
+    + (PROD.strips ? ' · สตริปบ็อกซ์ด้านข้างให้ไฮไลต์เป็นเส้นยาวตามลำขวด — ยิ่งสตริปแคบ เส้นยิ่งคม' : '')
+    + (PROD.grad ? ' · ฉากไล่เฉดช่วยให้ขอบแก้วส่วนบนและล่างต่างกัน เห็นรูปทรงชัดขึ้น' : '')
+    + (PROD.top ? ' · ซอฟต์บ็อกซ์ด้านบนทำให้ลูกบาศก์ผิวด้านมีหน้าบนสว่าง เห็นมิติสามหน้า' : ' · สังเกตว่าลูกบาศก์ผิวด้านต้องการแสงตกกระทบตรง ๆ ไฟจากด้านหลังอย่างเดียวทำให้มันมืด');
+}
+function drawProdPlan() {
+  const c = $('#prodPlan'), [W, H, dp] = sizeCanvas(c), x = c.getContext('2d'), xf = planXf(W, H, { x0: -1.6, x1: 1.6, z0: -1.25, z1: 1.2 }), s = xf.s, dark = PROD.mode === 'dark';
+  x.clearRect(0, 0, W, H); x.font = `${9 * dp}px ${MONO()}`; x.lineWidth = dp;
+  for (let v = -2; v <= 2; v += .25) { x.strokeStyle = 'rgba(207,227,255,.05)'; x.beginPath(); x.moveTo(xf.X(v), 0); x.lineTo(xf.X(v), H); x.moveTo(0, xf.Z(v)); x.lineTo(W, xf.Z(v)); x.stroke(); }
+  // back panel + light behind
+  x.fillStyle = '#e8e6e1'; x.fillRect(xf.X(-.6), xf.Z(-.8), 1.2 * s, 5 * dp);
+  const g = x.createRadialGradient(xf.X(0), xf.Z(-1.05), 0, xf.X(0), xf.Z(-1.05), .6 * s); g.addColorStop(0, 'rgba(207,227,255,.5)'); g.addColorStop(1, 'rgba(207,227,255,0)'); x.fillStyle = g; x.beginPath(); x.arc(xf.X(0), xf.Z(-1.05), .6 * s, 0, 6.283); x.fill();
+  x.fillStyle = '#cfe3ff'; x.beginPath(); x.arc(xf.X(0), xf.Z(-1.05), 4 * dp, 0, 6.283); x.fill();
+  x.fillStyle = 'rgba(232,230,225,.8)'; x.fillText(PROD.grad ? 'ไฟหลังแผ่น (ไล่เฉด)' : 'ไฟยิงผ่านแผ่นขาว', xf.X(.1) + 10 * dp, xf.Z(-1.05));
+  if (dark) { x.fillStyle = '#000'; x.strokeStyle = '#e8e6e1'; x.fillRect(xf.X(-.18), xf.Z(-.72), .36 * s, 4 * dp); x.strokeRect(xf.X(-.18), xf.Z(-.72), .36 * s, 4 * dp); x.fillStyle = 'rgba(232,230,225,.8)'; x.fillText('การ์ดดำบังกลาง', xf.X(.22), xf.Z(-.66)); }
+  // products
+  x.strokeStyle = '#e8e6e1'; x.fillStyle = 'rgba(207,227,255,.15)'; x.beginPath(); x.arc(xf.X(-.2), xf.Z(-.2), .06 * s, 0, 6.283); x.fill(); x.stroke();
+  x.fillStyle = 'rgba(232,230,225,.25)'; x.fillRect(xf.X(.14), xf.Z(-.28), .14 * s, .14 * s); x.strokeRect(xf.X(.14), xf.Z(-.28), .14 * s, .14 * s);
+  // strips
+  if (PROD.strips) [-1, 1].forEach(sd => { x.save(); x.translate(xf.X(sd * .7), xf.Z(-.35)); x.rotate(sd > 0 ? Math.PI * .85 : Math.PI * .15); x.fillStyle = 'rgba(255,179,92,.25)'; x.strokeStyle = '#e8e6e1'; x.fillRect(-.04 * s, -.15 * s, .08 * s, .3 * s); x.strokeRect(-.04 * s, -.15 * s, .08 * s, .3 * s); x.restore(); x.fillStyle = '#ffb35c'; x.fillText('STRIP', xf.X(sd * .7) - 14 * dp, xf.Z(-.35) + .24 * s); });
+  if (PROD.top) { x.setLineDash([4 * dp, 3 * dp]); x.strokeStyle = '#ffb35c'; x.strokeRect(xf.X(-.35), xf.Z(-.5), .7 * s, .5 * s); x.setLineDash([]); x.fillStyle = '#ffb35c'; x.fillText('TOP (เหนือโต๊ะ)', xf.X(-.35), xf.Z(-.5) - 8 * dp); }
+  x.fillStyle = '#1a1c20'; x.strokeStyle = '#e8e6e1'; x.fillRect(xf.X(-.1), xf.Z(.85), .2 * s, .13 * s); x.strokeRect(xf.X(-.1), xf.Z(.85), .2 * s, .13 * s);
+  x.fillStyle = 'rgba(232,230,225,.7)'; x.fillText('กล้อง', xf.X(.15), xf.Z(.92));
+}
+new ResizeObserver(drawProd).observe($('#prodCanvas'));
+setProd({});
+
+/* =====================================================================
+   7. QUIZ
+   ===================================================================== */
+const QPOOL = RECIPES.filter(r => !r.product);
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const Q = { i: 0, score: 0, list: [], res: [], st: QPOOL[0].state };
+const quizView = new BustView($('#quizRender'), { view: VIEWS.full, ppu: 96, draftScale: .5, getScene: () => toScene(Q.st) });
+function newQuiz() { Q.list = shuffle(QPOOL).slice(0, 8); Q.i = 0; Q.score = 0; Q.res = []; showQ(); }
+function pips() { $('#qPips').innerHTML = Array.from({ length: 8 }, (_, i) => `<i class="${Q.res[i] === true ? 'ok' : Q.res[i] === false ? 'no' : i === Q.i ? 'cur' : ''}"></i>`).join(''); $('#qNum').textContent = Math.min(Q.i + 1, 8); $('#qScore').textContent = Q.score; }
+function showQ() {
+  const r = Q.list[Q.i]; Q.st = r.state; quizView.invalidate(false);
+  const opts = shuffle([r, ...shuffle(QPOOL.filter(x => x !== r)).slice(0, 3)]);
+  $('#qOpts').innerHTML = opts.map(o => `<button type="button" data-id="${o.id}">${o.th} <span class="en">${o.en}</span></button>`).join('');
+  $$('#qOpts button').forEach(b => b.onclick = () => answer(b, r));
+  $('#qReveal').hidden = true; pips();
+}
+function answer(btn, r) {
+  const ok = btn.dataset.id === r.id; Q.res[Q.i] = ok; if (ok) Q.score++;
+  $$('#qOpts button').forEach(b => { b.disabled = true; if (b.dataset.id === r.id) b.classList.add('right'); else if (b === btn) b.classList.add('wrong'); });
+  const p = detectPattern(r.state, toScene(r.state));
+  $('#qFeedback').textContent = (ok ? '✓ ถูกต้อง! ' : '✗ ยังไม่ใช่ — ') + `คำตอบคือ “${r.th}” (${PAT[p.k].th})`;
+  $('#qWhy').textContent = r.why;
+  $('#qReveal').hidden = false; $('#qNext').textContent = Q.i >= 7 ? 'ดูผลคะแนน' : 'ข้อต่อไป →';
+  requestAnimationFrame(() => drawMiniPlan($('#qDiagram'), r.state)); pips();
+}
+$('#qNext').onclick = () => {
+  if (Q.i >= 7) {
+    if (Q.i === 8) { newQuiz(); return; }
+    Q.i = 8; pips();
+    $('#qOpts').innerHTML = ''; $('#qFeedback').textContent = `คะแนนรวม ${Q.score}/8 — ` + (Q.score >= 7 ? 'ตาไวมาก! คุณอ่านแสงได้เหมือนมืออาชีพ' : Q.score >= 4 ? 'ดีมาก ลองสังเกตเงาจมูกและแคตช์ไลต์เพิ่มอีกนิด' : 'ลองกลับไปเล่นสตูดิโอจำลองแล้วมาทายใหม่');
+    $('#qWhy').textContent = 'เคล็ดลับ: ดูตำแหน่งแคตช์ไลต์ในตาเพื่อบอกทิศทางไฟ ดูขอบเงาเพื่อบอกขนาดแหล่งแสง และดูความสว่างฉากเพื่อบอกระยะ';
+    $('#qNext').textContent = 'เล่นใหม่ ↻'; return;
+  }
+  Q.i++; showQ();
+};
+newQuiz();
+
+/* =====================================================================
+   8. GLOSSARY
+   ===================================================================== */
+const GLOSS = [
+  ['ไฟหลัก', 'คีย์ไลต์', 'แหล่งแสงหลักของภาพ เป็นตัวกำหนดทิศทางแสง รูปแบบเงา และอารมณ์ของภาพ'],
+  ['ไฟเติม', 'ไฟเสริม, ฟิลไลต์', 'แสงที่ช่วยเปิดเงาจากไฟหลักให้อ่อนลง เป็นตัวกำหนดอัตราส่วนแสง อาจเป็นไฟอีกดวงหรือแผ่นสะท้อนแสงก็ได้'],
+  ['ไฟขอบ', 'ริมไลต์', 'ไฟที่ส่องจากด้านหลังเฉียงของตัวแบบ ทำให้เกิดเส้นสว่างตามขอบหน้า ผม และไหล่ ช่วยแยกตัวแบบออกจากฉากหลัง'],
+  ['ไฟส่องผม', 'แฮร์ไลต์', 'ไฟที่ส่องจากด้านบนค่อนไปทางด้านหลังศีรษะ ทำให้ผมมีประกายและไม่กลืนไปกับฉากหลัง'],
+  ['ไฟฉากหลัง', 'ไฟฉาก', 'ไฟที่ส่องไปยังฉากหลังโดยเฉพาะ ใช้ควบคุมความสว่าง สี และการไล่ระดับแสงบนฉาก'],
+  ['กฎกำลังสองผกผัน', '', 'ความเข้มของแสงที่ตกกระทบแปรผกผันกับกำลังสองของระยะทาง เมื่อระยะเพิ่มเป็น 2 เท่า แสงจะเหลือ ¼ หรือลดลง 2 สต็อป'],
+  ['สต็อป', 'ขั้นแสง', 'หน่วยวัดปริมาณแสงแบบลอการิทึม เพิ่ม 1 สต็อปคือแสงเพิ่มเป็น 2 เท่า ลด 1 สต็อปคือแสงเหลือครึ่งหนึ่ง'],
+  ['ขนาดปรากฏของแหล่งแสง', '', 'ขนาดของแหล่งแสงเมื่อมองจากตำแหน่งตัวแบบ ขึ้นกับทั้งขนาดจริงและระยะห่าง ยิ่งดูใหญ่ แสงยิ่งนุ่ม'],
+  ['แสงแข็ง', '', 'แสงจากแหล่งแสงที่มีขนาดปรากฏเล็ก ขอบเงาคม คอนทราสต์สูง เช่น แดดจัดหรือแฟลชหัวเปล่า'],
+  ['แสงนุ่ม', 'แสงฟุ้ง', 'แสงจากแหล่งแสงที่มีขนาดปรากฏใหญ่ ขอบเงาไล่ระดับอย่างนุ่มนวล ผิวดูเรียบเนียน'],
+  ['เงามืด', '', 'บริเวณของเงาที่แหล่งแสงถูกบังไว้ทั้งหมด จึงเป็นส่วนที่มืดที่สุดของเงา'],
+  ['เงามัว', '', 'บริเวณรอยต่อระหว่างส่วนสว่างกับเงามืด ซึ่งแหล่งแสงถูกบังเพียงบางส่วน ยิ่งกว้าง แสงยิ่งนุ่ม'],
+  ['อัตราส่วนแสง', '', 'อัตราส่วนความสว่างระหว่างด้านสว่างกับด้านเงาของใบหน้า เช่น 2:1 (ต่างกัน 1 สต็อป) หรือ 4:1 (ต่างกัน 2 สต็อป)'],
+  ['แคตช์ไลต์', 'ประกายตา', 'ภาพสะท้อนของแหล่งแสงบนดวงตา บอกรูปทรงและตำแหน่งของไฟ และทำให้ดวงตาดูมีชีวิต'],
+  ['อุณหภูมิสี', '', 'ค่าสีของแสงในหน่วยเคลวิน ค่าต่ำให้แสงโทนส้ม เช่น หลอดไส้ราว 3,200 เคลวิน ค่าสูงให้แสงโทนฟ้า เช่น ในร่มเงาราว 9,000 เคลวิน'],
+  ['สมดุลแสงขาว', 'ไวต์บาลานซ์', 'การตั้งค่ากล้องให้ชดเชยสีของแสง เพื่อให้วัตถุสีขาวปรากฏเป็นสีขาวที่เป็นกลาง'],
+  ['ซอฟต์บ็อกซ์', 'กล่องกระจายแสง', 'กล่องผ้าครอบหัวไฟที่มีแผ่นกระจายแสงด้านหน้า ให้แสงนุ่มและควบคุมทิศทางได้ แคตช์ไลต์เป็นรูปสี่เหลี่ยม'],
+  ['ออคตาบ็อกซ์', 'ซอฟต์บ็อกซ์แปดเหลี่ยม', 'ซอฟต์บ็อกซ์ทรงแปดเหลี่ยมขนาดใหญ่ ให้แสงนุ่มและแคตช์ไลต์ทรงกลมที่ดูเป็นธรรมชาติ'],
+  ['ร่มทะลุ', 'ร่มขาวโปร่งแสง', 'ร่มผ้าขาวบางที่ยิงแสงทะลุผ่าน ให้แสงนุ่มและกระจายกว้าง แต่ควบคุมแสงหกได้ยาก'],
+  ['ร่มสะท้อน', '', 'ร่มที่ด้านในบุวัสดุสีเงินหรือสีขาว หันหัวไฟเข้าหาร่มแล้วให้แสงสะท้อนออกมา ได้แสงที่มีทิศทางชัดกว่าร่มทะลุ'],
+  ['บิวตี้ดิช', 'จานสะท้อนแสง', 'จานสะท้อนแสงที่มีแผ่นกั้นแสงตรงกลาง ให้แสงกึ่งแข็งกึ่งนุ่ม คมชัด และขับผิวให้มีมิติ'],
+  ['กริด', 'ตะแกรงรังผึ้ง', 'ตะแกรงรูปรังผึ้งที่ติดหน้าหัวไฟหรือซอฟต์บ็อกซ์ ช่วยบีบลำแสงให้แคบและลดแสงหก'],
+  ['สนู้ต', 'กรวยบีบแสง', 'อุปกรณ์ทรงกระบอกหรือกรวยที่บีบแสงให้เป็นลำเล็ก ใช้เน้นเฉพาะจุด เช่น ผมหรือฉากหลัง'],
+  ['สคริม', 'แผ่นกรองแสง', 'แผ่นผ้ากระจายแสงขนาดใหญ่ ใช้ทำให้แสงแข็ง เช่น แสงแดด นุ่มลง'],
+  ['สตริปบ็อกซ์', 'ซอฟต์บ็อกซ์ทรงยาว', 'ซอฟต์บ็อกซ์ทรงยาวแคบ นิยมใช้เป็นไฟขอบ หรือสร้างเส้นไฮไลต์ยาวบนสินค้า'],
+  ['แผ่นสะท้อนแสง', 'รีเฟลกเตอร์', 'แผ่นที่สะท้อนแสงกลับไปยังตัวแบบเพื่อใช้เป็นไฟเติม สีขาวให้แสงนุ่ม สีเงินให้แสงแรงและคม สีทองให้แสงโทนอุ่น'],
+  ['วีแฟลต', '', 'แผ่นโฟมขนาดใหญ่สองแผ่นต่อกันเป็นรูปตัววี ด้านขาวใช้สะท้อนแสง ด้านดำใช้ดูดแสง'],
+  ['การลดแสงเติม', 'เนกาทีฟฟิลล์', 'การใช้พื้นผิวสีดำดูดซับแสงสะท้อนในห้อง เพื่อให้ด้านเงาเข้มขึ้นและภาพมีมิติ'],
+  ['การเฟเธอร์แสง', 'การส่องด้วยขอบลำแสง', 'การหันหัวไฟให้ขอบของลำแสงกระทบตัวแบบแทนกึ่งกลางลำแสง ได้แสงที่นุ่มขึ้นและลดแสงหกลงฉาก'],
+  ['ธงบังแสง', 'แฟล็ก', 'แผ่นทึบแสงที่ใช้บังไม่ให้แสงตกกระทบบางส่วนของภาพ หรือไม่ให้แสงเข้าหน้าเลนส์'],
+  ['ไฟโมเดลลิง', 'ไฟนำร่อง', 'หลอดไฟต่อเนื่องในหัวแฟลชสตูดิโอ ช่วยให้เห็นทิศทางและเงาของแสงก่อนยิงแฟลชจริง'],
+  ['บัตเตอร์ฟลาย', 'แสงผีเสื้อ, พาราเมาต์', 'ไฟหลักอยู่ด้านหน้าและสูงกว่าระดับตา เกิดเงารูปผีเสื้อเล็กๆ ใต้จมูก'],
+  ['ลูป', '', 'ไฟหลักทำมุมราว 15–40° กับแนวกล้อง เงาจมูกเป็นวงเล็กที่ไม่แตะเงาแก้ม'],
+  ['เรมบรันต์', '', 'ไฟหลักทำมุมราว 45–60° และอยู่สูง เกิดแสงรูปสามเหลี่ยมใต้ตาด้านเงา'],
+  ['สปลิต', 'แสงแบ่งครึ่งหน้า', 'ไฟหลักอยู่ด้านข้าง 90° แบ่งใบหน้าเป็นครึ่งสว่างและครึ่งมืด'],
+  ['แคลมเชลล์', '', 'ไฟหลักจากด้านบนคู่กับไฟเติมหรือแผ่นสะท้อนแสงจากด้านล่าง ประกบกันเหมือนเปลือกหอย นิยมในงานภาพบิวตี้'],
+  ['การจัดแสงด้านกว้าง', 'บรอดไลติง', 'เมื่อตัวแบบหันหน้าเฉียง ให้แสงส่องด้านของใบหน้าที่หันเข้าหากล้อง ใบหน้าจะดูกว้างขึ้น'],
+  ['การจัดแสงด้านแคบ', 'ชอร์ตไลติง', 'เมื่อตัวแบบหันหน้าเฉียง ให้แสงส่องด้านของใบหน้าที่หันออกจากกล้อง ใบหน้าจะดูเรียวและมีมิติ'],
+  ['ไฮคีย์', 'ภาพโทนสว่าง', 'ภาพโทนสว่าง เงาน้อย มักใช้ฉากขาว ฮิสโตแกรมกองไปทางขวา'],
+  ['โลว์คีย์', 'ภาพโทนมืด', 'ภาพโทนมืด คอนทราสต์สูง ฮิสโตแกรมกองไปทางซ้าย'],
+  ['ฮิสโตแกรม', 'กราฟค่าแสง', 'กราฟแสดงการกระจายความสว่างของภาพ ใช้ตรวจว่าภาพสว่างเกินหรือมืดเกิน'],
+  ['เจลกรองสี', 'เจลสี', 'แผ่นฟิล์มสีสำหรับครอบหน้าไฟ เพื่อเปลี่ยนสีของแสงหรือปรับอุณหภูมิสี เช่น เจลสีส้มปรับแสงแฟลชให้อุ่นเท่าหลอดไส้'],
+  ['ช่วงเวลาทอง', 'โกลเดนอาวร์', 'ช่วงที่ดวงอาทิตย์อยู่ต่ำใกล้ขอบฟ้า หลังพระอาทิตย์ขึ้นและก่อนพระอาทิตย์ตก แสงโทนอุ่น เงายาว'],
+  ['ช่วงเวลาสีน้ำเงิน', 'บลูอาวร์', 'ช่วงก่อนพระอาทิตย์ขึ้นและหลังพระอาทิตย์ตก เหลือเพียงแสงจากท้องฟ้าโทนน้ำเงินที่นุ่มมาก'],
+  ['ร่มเงา', 'ที่ร่มเปิดโล่ง', 'บริเวณที่อยู่ในเงาแต่ยังมองเห็นท้องฟ้าเปิดโล่ง ได้แสงนุ่มจากท้องฟ้าซึ่งมักอมฟ้า'],
+  ['ไบรต์ฟิลด์', 'การจัดแสงพื้นสว่าง', 'การจัดแสงวัตถุแก้วบนพื้นหลังสว่าง ขอบแก้วจะปรากฏเป็นเส้นสีเข้ม'],
+  ['ดาร์กฟิลด์', 'การจัดแสงพื้นมืด', 'การจัดแสงวัตถุแก้วบนพื้นหลังดำโดยให้มีแสงอยู่รอบขอบ ขอบแก้วจะปรากฏเป็นเส้นสว่าง'],
+  ['เครื่องวัดแสงตกกระทบ', 'มิเตอร์วัดแสง', 'เครื่องวัดแสง ณ ตำแหน่งตัวแบบโดยหันโดมรับแสงไปทางกล้อง ให้ค่าแม่นยำโดยไม่ถูกหลอกจากสีหรือโทนของตัวแบบ'],
+  ['ความเร็วซิงก์แฟลช', 'แฟลชซิงก์', 'ความเร็วชัตเตอร์สูงสุดที่ใช้กับแฟลชได้โดยแสงแฟลชครอบคลุมทั้งเฟรม ส่วนใหญ่อยู่ราว 1/160–1/250 วินาที'],
+  ['แสงหก', 'แสงรั่ว', 'แสงที่ตกไปยังบริเวณที่ไม่ต้องการ เช่น ฉากหลัง หรือส่องเข้าหน้าเลนส์']
+];
+(() => {
+  const dl = $('#gloss'), esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const render = q => {
+    q = q.trim().toLowerCase(); let n = 0;
+    const hl = s => { const e = esc(s); if (!q) return e; const i = s.toLowerCase().indexOf(q); return i < 0 ? e : esc(s.slice(0, i)) + '<mark>' + esc(s.slice(i, i + q.length)) + '</mark>' + esc(s.slice(i + q.length)); };
+    dl.innerHTML = GLOSS.filter(g => !q || g.join(' ').toLowerCase().includes(q)).map(g => { n++; return `<div><dt>${hl(g[0])}${g[1] ? `<span>${hl(g[1])}</span>` : ''}</dt><dd>${hl(g[2])}</dd></div>`; }).join('');
+    $('#gEmpty').hidden = n > 0;
+  };
+  $('#gSearch').addEventListener('input', e => render(e.target.value)); render('');
+})();
+
+/* =====================================================================
+   REVEAL + APERTURE PROGRESS RAIL
+   ===================================================================== */
+const revIO = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); revIO.unobserve(e.target); } }), { threshold: .08 });
+$$('.reveal').forEach(e => revIO.observe(e));
+const SECS = $$('[data-title]');
+$('#railList').innerHTML = SECS.map((s, i) => `<li><a href="#${s.id}" data-i="${i}"><i></i>${String(i + 1).padStart(2, '0')}<em>${s.dataset.title}</em></a></li>`).join('');
+const FN = [22, 16, 11, 8, 5.6, 4, 2.8, 2, 1.4];
+function drawAperture(p) {
+  const c = $('#aperture'), x = c.getContext('2d'), W = c.width, C = W / 2, R = W * .44;
+  x.clearRect(0, 0, W, W);
+  x.fillStyle = '#0c0d0f'; x.beginPath(); x.arc(C, C, R, 0, 6.283); x.fill();
+  const n = 7, open = R * (.12 + .78 * p), rot = p * 1.4, V = [];
+  for (let k = 0; k < n; k++) { const a = rot + k * 6.283 / n; V.push([C + open * Math.cos(a), C + open * Math.sin(a)]); }
+  x.save(); x.beginPath(); V.forEach((v, i) => i ? x.lineTo(...v) : x.moveTo(...v)); x.closePath(); x.clip();
+  const g = x.createRadialGradient(C, C, 0, C, C, open); g.addColorStop(0, 'rgba(255,220,170,1)'); g.addColorStop(.6, 'rgba(255,179,92,.85)'); g.addColorStop(1, 'rgba(255,179,92,.35)');
+  x.fillStyle = g; x.fillRect(0, 0, W, W); x.restore();
+  x.strokeStyle = 'rgba(232,230,225,.4)'; x.lineWidth = 1.5;
+  for (let k = 0; k < n; k++) {
+    const a = V[k], b = V[(k + 1) % n], dx = b[0] - a[0], dy = b[1] - a[1], l = Math.hypot(dx, dy), ux = dx / l, uy = dy / l;
+    const fx = a[0] - C, fy = a[1] - C, B = fx * ux + fy * uy, t = -B + Math.sqrt(B * B - (fx * fx + fy * fy - R * R));
+    x.beginPath(); x.moveTo(a[0], a[1]); x.lineTo(a[0] + ux * t, a[1] + uy * t); x.stroke();
+  }
+  x.strokeStyle = 'rgba(232,230,225,.7)'; x.lineWidth = 2; x.beginPath(); x.arc(C, C, R, 0, 6.283); x.stroke();
+  $('#fnum').textContent = 'f/' + FN[Math.round(p * (FN.length - 1))];
+}
+let railQ = false;
+function onScroll() {
+  if (railQ) return; railQ = true;
+  requestAnimationFrame(() => {
+    railQ = false;
+    const max = document.documentElement.scrollHeight - innerHeight, p = max > 0 ? clamp(scrollY / max, 0, 1) : 0;
+    drawAperture(p);
+    let cur = 0; SECS.forEach((s, i) => { if (s.getBoundingClientRect().top < innerHeight * .4) cur = i; });
+    $$('#railList a').forEach((a, i) => { a.classList.toggle('on', i === cur); if (i === cur) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current'); });
+  });
+}
+addEventListener('scroll', onScroll, { passive: true }); addEventListener('resize', onScroll); onScroll();
+})();
+</script>
+</body>
+</html>
