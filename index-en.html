@@ -168,6 +168,7 @@ select{background:var(--bg3);border:1px solid var(--line2);border-radius:8px;pad
 .flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}
 .flash.go{animation:flash .28s ease-out}
 @keyframes flash{0%{opacity:.42}100%{opacity:0}}
+.subj-pick{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
 .pattern{margin-top:14px;display:grid;grid-template-columns:1fr 132px;gap:14px}
 .pattern h3{font-size:22px;color:var(--amber)}
 .pattern h3 small{display:block;font-size:13px;color:var(--ink3);font-weight:400;font-family:var(--cond);letter-spacing:.14em;text-transform:uppercase}
@@ -275,7 +276,7 @@ footer{max-width:1240px;margin:0 auto;padding:40px 28px 90px 96px;color:var(--in
 <main>
 <!-- 1. HERO -->
 <header id="hero" class="hero" data-title="Light is everything">
-  <canvas id="heroCanvas" tabindex="0" role="img" aria-label="A bust in near darkness lit by a single light that follows your mouse or finger. Use the arrow keys to move the light"></canvas>
+  <canvas id="heroCanvas" tabindex="0" role="img" aria-label="The subject in near darkness, lit by a single light that follows your mouse or finger. Use the arrow keys to move the light"></canvas>
   <canvas id="heroMotes"></canvas>
   <div class="hero-copy">
     <p class="kicker">Catchlight · A Field Guide to Light</p>
@@ -366,6 +367,7 @@ footer{max-width:1240px;margin:0 auto;padding:40px 28px 90px 96px;color:var(--in
       <div class="panel" id="pgPanel" role="tabpanel"></div>
     </div>
     <div class="pg-render reveal">
+      <div class="subj-pick"><span class="note">Subject</span><div class="seg" role="group" aria-label="Choose subject" id="subjPick"><button type="button" data-s="apple">Apple</button><button type="button" data-s="orange">Orange</button><button type="button" data-s="egg">Egg</button><button type="button" data-s="peach">Peach (with face)</button></div></div>
       <div class="render-wrap">
         <canvas id="pgCanvas" class="bust-canvas" role="img" aria-label="Simulated camera view"></canvas>
         <canvas id="pgMotes" class="motes"></canvas>
@@ -378,7 +380,7 @@ footer{max-width:1240px;margin:0 auto;padding:40px 28px 90px 96px;color:var(--in
           <div id="patBadges"></div>
           <p id="patWhy" aria-live="polite"></p>
         </div>
-        <div class="loupe"><canvas id="loupe" aria-label="Magnified eye showing the catchlight"></canvas><span>Catchlight · eye close-up</span></div>
+        <div class="loupe"><canvas id="loupe" aria-label="Magnified eye showing the catchlight"></canvas><span id="loupeLabel">Catchlight · eye close-up</span></div>
       </div>
       <div class="stats">
         <div class="stat"><small>Lighting ratio</small><b id="ratioO">—</b></div>
@@ -585,17 +587,19 @@ const VIEWS = {
   sq:   { x0: -0.56, x1: 0.56, y0: -0.86, y1: 0.26 },
   inv:  { x0: -1.1, x1: 1.1, y0: -1.05, y1: 0.95 }
 };
-// materials: 0 bg, 1 skin, 2 lip, 3 hair, 4 cloth, 5 sclera, 6 iris, 7 pupil
-const ALB = [[0, 0, 0], [.56, .33, .245], [.46, .19, .17], [.05, .035, .027], [.075, .08, .09], [.4, .38, .36], [.12, .07, .04], [.012, .012, .012]];
-const KS = [0, .10, .16, .08, .02, .3, .3, .3];
-const SH = [1, 26, 40, 14, 6, 90, 90, 90];
+// materials: 0 bg, 1 peach skin, 2 blush, 3 leaf, 4 body, 5 apple, 6 eye, 7 pupil, 8 orange, 9 egg, 10 stem
+const ALB = [[0, 0, 0], [.86, .46, .28], [.92, .3, .3], [.1, .3, .06], [.28, .52, .42], [.5, .028, .03], [.012, .01, .014], [.012, .012, .012], [.75, .22, .012], [.72, .6, .45], [.13, .075, .03]];
+const KS = [0, .12, .12, .15, .04, .25, .5, .5, .08, .05, .05];
+const SH = [1, 30, 30, 30, 12, 60, 120, 120, 20, 15, 10];
+const MIR = [0, 0, 0, 0, 0, .35, 1, 1, 0, 0, 0]; // mirror reflection strength (shows the modifier's shape)
 
 const GEOM = new Map();
-function getGeom(view, ppu, turn) {
-  const key = `${view.x0.toFixed(3)},${view.x1.toFixed(3)},${view.y0.toFixed(3)}|${ppu.toFixed(1)}|${turn.toFixed(3)}`;
+let SUBJECT = 'apple';
+function getGeom(view, ppu, turn, subj = SUBJECT) {
+  const key = `${subj}|${view.x0.toFixed(3)},${view.x1.toFixed(3)},${view.y0.toFixed(3)}|${ppu.toFixed(1)}|${turn.toFixed(3)}`;
   let g = GEOM.get(key);
   if (g) { GEOM.delete(key); GEOM.set(key, g); return g; }
-  g = buildGeom(view, ppu, turn);
+  g = buildGeom(view, ppu, turn, subj);
   GEOM.set(key, g);
   if (GEOM.size > 28) GEOM.delete(GEOM.keys().next().value);
   return g;
@@ -603,26 +607,15 @@ function getGeom(view, ppu, turn) {
 function ell(x, y, cx, cy, cz, rx, ry, rz) { const dx = (x - cx) / rx, dy = (y - cy) / ry, e = 1 - dx * dx - dy * dy; return e > 0 ? cz + rz * Math.sqrt(e) : -9; }
 function sell(x, y, cx, cy, cz, rx, ry, rz, n) { const dx = Math.abs(x - cx) / rx, dy = (y - cy) / ry, e = 1 - Math.pow(dx, n) - dy * dy; return e > 0 ? cz + rz * Math.pow(e, 1 / n) : -9; } // flatter front, steeper sides
 
-function buildGeom(view, ppu, turn) {
+function buildGeom(view, ppu, turn, subj) {
   const W = Math.max(8, Math.round((view.x1 - view.x0) * ppu)), H = Math.max(8, Math.round((view.y1 - view.y0) * ppu));
   const N = W * H, hz = new Float32Array(N), mat = new Uint8Array(N), af = new Float32Array(N);
   const nx = new Float32Array(N), ny = new Float32Array(N), nz = new Float32Array(N), isEye = new Uint8Array(N);
   const c = Math.cos(turn), s = Math.sin(turn);
   const R = (fx, fz) => [fx * c + fz * s, -fx * s + fz * c];
-  const feat = [];
-  const F = (fx, fy, fz, rx, ry, rz, m, k) => { const [cx, cz] = R(fx, fz); feat.push([cx, fy, cz, rx, ry, rz, m, k]); };
-  F(.13, -.235, .13, .1, .08, .085, 1, .06); F(-.13, -.235, .13, .1, .08, .085, 1, .06);   // cheeks
-  F(0, -.405, .225, .21, .05, .075, 1, .04);                                                     // brow
-  F(0, -.005, .19, .075, .05, .06, 1, .04);                                                      // chin
-  F(.28, -.31, -.01, .035, .085, .06, 1, .02); F(-.28, -.31, -.01, .035, .085, .06, 1, .02);    // ears
-  F(0, -.265, .25, .04, .105, .075, 1, .025);                                                    // nose bridge
-  F(0, -.185, .285, .05, .045, .06, 1, .02);                                                     // nose tip
-  F(.042, -.172, .245, .034, .03, .04, 1, .015); F(-.042, -.172, .245, .034, .03, .04, 1, .015); // alae
-  F(0, -.098, .232, .07, .02, .04, 2, .015); F(0, -.07, .228, .062, .024, .045, 2, .015);        // lips
-  const sockets = [R(.105, .2), R(-.105, .2)];
-  const eyes = [R(.105, .172), R(-.105, .172)];
-  const mouth = R(0, .23);
-  const cosT = Math.max(.45, c);
+  // cute peach character: round head, button nose, big glossy eyes, blush, smile, leaf
+  const nose = R(0, .35), cleft = R(0, .36), mouth = R(0, .37);
+  const eyes = [R(.14, .315), R(-.14, .315)], blush = [R(.25, .3), R(-.25, .3)];
   let z, m;
   const U = (zn, mn, k) => {
     if (zn <= -9) return;
@@ -630,42 +623,53 @@ function buildGeom(view, ppu, turn) {
     if (k > 0) { const h = clamp(.5 + .5 * (zn - z) / k, 0, 1); const r = z + (zn - z) * h + k * h * (1 - h); if (zn > z) m = mn; z = r; }
     else if (zn > z) { z = zn; m = mn; }
   };
+  const la = -.45, lc = Math.cos(la), ls = Math.sin(la);
   for (let j = 0; j < H; j++) {
     const y = view.y0 + (j + .5) / ppu;
     for (let i = 0; i < W; i++) {
       const x = view.x0 + (i + .5) / ppu, p = j * W + i;
-      z = -9; m = 0;
-      { const ax = Math.abs(x); if (ax < 1) { const yt = .24 + .34 * Math.pow(ax / .98, 1.8); // torso: sloping shoulders rolling over the top
-        if (y > yt) U(-.14 + .36 * Math.sqrt(1 - ax * ax) * Math.sqrt(Math.min(1, (y - yt) / .22)), 4, 0); } }
-      if (y > -.2) { const e = 1 - (x / .135) * (x / .135); if (e > 0) U(-.03 + .13 * Math.sqrt(e), 1, .07); } // neck
-      if (y < .15) {
-        U(sell(x, y, 0, -.36, 0, .285, .37, .28, 2.5), 1, 0);                         // cranium
-        U(sell(x, y, 0, -.15, .01, .2, .21, .23, 2.4), 1, .07);                       // jaw
-        for (let f = 0; f < feat.length; f++) { const q = feat[f]; U(ell(x, y, q[0], q[1], q[2], q[3], q[4], q[5]), q[6], q[7]); }
-        if (m === 1 || m === 2) {
-          for (const sk of sockets) { const dx = x - sk[0], dy = y + .335; z -= .045 * Math.exp(-(dx * dx + dy * dy) / (2 * .055 * .055)); }
-          const mx = x - mouth[0], my = y + .084; if (Math.abs(mx) < .07) z -= .012 * Math.exp(-(my * my) / (2 * .006 * .006)) * (1 - Math.pow(mx / .07, 2));
-          // eyes
-          for (const e of eyes) {
-            const dx = x - e[0], dy = y + .335, lx = dx / cosT, a = 1 - (lx / .062) * (lx / .062);
-            if (a > 0 && Math.abs(dy + .003) < .024 * Math.pow(a, .75)) {
-              const e2 = .068 * .068 - dx * dx - dy * dy;
-              if (e2 > 0) {
-                const ze = e[1] + Math.sqrt(e2);
-                if (ze > z - .03) {
-                  z = ze; const dI = Math.hypot(dx, dy); m = dI < .012 ? 7 : dI < .03 ? 6 : 5;
-                  const l = .068; nx[p] = dx / l; ny[p] = -dy / l; nz[p] = (ze - e[1]) / l; isEye[p] = 1;
-                }
-              }
-            }
+      z = -9; m = 0; let tone = 1;
+      if (subj !== 'peach') { // still-life subjects
+        const cy = -.1;
+        if (subj === 'egg') { const t = (y + .06) / .68, rx = .5 * (1 - .16 * Math.max(0, -t)); U(ell(x, y, 0, -.06, 0, rx, .68, .5), 9, 0); }
+        else if (subj === 'orange') {
+          U(ell(x, y, 0, cy, 0, .64, .62, .58), 8, 0);
+          if (m) { z += .0025 * Math.sin(x * 70 + Math.sin(y * 45) * 2.5) * Math.sin(y * 74 + Math.sin(x * 41) * 2.5); const ty = y - (cy - .6); z -= .02 * Math.exp(-(x * x + ty * ty * 4) / (2 * .035 * .035)); tone = .94 + .06 * Math.sin(x * 23 + Math.sin(y * 19) * 3); }
+        } else { // apple
+          const t = (y - cy) / .62, rx = .67 * (1 - .1 * Math.max(0, t) * Math.max(0, t));
+          U(ell(x, y, 0, cy, 0, rx, .62, .58), 5, 0);
+          if (m) {
+            z -= .11 * Math.exp(-(x * x) / (2 * .1 * .1)) * Math.exp(-((y - (cy - .57)) ** 2) / (2 * .1 * .1));
+            z -= .03 * Math.exp(-(x * x) / (2 * .05 * .05)) * Math.exp(-((y - (cy + .6)) ** 2) / (2 * .04 * .04));
+            tone = .82 + .18 * (.5 + .5 * Math.sin(x * 38 + Math.sin(y * 7) * 2));
+          }
+          if (y < -.55) {
+            U(ell(x, y, .015, -.74, .03, .018, .1, .025), 10, .01);                      // stem
+            const dx = x - .14, dy = y + .76, u = (dx * lc + dy * ls) / .14, v = (-dx * ls + dy * lc) / .055, e = 1 - u * u - v * v;
+            if (e > 0) { const zl = .1 + .07 * Math.sqrt(e) - .012 * Math.exp(-v * v * 30); if (zl > z) { z = zl; m = 3; } } // leaf
           }
         }
-        // hair
-        const hl = -.535 + .33 * (x / .3) * (x / .3);
-        if (y < hl) { const hh = ell(x, y, 0, -.43, -.035, .305, .378, .3); if (hh > z - .004 && hh > -9) { z = Math.max(z, hh); m = 3; isEye[p] = 0; } }
+        hz[p] = z; mat[p] = m; af[p] = tone; continue;
       }
-      hz[p] = z; mat[p] = m;
-      af[p] = m === 3 ? .72 + .28 * (.5 + .5 * Math.sin(x * 150 + Math.sin(y * 9) * 7)) : m === 4 ? .9 + .1 * Math.sin(x * 60 + y * 40) : 1;
+      U(ell(x, y, 0, .5, -.1, .52, .44, .28), 4, 0);                                  // body
+      U(ell(x, y, 0, -.3, 0, .44, .42, .38), 1, .08);                                   // head
+      if (m === 1) {
+        const cx = x - cleft[0]; if (y < -.46) z -= .024 * Math.exp(-(cx * cx) / (2 * .018 * .018)) * smooth(-.46, -.7, y); // peach cleft
+        U(ell(x, y, nose[0], -.24, nose[1], .05, .04, .05), 1, .02);                  // button nose
+        const mx = x - mouth[0];
+        if (Math.abs(mx) < .055) { const yc = -.16 - 7 * mx * mx, d = (y - yc) / .007; if (Math.abs(d) < 3) { z -= .01 * Math.exp(-d * d); tone = 1 - .6 * Math.exp(-d * d); } } // smile
+        for (const b of blush) if (Math.hypot(x - b[0], (y + .22) * 1.3) < .07 && m === 1) m = 2;
+        for (const e of eyes) {
+          const dx = x - e[0], dy = y + .33, e2 = .075 * .075 - dx * dx - dy * dy;
+          if (e2 > 0) { const ze = e[1] + Math.sqrt(e2); if (ze > z - .01) { z = ze; m = 6; const l = .075; nx[p] = dx / l; ny[p] = -dy / l; nz[p] = (ze - e[1]) / l; isEye[p] = 1; } }
+        }
+      }
+      if (y < -.62) {
+        U(ell(x, y, cleft[0] * .3, -.74, .02, .022, .06, .03), 3, .01);                  // stem
+        const dx = x - .11, dy = y + .79, u = (dx * lc + dy * ls) / .14, v = (-dx * ls + dy * lc) / .055, e = 1 - u * u - v * v;
+        if (e > 0) { const zl = .06 + .07 * Math.sqrt(e) - .012 * Math.exp(-v * v * 30); if (zl > z) { z = zl; m = 3; isEye[p] = 0; } } // leaf
+      }
+      hz[p] = z; mat[p] = m; af[p] = tone;
     }
   }
   // normals from height field (one-sided at silhouettes)
@@ -679,7 +683,6 @@ function buildGeom(view, ppu, turn) {
     if (L === L && Rr === Rr) dzdx = (Rr - L) / (2 * d); else if (Rr === Rr) dzdx = (Rr - zc) / d * 3; else if (L === L) dzdx = (zc - L) / d * 3;
     if (T === T && B === B) dzdy = (B - T) / (2 * d); else if (B === B) dzdy = (B - zc) / d * 3; else if (T === T) dzdy = (zc - T) / d * 3;
     let a = -dzdx, b = dzdy, cc = 1;
-    if (mat[p] === 3) { const x = view.x0 + (i + .5) / ppu, y = view.y0 + (j + .5) / ppu; a += .12 * Math.cos(x * 150 + Math.sin(y * 9) * 7); }
     const l = Math.hypot(a, b, cc); nx[p] = a / l; ny[p] = b / l; nz[p] = cc / l;
   }
   // cavity AO from blurred height
@@ -826,7 +829,7 @@ function renderRows(img, g, sc, q, job, jA, jB) {
         const A = ALB[m], f = af[p], ar = A[0] * f, ag = A[1] * f, ab = A[2] * f, ks = KS[m], sh = SH[m], o = ao[p];
         let h = Math.imul(i, 374761393) + Math.imul(j, 668265263) | 0; h = Math.imul(h ^ (h >>> 13), 1274126177); h ^= h >>> 16;
         const j1 = ((h & 1023) / 1023) - .5, j2 = (((h >>> 10) & 1023) / 1023) - .5;
-        const eye = m >= 5;
+        const eye = MIR[m] > 0, mir = MIR[m];
         for (let k = 0; k < nL; k++) {
           const L = Ls[k];
           const Dx = L.px - Px, Dy = L.py - Py, Dz = L.pz - Pz, d2 = Dx * Dx + Dy * Dy + Dz * Dz, d = Math.sqrt(d2);
@@ -861,7 +864,7 @@ function renderRows(img, g, sc, q, job, jA, jB) {
                 const hx = Px + Rx * t - L.px, hy = Py + Ry * t - L.py, hz2 = Pz + Rz * t - L.pz;
                 const u = hx * L.ux + hy * L.uy + hz2 * L.uz, v = hx * L.vx + hy * L.vy + hz2 * L.vz;
                 const c = L.dir ? (u * u + v * v < (L.tanA * t * 3) ** 2 ? 1 : 0) : inShape(L.shape, u, v, L.hwC, L.hhC);
-                if (c > 0) { const cv = c * L.cat * vis * Math.pow(cb, L.p * .5); r += cv * L.cr; gg += cv * L.cg; b += cv * L.cb; }
+                if (c > 0) { const cv = c * L.cat * vis * mir * Math.pow(cb, L.p * .5); r += cv * L.cr; gg += cv * L.cg; b += cv * L.cb; }
               }
             }
           }
@@ -907,11 +910,12 @@ function renderRows(img, g, sc, q, job, jA, jB) {
   }
 }
 
-function edgeAA(img, g) { // soften silhouette stair-steps with a 3x3 average on boundary pixels
+function edgeAA(img, g) { // ink outline on the silhouette, then soften stair-steps
   const { W, H, mat } = g, d = img.data, src = new Uint8ClampedArray(d);
   for (let j = 1; j < H - 1; j++) for (let i = 1; i < W - 1; i++) {
     const p = j * W + i, m = mat[p] ? 1 : 0;
     if ((mat[p - 1] ? 1 : 0) === m && (mat[p + 1] ? 1 : 0) === m && (mat[p - W] ? 1 : 0) === m && (mat[p + W] ? 1 : 0) === m) continue;
+    if (m) for (let c = 0; c < 3; c++) src[p * 4 + c] *= .28; // crisp dark outline
     for (let c = 0; c < 3; c++) { let a = 0; for (let y = -1; y <= 1; y++) for (let x = -1; x <= 1; x++) a += src[((j + y) * W + i + x) * 4 + c] * (x || y ? 1 : 2); d[p * 4 + c] = a / 10; }
   }
 }
@@ -1328,14 +1332,14 @@ const pgView = new BustView($('#pgCanvas'), {
 });
 const loupeView = new BustView($('#loupe'), {
   ppu: 440, draftScale: .5,
-  view: sc => { const ex = -.105 * Math.cos(sc.turn) + .172 * Math.sin(sc.turn); return { x0: ex - .13, x1: ex + .13, y0: -.435, y1: -.235 }; },
+  view: sc => { if (SUBJECT !== 'peach') return { x0: -.56, x1: 0, y0: -.64, y1: -.21 }; const ex = -.14 * Math.cos(sc.turn) + .315 * Math.sin(sc.turn); return { x0: ex - .13, x1: ex + .13, y0: -.43, y1: -.23 }; },
   getScene: () => ST.__sc || toScene(ST)
 });
 let PATRES = null;
 function pgOverlay(c, sc) {
-  if (!PATRES || PATRES.k !== 'rembrandt' || !PATRES.key) return;
+  if (SUBJECT !== 'peach' || !PATRES || PATRES.k !== 'rembrandt' || !PATRES.key) return;
   const t = ST.turn * D2R, s = PATRES.key.az < 0 ? 1 : -1, d = DPR();
-  const P = [[.06, -.285, .23], [.165, -.262, .19], [.085, -.16, .235]].map(([fx, fy, fz]) => pgView.toCanvas(s * fx * Math.cos(t) + fz * Math.sin(t), fy));
+  const P = [[.09, -.25, .36], [.24, -.235, .32], [.11, -.14, .36]].map(([fx, fy, fz]) => pgView.toCanvas(s * fx * Math.cos(t) + fz * Math.sin(t), fy));
   c.save(); c.strokeStyle = '#ffb35c'; c.lineWidth = 1.5 * d; c.setLineDash([4 * d, 3 * d]); c.shadowColor = '#000'; c.shadowBlur = 4 * d;
   c.beginPath(); c.moveTo(...P[0]); c.lineTo(...P[1]); c.lineTo(...P[2]); c.closePath(); c.stroke();
   c.setLineDash([]); c.fillStyle = '#ffb35c'; c.font = `${11 * d}px ${getComputedStyle(document.body).getPropertyValue('--mono')}`;
@@ -1362,6 +1366,7 @@ function updReadouts() {
   if (ST.lights.bg.on) badges.push('<span class="badge">Background light</span>');
   if (SLOTS.some(s => ST.lights[s].on && ST.lights[s].gel !== 'none')) badges.push('<span class="badge" style="border-color:#9b5cff;color:#c9a8ff">Gel</span>');
   $('#patBadges').innerHTML = badges.join('');
+  if (SUBJECT !== 'peach') why += `<br><span class="note">${SUBJ_NOTE}</span>`;
   $('#patWhy').innerHTML = why;
   const r = ratioOf(ST, sc);
   $('#ratioO').textContent = r < 1.15 ? '1:1' : (r < 3 ? r.toFixed(1) : Math.round(r)) + ':1';
@@ -1606,6 +1611,16 @@ new Motes($('#pgMotes'), (x, y, w, h) => {
   const [lx, ly] = pgView.toCanvas(L.x / KM, EYE_Y - L.h / KM), [fx, fy] = pgView.toCanvas(0, -.3);
   return segBeam(x, y, lx, ly, fx, fy, w * .05, w * .16) * .7;
 }, COARSE ? 30 : 55);
+const SUBJ_NOTE = 'Pattern names are based on where the light sits relative to a face. Switch to “Peach (with face)” to see real nose shadows and catchlights in the eyes.';
+function setSubject(s) {
+  SUBJECT = s; try { localStorage.setItem('catchlight-subject', s); } catch (e) {}
+  $$('#subjPick button').forEach(b => b.setAttribute('aria-pressed', b.dataset.s === s));
+  $('#loupeLabel').textContent = s === 'peach' ? 'Catchlight · eye close-up' : 'Specular highlight · close-up';
+  VIEWSET.forEach(v => v.invalidate(false)); updReadouts();
+}
+$$('#subjPick button').forEach(b => b.onclick = () => { setSubject(b.dataset.s); pgFire(); });
+try { const s = localStorage.getItem('catchlight-subject'); if (['apple', 'orange', 'egg', 'peach'].includes(s)) SUBJECT = s; } catch (e) {}
+setSubject(SUBJECT);
 selectTab('key'); updTabDots(); pgChanged(false);
 
 /* =====================================================================
@@ -1690,7 +1705,7 @@ const RECIPES = [
     mistakes: ['White light spilling onto the backdrop, washing out the gel colour', 'Gelling the key light so skin tones look unnatural', 'Forgetting to add back the power lost to the gels'],
     state: mk({ key: { x: -.35, z: 1.15, h: .5, mod: 'dish', power: -.3 }, fill: { x: -1, z: -.6, h: .3, mod: 'strip', power: .8, gel: 'cyan' }, rim: { x: 1, z: -.6, h: .3, mod: 'strip', power: .8, gel: 'red' }, bg: { x: 0, z: -.7, h: -.3, mod: 'grid', power: 1.8, gel: 'violet' }, bgDist: 1.6 }) },
   { id: 'productwhite', th: 'Product on white', en: 'Product on white', product: { mode: 'bright', grad: 0, strips: 0, top: 1 },
-    lead: 'Softbox above the product + a light on the white backdrop + a reflector (the Playground uses the bust as a stand-in)',
+    lead: 'Softbox above the product + a light on the white backdrop + a reflector (the Playground uses the character as a stand-in)',
     gear: ['Softbox (overhead)', 'Background light', 'White seamless sweep', 'White reflector'],
     steps: ['Put the product on a white sweep, away from the wall', 'Set the softbox above and slightly in front of the product so the top is brightest', 'Light the backdrop to pure white (+1.5 to +2 EV vs the product)', 'Fill the shadow side with a white board', 'Check the histogram: the backdrop touches the right edge but the product doesn’t clip'],
     why: 'Top light gives a short shadow under the product that keeps it three-dimensional, and a backdrop brighter than the product turns pure white — easy to cut out for e-commerce.',
