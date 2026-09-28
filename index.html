@@ -623,30 +623,30 @@ function buildGeom(view, ppu, turn, subj) {
     if (k > 0) { const h = clamp(.5 + .5 * (zn - z) / k, 0, 1); const r = z + (zn - z) * h + k * h * (1 - h); if (zn > z) m = mn; z = r; }
     else if (zn > z) { z = zn; m = mn; }
   };
-  const la = -.45, lc = Math.cos(la), ls = Math.sin(la);
+  const la = subj === 'peach' ? -.45 : -.2, lc = Math.cos(la), ls = Math.sin(la);
   for (let j = 0; j < H; j++) {
     const y = view.y0 + (j + .5) / ppu;
     for (let i = 0; i < W; i++) {
       const x = view.x0 + (i + .5) / ppu, p = j * W + i;
       z = -9; m = 0; let tone = 1;
       if (subj !== 'peach') { // still-life subjects
-        const cy = -.1;
-        if (subj === 'egg') { const t = (y + .06) / .68, rx = .5 * (1 - .16 * Math.max(0, -t)); U(ell(x, y, 0, -.06, 0, rx, .68, .5), 9, 0); }
+        const cy = EYE_Y; // object centre sits at the light-height reference
+        if (subj === 'egg') { const t = (y - cy) / .54, rx = .41 * (1 - .15 * Math.max(0, -t)); U(ell(x, y, 0, cy - .04, 0, rx, .54, .41), 9, 0); }
         else if (subj === 'orange') {
-          U(ell(x, y, 0, cy, 0, .64, .62, .58), 8, 0);
-          if (m) { z += .0025 * Math.sin(x * 70 + Math.sin(y * 45) * 2.5) * Math.sin(y * 74 + Math.sin(x * 41) * 2.5); const ty = y - (cy - .6); z -= .02 * Math.exp(-(x * x + ty * ty * 4) / (2 * .035 * .035)); tone = .94 + .06 * Math.sin(x * 23 + Math.sin(y * 19) * 3); }
+          U(ell(x, y, 0, cy, 0, .52, .5, .47), 8, 0);
+          if (m) { z += .0022 * Math.sin(x * 80 + Math.sin(y * 50) * 2.5) * Math.sin(y * 84 + Math.sin(x * 46) * 2.5); const ty = y - (cy - .48); z -= .018 * Math.exp(-(x * x + ty * ty * 4) / (2 * .03 * .03)); tone = .94 + .06 * Math.sin(x * 26 + Math.sin(y * 21) * 3); }
         } else { // apple
-          const t = (y - cy) / .62, rx = .67 * (1 - .1 * Math.max(0, t) * Math.max(0, t));
-          U(ell(x, y, 0, cy, 0, rx, .62, .58), 5, 0);
+          const t = (y - cy) / .5, rx = .54 * (1 - .1 * Math.max(0, t) * Math.max(0, t));
+          U(ell(x, y, 0, cy, 0, rx, .5, .47), 5, 0);
           if (m) {
-            z -= .11 * Math.exp(-(x * x) / (2 * .1 * .1)) * Math.exp(-((y - (cy - .57)) ** 2) / (2 * .1 * .1));
-            z -= .03 * Math.exp(-(x * x) / (2 * .05 * .05)) * Math.exp(-((y - (cy + .6)) ** 2) / (2 * .04 * .04));
-            tone = .82 + .18 * (.5 + .5 * Math.sin(x * 38 + Math.sin(y * 7) * 2));
+            z -= .09 * Math.exp(-(x * x) / (2 * .08 * .08)) * Math.exp(-((y - (cy - .46)) ** 2) / (2 * .08 * .08));
+            z -= .025 * Math.exp(-(x * x) / (2 * .04 * .04)) * Math.exp(-((y - (cy + .48)) ** 2) / (2 * .035 * .035));
+            tone = .82 + .18 * (.5 + .5 * Math.sin(x * 46 + Math.sin(y * 9) * 2));
           }
-          if (y < -.55) {
-            U(ell(x, y, .015, -.74, .03, .018, .1, .025), 10, .01);                      // stem
-            const dx = x - .14, dy = y + .76, u = (dx * lc + dy * ls) / .14, v = (-dx * ls + dy * lc) / .055, e = 1 - u * u - v * v;
-            if (e > 0) { const zl = .1 + .07 * Math.sqrt(e) - .012 * Math.exp(-v * v * 30); if (zl > z) { z = zl; m = 3; } } // leaf
+          if (y < cy - .36) {
+            U(ell(x, y, 0, cy - .52, .04, .016, .09, .022), 10, .01);                    // stem, centred
+            const dx = x - .085, dy = y - (cy - .56), u = (dx * lc + dy * ls) / .1, v = (-dx * ls + dy * lc) / .038, e = 1 - u * u - v * v;
+            if (e > 0) { const zl = .09 + .05 * Math.sqrt(e) - .01 * Math.exp(-v * v * 30); if (zl > z) { z = zl; m = 3; } } // small leaf beside the stem
           }
         }
         hz[p] = z; mat[p] = m; af[p] = tone; continue;
@@ -715,7 +715,8 @@ function buildGeom(view, ppu, turn, subj) {
   };
   const dOut = dt(false), dIn = dt(true), sd = new Float32Array(N);
   for (let p = 0; p < N; p++) sd[p] = (mat[p] ? -dIn[p] : dOut[p]) / ppu;
-  return { W, H, ppu, view, hz, nx, ny, nz, mat, af, ao, sd, turn };
+  const obj = subj === 'peach' ? null : { hor: EYE_Y + .2, yb: EYE_Y + (subj === 'egg' ? .5 : .5), Rw: (subj === 'egg' ? .44 : .5) * KM };
+  return { W, H, ppu, view, hz, nx, ny, nz, mat, af, ao, sd, turn, obj };
 }
 
 /* =====================================================================
@@ -897,6 +898,31 @@ function renderRows(img, g, sc, q, job, jA, jB) {
         r += amb * .7 * wa[0] * ac[0]; gg += amb * .7 * wa[1] * ac[1]; b += amb * .7 * wa[2] * ac[2];
         if (sky) { r += sky.I * .5 * wa[0] * sky.c[0]; gg += sky.I * .5 * wa[1] * sky.c[1]; b += sky.I * .5 * wa[2] * sky.c[2]; }
         if (emit) { const t = (y - view.y0) / (view.y1 - view.y0); r += emit[0] * (1.15 - t * .5); gg += emit[1] * (1.15 - t * .5); b += emit[2] * (1.15 - t * .5); }
+        const O = g.obj;
+        if (O && y > O.hor - .05) { // tabletop / paper sweep under still-life subjects
+          const Yf = (EYE_Y - O.yb) * KM, Fz = Math.min(1.3, wallZ + (y - O.hor) * (-wallZ / (O.yb - O.hor)));
+          const rr = Math.hypot(Px, Fz), fao = 1 - .65 * Math.exp(-(rr * rr) / (2 * (O.Rw * .45) ** 2));
+          let fr = 0, fg = 0, fb = 0;
+          for (let k = 0; k < nL; k++) {
+            const L = Ls[k];
+            const Dx = L.px - Px, Dy = L.py - Yf, Dz = L.pz - Fz; if (Dy <= .01) continue;
+            const d2 = Dx * Dx + Dy * Dy + Dz * Dz, d = Math.sqrt(d2), lx = Dx / d, ly = Dy / d, lz = Dz / d;
+            const cb = -(lx * L.ax + ly * L.ay + lz * L.az); if (cb <= 0) continue;
+            let E = (L.dir ? L.base : L.base / Math.max(d2, .04)) * Math.pow(cb, L.p) * ly;
+            const t = -(Px * lx + Yf * ly + Fz * lz); // closest approach to the object centre (world origin)
+            if (t > 0 && t < d) {
+              const cx = Px + lx * t, cyy = Yf + ly * t, cz = Fz + lz * t, dist = Math.sqrt(cx * cx + cyy * cyy + cz * cz);
+              const w = (L.dir ? L.tanA * t : L.rEff * t / Math.max(.05, d - t)) + .004;
+              E *= smooth(O.Rw - w, O.Rw + w, dist);
+            }
+            fr += E * wa[0] * L.cr; fg += E * wa[1] * L.cg; fb += E * wa[2] * L.cb;
+          }
+          fr += amb * fao * wa[0] * ac[0]; fg += amb * fao * wa[1] * ac[1]; fb += amb * fao * wa[2] * ac[2];
+          if (sky) { fr += sky.I * fao * wa[0] * sky.c[0]; fg += sky.I * fao * wa[1] * sky.c[1]; fb += sky.I * fao * wa[2] * sky.c[2]; }
+          fr *= fao; fg *= fao; fb *= fao;
+          const bw = smooth(O.hor - .05, O.hor + .05, y);
+          r = lerp(r, fr, bw); gg = lerp(gg, fg, bw); b = lerp(b, fb, bw);
+        }
       }
       const o4 = p * 4;
       r *= expo; gg *= expo; b *= expo;
@@ -938,8 +964,9 @@ class BustView {
   invalidateJob() { this.job = null; }
   prep(draft) {
     const sc = this.getScene(); if (!sc) return null;
-    const view = typeof this.view === 'function' ? this.view(sc) : this.view;
-    const g = getGeom(view, this.ppu * (draft ? this.draftScale : 1), sc.turn || 0);
+    let view = typeof this.view === 'function' ? this.view(sc) : this.view, zk = 1;
+    if (SUBJECT !== 'peach' && typeof this.view !== 'function') { const k = zk = view.y1 - view.y0 < 2 ? 1.45 : 1, w = (view.x1 - view.x0) * k, h = (view.y1 - view.y0) * k, cx = (view.x0 + view.x1) / 2; view = { x0: cx - w / 2, x1: cx + w / 2, y0: EYE_Y - h * .45, y1: EYE_Y + h * .55 }; } // centre still-life subjects
+    const g = getGeom(view, this.ppu * (draft ? this.draftScale : 1) / zk, sc.turn || 0);
     return { sc, g, img: new ImageData(g.W, g.H), q: draft ? 0 : 1 };
   }
   draw(draft) { // synchronous (drafts)
@@ -1332,7 +1359,7 @@ const pgView = new BustView($('#pgCanvas'), {
 });
 const loupeView = new BustView($('#loupe'), {
   ppu: 440, draftScale: .5,
-  view: sc => { if (SUBJECT !== 'peach') return { x0: -.56, x1: 0, y0: -.64, y1: -.21 }; const ex = -.14 * Math.cos(sc.turn) + .315 * Math.sin(sc.turn); return { x0: ex - .13, x1: ex + .13, y0: -.43, y1: -.23 }; },
+  view: sc => { if (SUBJECT !== 'peach') return { x0: -.5, x1: .02, y0: -.8, y1: -.4 }; const ex = -.14 * Math.cos(sc.turn) + .315 * Math.sin(sc.turn); return { x0: ex - .13, x1: ex + .13, y0: -.43, y1: -.23 }; },
   getScene: () => ST.__sc || toScene(ST)
 });
 let PATRES = null;
